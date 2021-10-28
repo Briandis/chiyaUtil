@@ -63,8 +63,6 @@ public class UserMap {
 				try {
 					userData.selectAll(userHasMap);
 					updateFlag = false;
-				} catch (Exception e) {
-					e.printStackTrace();
 				} finally {
 					lock.unlock();
 				}
@@ -84,8 +82,6 @@ public class UserMap {
 				try {
 					userData.selectOne(userHasMap, userGroupId);
 					updateSet.remove(userGroupId);
-				} catch (Exception e) {
-					e.printStackTrace();
 				} finally {
 					lock.unlock();
 				}

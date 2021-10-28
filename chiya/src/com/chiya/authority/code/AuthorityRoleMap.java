@@ -54,8 +54,6 @@ public class AuthorityRoleMap {
 				try {
 					authorityRoleData.selectAll(chiyaHashMapValueMap);
 					updateFlag = false;
-				} catch (Exception e) {
-					e.printStackTrace();
 				} finally {
 					lock.unlock();
 				}
@@ -74,8 +72,6 @@ public class AuthorityRoleMap {
 				try {
 					authorityRoleData.selectOne(chiyaHashMapValueMap, authorityRoleId);
 					updateSet.remove(authorityRoleId);
-				} catch (Exception e) {
-					e.printStackTrace();
 				} finally {
 					lock.unlock();
 				}

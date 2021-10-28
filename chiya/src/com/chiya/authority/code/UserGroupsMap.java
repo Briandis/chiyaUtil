@@ -82,8 +82,6 @@ public class UserGroupsMap {
 				try {
 					userGroupsData.selectAll(chiyaHashMapValueSet);
 					updateFlag = false;
-				} catch (Exception e) {
-					e.printStackTrace();
 				} finally {
 					lock.unlock();
 				}
@@ -103,8 +101,6 @@ public class UserGroupsMap {
 				try {
 					userGroupsData.selectOne(chiyaHashMapValueSet, userGroupId);
 					updateSet.remove(userGroupId);
-				} catch (Exception e) {
-					e.printStackTrace();
 				} finally {
 					lock.unlock();
 				}
