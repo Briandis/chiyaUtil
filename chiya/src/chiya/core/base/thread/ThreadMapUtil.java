@@ -83,7 +83,7 @@ public class ThreadMapUtil {
 	 */
 	private static ConcurrentHashMap<String, Object> getMap() {
 		if (threadThisMap == null) {
-			synchronized (threadThisMap) {
+			synchronized (ThreadMapUtil.class) {
 				if (threadThisMap == null) { threadThisMap = new ConcurrentHashMap<String, ConcurrentHashMap<String, Object>>(); }
 			}
 
