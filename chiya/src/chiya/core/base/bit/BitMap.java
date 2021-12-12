@@ -6,7 +6,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * 用户组持有用户信息
+ * 位图
  * 
  * @author Brian
  *
@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class BitMap {
 
 	/**
-	 * 位图记录用户信息,1K空间可记录8192个单位
+	 * 位图容器数组,1K空间可记录8192个单位
 	 */
 	private byte[] allBit = null;
 	private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
@@ -32,10 +32,18 @@ public class BitMap {
 	 */
 	private static final int DEF_INIT_SIZE = 1024;
 
+	/**
+	 * 默认构造方法，创建一个1K存储容量的数组
+	 */
 	public BitMap() {
 		allBit = new byte[DEF_INIT_SIZE];
 	}
 
+	/**
+	 * 指定数组大小的构造方法
+	 * 
+	 * @param initSize 数组容量大小
+	 */
 	public BitMap(int initSize) {
 		if (initSize < 1) {
 			allBit = new byte[DEF_INIT_SIZE];
@@ -45,7 +53,7 @@ public class BitMap {
 	}
 
 	/**
-	 * 对应位置
+	 * 标记对应位置数据
 	 * 
 	 * @param location 对应下标位置
 	 * @return true:写入成功/false:写入失败
@@ -70,7 +78,7 @@ public class BitMap {
 	}
 
 	/**
-	 * 移除用户id
+	 * 移除对应位置数据
 	 * 
 	 * @param location 对应下标位置
 	 * @return true:移除成功/false:移除失败
@@ -94,7 +102,7 @@ public class BitMap {
 	}
 
 	/**
-	 * 获取该用户存不存在
+	 * 获取该位置存不存在数据
 	 * 
 	 * @param location 对应下标位置
 	 * @return true:存在/false:不存在
@@ -114,7 +122,7 @@ public class BitMap {
 	/**
 	 * 空间占用长度
 	 * 
-	 * @return
+	 * @return 数组长度
 	 */
 	public int length() {
 		return allBit.length;

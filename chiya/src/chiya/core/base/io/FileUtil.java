@@ -59,7 +59,7 @@ public class FileUtil {
 			bufferedOutputStrea.flush();
 			b = true;
 		} catch (IOException e) {
-			e.printStackTrace();
+			new RuntimeException(e);
 		}
 		return b;
 	}
@@ -87,7 +87,7 @@ public class FileUtil {
 		try {
 			return saveFile(inputStream.readAllBytes(), fileName);
 		} catch (IOException e) {
-			e.printStackTrace();
+			new RuntimeException(e);
 		}
 		return false;
 
@@ -105,7 +105,7 @@ public class FileUtil {
 		try {
 			return saveFile(inputStream.readAllBytes(), dirPath, fileName);
 		} catch (IOException e) {
-			e.printStackTrace();
+			new RuntimeException(e);
 		}
 		return false;
 
@@ -122,7 +122,7 @@ public class FileUtil {
 		try (InputStream inputStream = new FileInputStream(fileName); BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream)) {
 			bytes = bufferedInputStream.readAllBytes();
 		} catch (IOException e) {
-			e.printStackTrace();
+			new RuntimeException(e);
 		}
 		return bytes;
 	}
@@ -154,7 +154,7 @@ public class FileUtil {
 			bufferedOutputStrea.flush();
 			b = true;
 		} catch (IOException e) {
-			e.printStackTrace();
+			new RuntimeException(e);
 		}
 		return b;
 	}
@@ -183,7 +183,7 @@ public class FileUtil {
 		try {
 			return appendFile(inputStream.readAllBytes(), dirPath, fileName);
 		} catch (IOException e) {
-			e.printStackTrace();
+			new RuntimeException(e);
 		}
 		return false;
 	}
@@ -199,7 +199,7 @@ public class FileUtil {
 		try {
 			return appendFile(inputStream.readAllBytes(), fileName);
 		} catch (IOException e) {
-			e.printStackTrace();
+			new RuntimeException(e);
 		}
 		return false;
 	}
@@ -237,7 +237,7 @@ public class FileUtil {
 			}
 			return stringBuilder.toString();
 		} catch (IOException e) {
-			e.printStackTrace();
+			new RuntimeException(e);
 		}
 		return null;
 	}
@@ -280,7 +280,7 @@ public class FileUtil {
 			bufferedWriter.flush();
 			b = true;
 		} catch (IOException e) {
-			e.printStackTrace();
+			new RuntimeException(e);
 		}
 		return b;
 	}

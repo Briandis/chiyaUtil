@@ -83,15 +83,15 @@ public class ContainerUtil {
 	 * @return 成功/失败
 	 */
 	public static <T> boolean swapList(List<T> list, int a, int b) {
-		if (list != null) {
-			if (compareAllNumberLessNumberAndMoreZero(list.size(), a, b)) {
-				T swap = list.get(a);
-				list.set(a, list.get(b));
-				list.set(b, swap);
-				return true;
-			}
-		}
-		return false;
+		if (list == null) { return false; }
+		if (a >= list.size() || b >= list.size()) { return false; }
+		if (a < 0) { a += list.size(); }
+		if (b < 0) { b += list.size(); }
+		if (a < 0 || b < 0) { return false; }
+		T swap = list.get(a);
+		list.set(a, list.get(b));
+		list.set(b, swap);
+		return true;
 	}
 
 	/**
@@ -103,15 +103,15 @@ public class ContainerUtil {
 	 * @return 成功/失败
 	 */
 	public static boolean swapArrayInt(int array[], int a, int b) {
-		if (array != null) {
-			if (compareAllNumberLessNumberAndMoreZero(array.length, a, b)) {
-				int swap = array[a];
-				array[a] = array[b];
-				array[b] = swap;
-				return true;
-			}
-		}
-		return false;
+		if (array == null) { return false; }
+		if (a >= array.length || b >= array.length) { return false; }
+		if (a < 0) { a += array.length; }
+		if (b < 0) { b += array.length; }
+		if (a < 0 || b < 0) { return false; }
+		int swap = array[a];
+		array[a] = array[b];
+		array[b] = swap;
+		return true;
 	}
 
 	/**
@@ -122,6 +122,7 @@ public class ContainerUtil {
 	 * @return list 待乱序列表的地址
 	 */
 	public static <T> List<T> upsetList(List<T> list) {
+		if (list == null) { return null; }
 		for (int i = 0; i < list.size(); i++) {
 			swapList(list, i, RandomUtil.randInt(list.size()));
 		}
@@ -135,6 +136,7 @@ public class ContainerUtil {
 	 * @return 数组起始地址
 	 */
 	public static int[] upsetArray(int[] array) {
+		if (array == null) { return null; }
 		for (int i = 0; i < array.length; i++) {
 			swapArrayInt(array, i, RandomUtil.randInt(array.length));
 		}
@@ -142,7 +144,7 @@ public class ContainerUtil {
 	}
 
 	/**
-	 * 生成一个乱序序列，范围[start,end)
+	 * 生成一个连续不重复的乱序列表，范围[start,end)
 	 * 
 	 * @param start 乱序起始值
 	 * @param end   乱序最大值
@@ -169,7 +171,7 @@ public class ContainerUtil {
 	}
 
 	/**
-	 * 生成一个乱序数组，范围[start,end)
+	 * 生成一个连续不重复的乱序数组，范围[start,end)
 	 * 
 	 * @param start 乱序起始值
 	 * @param end   乱序最大值
