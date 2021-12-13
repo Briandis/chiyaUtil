@@ -2,6 +2,10 @@ package chiya.core.base.collection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import chiya.core.base.random.RandomUtil;
 
@@ -193,5 +197,51 @@ public class ContainerUtil {
 		}
 		// 对数组进行乱序
 		return upsetArray(array);
+	}
+
+	/**
+	 * 根据字段进行分组，获得分组后对象
+	 * 
+	 * @param source 数据源
+	 * @param key    lambda表达式，要分组的字段
+	 * @return Map<?, List<T>>
+	 */
+	public static <T, K> Map<K, List<T>> mapList(List<T> source, Function<T, K> key) {
+		return source.stream().collect(Collectors.groupingBy(key));
+	}
+
+	/**
+	 * 根据MAP装配List
+	 * 
+	 * @param source List数据源
+	 * @param map    需要封装的Map
+	 * @param get    获取的字段
+	 * @param set    设置的字段
+	 */
+	public static <T, K, U> void listAssemblyMap(List<T> source, Map<K, U> map, Function<T, K> get, BiConsumer<T, U> set) {
+		source.forEach(obj -> {
+			K key = get.apply(obj);
+			set.accept(obj, map.get(key));
+		});
+	}
+
+	/**
+	 * 根据List自动装配另一个list的外键信息
+	 * 
+	 * @param <T>        源List的泛型
+	 * @param <C>        另一方List的泛型
+	 * @param <K>        外键类型
+	 * @param source     数据源列表
+	 * @param child      装配方列表
+	 * @param foreignKey 装配方外键,lambda表达式
+	 * @param get        数据源所匹配的外键
+	 * @param set        装配的目标位置
+	 */
+	public static <T, C, K> void listAssemblyList(List<T> source, List<C> child, Function<C, K> foreignKey, Function<T, K> get, BiConsumer<T, List<C>> set) {
+		Map<K, List<C>> map = child.stream().collect(Collectors.groupingBy(foreignKey));
+		source.forEach(obj -> {
+			K key = get.apply(obj);
+			set.accept(obj, map.get(key));
+		});
 	}
 }
