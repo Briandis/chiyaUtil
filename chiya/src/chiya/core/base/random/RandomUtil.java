@@ -9,7 +9,6 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  */
 public class RandomUtil {
-	private static ThreadLocalRandom random = ThreadLocalRandom.current();
 
 	/**
 	 * 随机生成一个0到max的数，[0,max)
@@ -18,7 +17,7 @@ public class RandomUtil {
 	 * @return 随机整数
 	 */
 	public static int randInt(int max) {
-		return random.nextInt(max);
+		return ThreadLocalRandom.current().nextInt(max);
 	}
 
 	/**
@@ -37,7 +36,7 @@ public class RandomUtil {
 			max = a;
 		}
 		a = max - min;
-		return random.nextInt(a) + min;
+		return ThreadLocalRandom.current().nextInt(a) + min;
 	}
 
 }
