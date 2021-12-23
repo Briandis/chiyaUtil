@@ -11,26 +11,36 @@ import chiya.core.base.string.StringUtil;
  * 日期工具类
  * 
  * @author Brian
- *
  */
 public class DateUtil {
-	// 日期时间
+	/** 日期时间 */
 	private static final String DATE_TIME = "yyyy-MM-dd HH:mm:ss";
-	// 日期
+	/** 日期 */
 	private static final String DATE = "yyyy-MM-dd";
+	/** UTC标准时间 */
+	private static final String UTC_DATE_TIME = "yyyy-MM-dd'T'HH:mm:ss'+08:00'";
+	/** UTC时间格式化工具 */
+	private static final ThreadLocal<SimpleDateFormat> simpleDateFormatUTCDateTime = new ThreadLocal<SimpleDateFormat>() {
+		protected SimpleDateFormat initialValue() {
+			return new SimpleDateFormat(UTC_DATE_TIME);
+		};
+	};
+
+	/** 时间日期格式化工具 */
 	private static final ThreadLocal<SimpleDateFormat> simpleDateFormatDatetime = new ThreadLocal<SimpleDateFormat>() {
 		protected SimpleDateFormat initialValue() {
 			return new SimpleDateFormat(DATE_TIME);
 		};
 	};
-
+	/** 日期格式化工具 */
 	private static final ThreadLocal<SimpleDateFormat> simpleDateFormatDate = new ThreadLocal<SimpleDateFormat>() {
 		protected SimpleDateFormat initialValue() {
 			return new SimpleDateFormat(DATE);
 		};
 	};
-	// 每个月份的天数
-	private static final int MONTH_DAY[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+	/** 每个月份的天数 */
+	private static final int MONTH_DAY[] = {
+			31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
 	/**
 	 * 获取现在的时间，以yyyy-MM-dd HH:mm:ss的方式显示
@@ -294,4 +304,24 @@ public class DateUtil {
 		return calendar.get(Calendar.DAY_OF_MONTH);
 	}
 
+	/**
+	 * 以UTC的方式格式化日期
+	 * 
+	 * @param date 待格式化日期
+	 * @return 格式化后的字符串
+	 */
+	public static String formatDateUTCDateTime(Date date) {
+		if (date == null) { return null; }
+		return simpleDateFormatUTCDateTime.get().format(date);
+	}
+
+	/**
+	 * 以UTC的方式格式化日期
+	 * 
+	 * @param time 时间戳
+	 * @return 格式化后的字符串
+	 */
+	public static String formatDateUTCDateTime(long time) {
+		return formatDateUTCDateTime(new Date(time));
+	}
 }
