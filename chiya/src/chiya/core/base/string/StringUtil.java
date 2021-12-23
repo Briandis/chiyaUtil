@@ -776,17 +776,7 @@ public class StringUtil {
 	 * @return 隐藏后的字符串
 	 */
 	public static String hide(String str, int start, int end) {
-		if (isNullOrZero(str)) { return null; }
-		// 默认显示字符数量为3
-		start = start < 0 ? 1 : start;
-		end = end < 0 ? 1 : end;
-		// 开头和结束所需要字符串相等则返回原串
-		if (start + end >= str.length()) { return str; }
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(str.substring(0, start));
-		for (int i = 0; i < str.length() - (start + end); i++) { stringBuilder.append("*"); }
-		stringBuilder.append(str.substring(str.length() - end));
-		return stringBuilder.toString();
+		return hide(str, start, end, 0);
 	}
 
 	/**
@@ -799,4 +789,66 @@ public class StringUtil {
 		return hide(str, 1, 1);
 	}
 
+	/***
+	 * 隐藏字符串，不够就有最小隐藏长度
+	 * 
+	 * @param str   源字符串
+	 * @param start 起始数量
+	 * @param end   结束数量
+	 * @param hide  隐藏最小间隔
+	 * @return 匿名后的字符串
+	 */
+	public static String hide(String str, int start, int end, int hide) {
+		if (isNullOrZero(str)) { return null; }
+		// 默认显示字符数量为3
+		start = start < 0 ? 1 : start;
+		end = end < 0 ? 1 : end;
+		hide = hide < 0 ? 0 : hide;
+		// 开头和结束所需要字符串相等则返回原串
+		if (start + end >= str.length()) {
+			start = str.length();
+			end = 0;
+		}
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(str.substring(0, start));
+		for (int i = 0; i < str.length() - (start + end) + hide; i++) { stringBuilder.append("*"); }
+		stringBuilder.append(str.substring(str.length() - end));
+		return stringBuilder.toString();
+	}
+
+	/***
+	 * 隐藏字符串，任何字符串都是同样的隐藏长度
+	 * 
+	 * @return 匿名后的字符串
+	 */
+	public static String hideSafety(String str) {
+		return hideSafety(str, 1, 0, 7);
+	}
+
+	/***
+	 * 隐藏字符串，任何字符串都是同样的隐藏长度
+	 * 
+	 * @param str   源字符串
+	 * @param start 起始数量
+	 * @param end   结束数量
+	 * @param hide  隐藏最小间隔
+	 * @return 匿名后的字符串
+	 */
+	public static String hideSafety(String str, int start, int end, int hide) {
+		if (isNullOrZero(str)) { return null; }
+		// 默认显示字符数量为3
+		start = start < 0 ? 1 : start;
+		end = end < 0 ? 1 : end;
+		hide = hide < 0 ? 0 : hide;
+		// 开头和结束所需要字符串相等则返回原串
+		if (start + end >= str.length()) {
+			start = str.length();
+			end = 0;
+		}
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(str.substring(0, start));
+		for (int i = 0; i < hide; i++) { stringBuilder.append("*"); }
+		stringBuilder.append(str.substring(str.length() - end));
+		return stringBuilder.toString();
+	}
 }
