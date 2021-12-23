@@ -14,9 +14,7 @@ import java.util.regex.Pattern;
 import chiya.core.base.random.RandomUtil;
 
 /**
- * 字符串工具库
- * 
- * 最后修改时间 2021-08-04
+ * 字符串工具库 最后修改时间 2021-08-04
  * 
  * @author Brian
  * @version 1.0.0
@@ -50,11 +48,13 @@ public class StringUtil {
 	/**
 	 * 图片文件名后缀
 	 */
-	private static final String[] ARRAY_IMG = { ".jpg", ".png", ".bmp", ".webp", ".jpge" };
+	private static final String[] ARRAY_IMG = {
+			".jpg", ".png", ".bmp", ".webp", ".jpge" };
 	/**
 	 * 空字符,对应编码：32、12288、9
 	 */
-	private static final char[] SPACE_CHARS = { '　', '	', ' ' };
+	private static final char[] SPACE_CHARS = {
+			'　', '	', ' ' };
 	/**
 	 * 空字符串
 	 */
@@ -146,9 +146,7 @@ public class StringUtil {
 		boolean b = true;
 		for (int i = 0; i < str.length(); i++) {
 			b = true;
-			for (char c : SPACE_CHARS) {
-				b = b && str.charAt(i) != c;
-			}
+			for (char c : SPACE_CHARS) { b = b && str.charAt(i) != c; }
 			if (b) { return false; }
 		}
 		return true;
@@ -228,9 +226,7 @@ public class StringUtil {
 		length = length < 1 ? 4 : length;
 		if (chars == null || chars.length() == 0) { chars = ALL_CHARS; }
 		StringBuilder stringBuilder = new StringBuilder();
-		for (int i = 0; i < length; i++) {
-			stringBuilder.append(chars.charAt(RandomUtil.randInt(chars.length())));
-		}
+		for (int i = 0; i < length; i++) { stringBuilder.append(chars.charAt(RandomUtil.randInt(chars.length()))); }
 		return stringBuilder.toString();
 	}
 
@@ -254,9 +250,7 @@ public class StringUtil {
 	 */
 	public static String extractFileNameIsImg(String fileName) {
 		String s = getFileFormat(fileName);
-		for (int i = 0; i < ARRAY_IMG.length; i++) {
-			if (ARRAY_IMG[i].equalsIgnoreCase(s)) { return ARRAY_IMG[i]; }
-		}
+		for (int i = 0; i < ARRAY_IMG.length; i++) { if (ARRAY_IMG[i].equalsIgnoreCase(s)) { return ARRAY_IMG[i]; } }
 		return null;
 	}
 
@@ -272,9 +266,7 @@ public class StringUtil {
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
 			String hashtext = new BigInteger(1, md.digest(string.getBytes())).toString(16);
-			while (hashtext.length() < 32) {
-				hashtext = "0" + hashtext;
-			}
+			while (hashtext.length() < 32) { hashtext = "0" + hashtext; }
 			return hashtext;
 		} catch (NoSuchAlgorithmException e) {
 			return string;
@@ -356,7 +348,6 @@ public class StringUtil {
 	}
 
 	/**
-	 * 
 	 * 隐藏邮箱，根据自定义位数
 	 * 
 	 * @param mail  待隐藏油箱字符串
@@ -375,9 +366,7 @@ public class StringUtil {
 			StringBuilder stringBuilder = new StringBuilder();
 			// 截取前index个显示字符
 			stringBuilder.append(head.substring(0, index));
-			for (int i = 0; i < l; i++) {
-				stringBuilder.append("*");
-			}
+			for (int i = 0; i < l; i++) { stringBuilder.append("*"); }
 			stringBuilder.append(less);
 			mail = stringBuilder.toString();
 		}
@@ -447,11 +436,7 @@ public class StringUtil {
 	 * @return true:存在/false:不存在
 	 */
 	public static boolean stringInList(String string, List<String> list) {
-		if (list != null) {
-			for (String str : list) {
-				if (eqString(string, str)) { return true; }
-			}
-		}
+		if (list != null) { for (String str : list) { if (eqString(string, str)) { return true; } } }
 		return false;
 	}
 
@@ -463,11 +448,7 @@ public class StringUtil {
 	 * @return true:存在/false:不存在
 	 */
 	public static boolean stringInArray(String string, String str[]) {
-		if (str != null) {
-			for (String st : str) {
-				if (eqString(string, st)) { return true; }
-			}
-		}
+		if (str != null) { for (String st : str) { if (eqString(string, st)) { return true; } } }
 		return false;
 	}
 
@@ -484,9 +465,7 @@ public class StringUtil {
 		if (arr == null) { return true; }
 		if (data == null) { return false; }
 		data = data.toLowerCase();
-		for (String str : arr) {
-			if (data.indexOf(str) != -1) { return true; }
-		}
+		for (String str : arr) { if (data.indexOf(str) != -1) { return true; } }
 		return false;
 	}
 
@@ -502,9 +481,7 @@ public class StringUtil {
 		if (list == null) { return true; }
 		if (data == null) { return false; }
 		data = data.toLowerCase();
-		for (String str : list) {
-			if (data.indexOf(str) != -1) { return true; }
-		}
+		for (String str : list) { if (data.indexOf(str) != -1) { return true; } }
 		return false;
 	}
 
@@ -516,11 +493,7 @@ public class StringUtil {
 	 * @return true:存在/false:不存在
 	 */
 	public static boolean charInArray(char chr, char[] chars) {
-		if (chars != null) {
-			for (char c : chars) {
-				if (c == chr) { return true; }
-			}
-		}
+		if (chars != null) { for (char c : chars) { if (c == chr) { return true; } } }
 		return false;
 	}
 
@@ -690,9 +663,7 @@ public class StringUtil {
 		if (!isNullOrZero(string)) {
 			String s[] = string.split("_");
 			StringBuilder stringBuilder = new StringBuilder();
-			for (int i = 0; i < s.length; i++) {
-				stringBuilder.append(i == 0 ? lowerFirst(s[i]) : upperFirst(s[i]));
-			}
+			for (int i = 0; i < s.length; i++) { stringBuilder.append(i == 0 ? lowerFirst(s[i]) : upperFirst(s[i])); }
 			return stringBuilder.toString();
 		}
 		return null;
@@ -708,9 +679,7 @@ public class StringUtil {
 		if (!isNullOrZero(string)) {
 			String s[] = string.split("_");
 			StringBuilder stringBuilder = new StringBuilder();
-			for (int i = 0; i < s.length; i++) {
-				stringBuilder.append(upperFirst(s[i]));
-			}
+			for (int i = 0; i < s.length; i++) { stringBuilder.append(upperFirst(s[i])); }
 			return stringBuilder.toString();
 		}
 		return null;
@@ -796,6 +765,38 @@ public class StringUtil {
 		String s = string.substring(0, tail.length());
 		if (eqIgnoreCase(s, tail)) { return string.substring(string.length(), -string.length()); }
 		return string;
+	}
+
+	/**
+	 * 隐藏字符串，前后个展示几位
+	 *
+	 * @param str   源字符串
+	 * @param start 起始字符串
+	 * @param end   结束字符串
+	 * @return 隐藏后的字符串
+	 */
+	public static String hide(String str, int start, int end) {
+		if (isNullOrZero(str)) { return null; }
+		// 默认显示字符数量为3
+		start = start < 0 ? 1 : start;
+		end = end < 0 ? 1 : end;
+		// 开头和结束所需要字符串相等则返回原串
+		if (start + end >= str.length()) { return str; }
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(str.substring(0, start));
+		for (int i = 0; i < str.length() - (start + end); i++) { stringBuilder.append("*"); }
+		stringBuilder.append(str.substring(str.length() - end));
+		return stringBuilder.toString();
+	}
+
+	/**
+	 * 隐藏字符串，前后个展示几位
+	 *
+	 * @param str 源字符串
+	 * @return 隐藏后的字符串
+	 */
+	public static String hide(String str) {
+		return hide(str, 1, 1);
 	}
 
 }
