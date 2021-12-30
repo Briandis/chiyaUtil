@@ -14,11 +14,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
- * 文件工具库
- * 
- * 最后修改时间 2021-08-04
+ * 文件工具库 最后修改时间 2021-08-04
  * 
  * @author Brian
  * @version 1.0.1
@@ -85,7 +86,7 @@ public class FileUtil {
 	 */
 	public static boolean saveFile(InputStream inputStream, String fileName) {
 		try {
-			return saveFile(inputStream.readAllBytes(), fileName);
+			return saveFile(readAllBytes(inputStream), fileName);
 		} catch (IOException e) {
 			new RuntimeException(e);
 		}
@@ -103,7 +104,7 @@ public class FileUtil {
 	 */
 	public static boolean saveFile(InputStream inputStream, String dirPath, String fileName) {
 		try {
-			return saveFile(inputStream.readAllBytes(), dirPath, fileName);
+			return saveFile(readAllBytes(inputStream), dirPath, fileName);
 		} catch (IOException e) {
 			new RuntimeException(e);
 		}
@@ -120,7 +121,7 @@ public class FileUtil {
 	public static byte[] readFile(String fileName) {
 		byte[] bytes = null;
 		try (InputStream inputStream = new FileInputStream(fileName); BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream)) {
-			bytes = bufferedInputStream.readAllBytes();
+			bytes = readAllBytes(bufferedInputStream);
 		} catch (IOException e) {
 			new RuntimeException(e);
 		}
@@ -149,7 +150,8 @@ public class FileUtil {
 		createParentDir(fileName);
 		boolean b = false;
 		// 在括号中的对象实现了AutoCloseable接口，会自动关闭
-		try (OutputStream outputStream = new FileOutputStream(fileName, true); BufferedOutputStream bufferedOutputStrea = new BufferedOutputStream(outputStream)) {
+		try (OutputStream outputStream = new FileOutputStream(fileName, true);
+				BufferedOutputStream bufferedOutputStrea = new BufferedOutputStream(outputStream)) {
 			bufferedOutputStrea.write(data);
 			bufferedOutputStrea.flush();
 			b = true;
@@ -181,7 +183,7 @@ public class FileUtil {
 	 */
 	public static boolean appendFile(InputStream inputStream, String dirPath, String fileName) {
 		try {
-			return appendFile(inputStream.readAllBytes(), dirPath, fileName);
+			return appendFile(readAllBytes(inputStream), dirPath, fileName);
 		} catch (IOException e) {
 			new RuntimeException(e);
 		}
@@ -197,7 +199,7 @@ public class FileUtil {
 	 */
 	public static boolean appendFile(InputStream inputStream, String fileName) {
 		try {
-			return appendFile(inputStream.readAllBytes(), fileName);
+			return appendFile(readAllBytes(inputStream), fileName);
 		} catch (IOException e) {
 			new RuntimeException(e);
 		}
@@ -228,9 +230,7 @@ public class FileUtil {
 			StringBuilder stringBuilder = new StringBuilder();
 			while ((index = bufferedReader.read(c)) != -1) {
 				if (index != 8192) {
-					for (int i = 0; i < index; i++) {
-						stringBuilder.append(c[i]);
-					}
+					for (int i = 0; i < index; i++) { stringBuilder.append(c[i]); }
 				} else {
 					stringBuilder.append(c);
 				}
@@ -295,5 +295,61 @@ public class FileUtil {
 	 */
 	public static boolean appendText(String text, String dirPath, String fileName) {
 		return appendText(text, dirPath + fileName);
+	}
+
+	/**
+	 * 读取全部的字节内容<br>
+	 * JDK15中，读取全部字节的源码，适配低于15的内容准备
+	 * 
+	 * @param inputStream 输入流
+	 * @return 字节数组
+	 * @throws IOException
+	 */
+	public static byte[] readAllBytes(InputStream inputStream) throws IOException {
+		int len = Integer.MAX_VALUE;
+		if (len < 0) { throw new IllegalArgumentException("len < 0"); }
+
+		List<byte[]> bufs = null;
+		byte[] result = null;
+		int total = 0;
+		int remaining = len;
+		int n;
+		do {
+			byte[] buf = new byte[Math.min(remaining, 8192)];
+			int nread = 0;
+
+			while ((n = inputStream.read(buf, nread, Math.min(buf.length - nread, remaining))) > 0) {
+				nread += n;
+				remaining -= n;
+			}
+			if (nread > 0) {
+				if (8192 - total < nread) { throw new OutOfMemoryError("Required array size too large"); }
+				if (nread < buf.length) { buf = Arrays.copyOfRange(buf, 0, nread); }
+				total += nread;
+				if (result == null) {
+					result = buf;
+				} else {
+					if (bufs == null) {
+						bufs = new ArrayList<>();
+						bufs.add(result);
+					}
+					bufs.add(buf);
+				}
+			}
+		} while (n >= 0 && remaining > 0);
+		if (bufs == null) {
+			if (result == null) { return new byte[0]; }
+			return result.length == total ? result : Arrays.copyOf(result, total);
+		}
+		result = new byte[total];
+		int offset = 0;
+		remaining = total;
+		for (byte[] b : bufs) {
+			int count = Math.min(b.length, remaining);
+			System.arraycopy(b, 0, result, offset, count);
+			offset += count;
+			remaining -= count;
+		}
+		return result;
 	}
 }
