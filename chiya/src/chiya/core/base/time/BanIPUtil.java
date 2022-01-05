@@ -12,31 +12,20 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class BanIPUtil {
 
-	/**
-	 * 全局统一
-	 */
+	/** 全局统一，私有化构造方法 */
 	private BanIPUtil() {}
 
-	/**
-	 * 1s种超过25次则封禁
-	 */
+	/** 计数工具，1s种超过25次则封禁 */
 	private static CountTimeUtil countTimeUtil = new CountTimeUtil(25);
+	/** 封禁的IP */
 	private static ConcurrentHashMap<String, Long> banIPMap = new ConcurrentHashMap<String, Long>();
-	/**
-	 * 默认封禁时间
-	 */
+	/** 默认封禁时间 */
 	private static int banTime = 1000 * 60 * 60 * 24;
-	/**
-	 * 过期自动回收锁
-	 */
+	/** 过期自动回收锁 */
 	private static Lock lock = new ReentrantLock();
-	/**
-	 * 最后清理时间
-	 */
+	/** 最后清理时间 */
 	private volatile static long lastTIme = System.currentTimeMillis();
-	/**
-	 * 默认间隔，回收机制才用某个业务线程中断回收后执行业务
-	 */
+	/** 默认间隔，回收机制才用某个业务线程中断回收后执行业务 */
 	private static int timeInterval = 1000 * 60 * 5;
 
 	/**

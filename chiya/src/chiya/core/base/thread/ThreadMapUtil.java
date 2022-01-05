@@ -12,31 +12,22 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  */
 public class ThreadMapUtil {
-
+	/** 私有化构造方法 */
 	private ThreadMapUtil() {}
 
 	// 懒加载模式，只有使用到了，才创建存储对象
+	/** 存储内容 */
 	private static ConcurrentHashMap<String, ConcurrentHashMap<String, Object>> threadThisMap = null;
 
-	/**
-	 * 内存释放标记
-	 */
+	/** 内存释放标记 */
 	private volatile static boolean claerFlag = false;
-	/**
-	 * 上一次内存回收时间
-	 */
+	/** 上一次内存回收时间 */
 	private volatile static long lastTime = System.currentTimeMillis();
-	/**
-	 * 清理间隔,5分钟一次
-	 */
+	/** 清理间隔,5分钟一次 */
 	private static long claerTime = 1000;
-	/**
-	 * 内存回收同步锁
-	 */
+	/** 内存回收同步锁 */
 	private static final Lock LOCK = new ReentrantLock();
-	/**
-	 * 内存回收线程标记,减少访问锁普通情况下访问锁次数，但依然能出现极端情况全部通过
-	 */
+	/** 内存回收线程标记,减少访问锁普通情况下访问锁次数，但依然能出现极端情况全部通过 */
 	private static long claerThreadId = 0;
 
 	/**

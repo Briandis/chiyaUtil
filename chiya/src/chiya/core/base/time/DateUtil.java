@@ -113,9 +113,8 @@ public class DateUtil {
 		try {
 			return simpleDateFormatDate.get().parse(year + "-" + month + "-" + day);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 
 	/**
@@ -202,12 +201,13 @@ public class DateUtil {
 		}
 		// 只有年月日的情况下
 		if (string.indexOf(":") == -1) { string = string + " 00:00:00"; }
+		// 斜杠问题
+		if (string.indexOf("/") != -1) { string = string.replace('/', '-'); }
 		try {
 			return simpleDateFormatDatetime.get().parse(string);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 
 	/**

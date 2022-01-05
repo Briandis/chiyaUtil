@@ -5,49 +5,45 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import chiya.core.base.thread.ThreadMapUtil;
-
 /**
  * 计数工具，用于解决固定间隔次数
  * 
  * @author Brian
  * @param <T>
- *
  */
 public class CountTimeUtil {
 
-	/**
-	 * 计数块，每个不同的key，将用链式列队进行存储
-	 */
+	/** 计数块，每个不同的key，将用链式列队进行存储 */
 	private ConcurrentHashMap<String, ArrayBlockingQueue<Long>> concurrentHashMap = new ConcurrentHashMap<String, ArrayBlockingQueue<Long>>();
-	/**
-	 * 默认总次数
-	 */
+	/** 默认总次数 */
 	private int maxCount = 10;
-	/**
-	 * 默认间隔，回收机制才用某个业务线程中断回收后执行业务
-	 */
+	/** 默认间隔，回收机制才用某个业务线程中断回收后执行业务 */
 	private int timeInterval = 1000 * 60 * 5;
 
-	/**
-	 * 清除失效key时间间隔
-	 */
+	/** 清除失效key时间间隔 */
 	private int claerLossKeyTime = 1000;
-	/**
-	 * 最后一次自动回收key时间
-	 */
+	/** 最后一次自动回收key时间 */
 	private volatile long lastClaerTime = System.currentTimeMillis();
-	/**
-	 * 自动回收锁
-	 */
+	/** 自动回收锁 */
 	private Lock lock = new ReentrantLock();
 
+	/** 默认构造方法 */
 	public CountTimeUtil() {}
 
+	/**
+	 * 最大值的构造方法
+	 * 
+	 * @param maxCount 最大数值
+	 */
 	public CountTimeUtil(int maxCount) {
 		setMaxCount(maxCount);
 	}
 
+	/**
+	 * 最大值和间隔的构造方法
+	 * @param maxCount 最大值
+	 * @param timeInterval 间隔，毫秒
+	 */
 	public CountTimeUtil(int maxCount, int timeInterval) {
 		setMaxCount(maxCount);
 		setTimeInterval(timeInterval);
@@ -95,9 +91,7 @@ public class CountTimeUtil {
 				if (lastClaerTime + claerLossKeyTime < nowTime) {
 					autoTimeClaer();
 					lastClaerTime = nowTime;
-					System.out.println(ThreadMapUtil.getThreadName() + "回收了失效key");
 				}
-
 				lock.unlock();
 			}
 		}

@@ -7,37 +7,35 @@ package chiya.core.base.time;
  *
  */
 public class CodeTime {
+	/** 起始时间 */
 	private long startTime;
 	private long endTime;
 
-	/**
-	 * 记录开始时间
-	 */
+	/** 记录开始时间 */
 	public void start() {
 		startTime = System.currentTimeMillis();
 	}
 
-	/**
-	 * 记录结束时间
-	 */
+	/** 记录结束时间 */
 	public long end() {
 		endTime = System.currentTimeMillis();
 		return endTime - startTime;
 	}
 
-	/**
-	 * 结束并打印
-	 */
+	/** 结束并打印 */
 	public void endAndPrint() {
 		endTime = System.currentTimeMillis();
 		print();
 	}
 
-	/**
-	 * 打印
-	 */
+	/** 打印 */
 	public void print() {
-		System.out.println("start:" + startTime + "\tned:" + endTime + "\tuse:" + (endTime - startTime));
+		System.out.println(toString());
+	}
+	
+	@Override
+	public String toString() {
+		return "start:" + startTime + "\tned:" + endTime + "\tuse:" + (endTime - startTime);
 	}
 
 	/**

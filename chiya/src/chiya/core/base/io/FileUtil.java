@@ -60,7 +60,7 @@ public class FileUtil {
 			bufferedOutputStrea.flush();
 			b = true;
 		} catch (IOException e) {
-			new RuntimeException(e);
+			throw new RuntimeException(e);
 		}
 		return b;
 	}
@@ -88,9 +88,8 @@ public class FileUtil {
 		try {
 			return saveFile(readAllBytes(inputStream), fileName);
 		} catch (IOException e) {
-			new RuntimeException(e);
+			throw new RuntimeException(e);
 		}
-		return false;
 
 	}
 
@@ -106,10 +105,8 @@ public class FileUtil {
 		try {
 			return saveFile(readAllBytes(inputStream), dirPath, fileName);
 		} catch (IOException e) {
-			new RuntimeException(e);
+			throw new RuntimeException(e);
 		}
-		return false;
-
 	}
 
 	/**
@@ -123,7 +120,7 @@ public class FileUtil {
 		try (InputStream inputStream = new FileInputStream(fileName); BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream)) {
 			bytes = readAllBytes(bufferedInputStream);
 		} catch (IOException e) {
-			new RuntimeException(e);
+			throw new RuntimeException(e);
 		}
 		return bytes;
 	}
@@ -156,7 +153,7 @@ public class FileUtil {
 			bufferedOutputStrea.flush();
 			b = true;
 		} catch (IOException e) {
-			new RuntimeException(e);
+			throw new RuntimeException(e);
 		}
 		return b;
 	}
@@ -185,9 +182,8 @@ public class FileUtil {
 		try {
 			return appendFile(readAllBytes(inputStream), dirPath, fileName);
 		} catch (IOException e) {
-			new RuntimeException(e);
+			throw new RuntimeException(e);
 		}
-		return false;
 	}
 
 	/**
@@ -201,9 +197,8 @@ public class FileUtil {
 		try {
 			return appendFile(readAllBytes(inputStream), fileName);
 		} catch (IOException e) {
-			new RuntimeException(e);
+			throw new RuntimeException(e);
 		}
-		return false;
 	}
 
 	/**
@@ -237,9 +232,8 @@ public class FileUtil {
 			}
 			return stringBuilder.toString();
 		} catch (IOException e) {
-			new RuntimeException(e);
+			throw new RuntimeException(e);
 		}
-		return null;
 	}
 
 	/**
@@ -280,7 +274,7 @@ public class FileUtil {
 			bufferedWriter.flush();
 			b = true;
 		} catch (IOException e) {
-			new RuntimeException(e);
+			throw new RuntimeException(e);
 		}
 		return b;
 	}

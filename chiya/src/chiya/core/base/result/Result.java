@@ -9,29 +9,19 @@ import chiya.core.base.page.Page;
  */
 public class Result {
 
-	/**
-	 * 业务状态码
-	 */
+	/** 业务状态码 */
 	private int code;
 
-	/**
-	 * 响应数据
-	 */
+	/** 响应数据 */
 	private Object data;
 
-	/**
-	 * 分页信息
-	 */
+	/** 分页信息 */
 	private Page page;
 
-	/**
-	 * 响应消息
-	 */
+	/** 响应消息 */
 	private String message;
 
-	/**
-	 * 无参构造
-	 */
+	/** 无参构造 */
 	private Result() {}
 
 	/**
@@ -188,6 +178,16 @@ public class Result {
 	}
 
 	/**
+	 * 执行失败
+	 * 
+	 * @param message 失败消息
+	 * @return Result 消息对象
+	 */
+	public static Result fail(String message) {
+		return enums(ResultEnum.FAIL, message);
+	}
+
+	/**
 	 * 参数错误
 	 * 
 	 * @return Result 消息对象
@@ -247,6 +247,61 @@ public class Result {
 	 */
 	public static Result enums(ResultEnum resultEnum) {
 		return new Result(resultEnum);
+	}
+
+	/**
+	 * 根据枚举值响应
+	 * 
+	 * @param resultEnum 枚举值
+	 * @param message    消息
+	 * @return Result 消息对象
+	 */
+	public static Result enums(ResultEnum resultEnum, String message) {
+		return new Result(resultEnum.getCode(), null, message, null);
+	}
+
+	/**
+	 * 设置状态码
+	 * 
+	 * @param code 状态码
+	 * @return Result 自身
+	 */
+	public Result chainCode(int code) {
+		this.code = code;
+		return this;
+	}
+
+	/**
+	 * 设置内容
+	 * 
+	 * @param data 内容
+	 * @return Result 自身
+	 */
+	public Result chainData(Object data) {
+		this.data = data;
+		return this;
+	}
+
+	/**
+	 * 设置消息
+	 * 
+	 * @param message 消息
+	 * @return Result 自身
+	 */
+	public Result chainMessage(String message) {
+		this.message = message;
+		return this;
+	}
+
+	/**
+	 * 设置分页
+	 * 
+	 * @param page 分页对象
+	 * @return Result 自身
+	 */
+	public Result chainPage(Page page) {
+		this.page = page;
+		return this;
 	}
 
 }

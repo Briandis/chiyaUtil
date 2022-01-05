@@ -5,47 +5,61 @@ package chiya.core.base.page;
  * 
  * @author Brian
  * @version 1.0.0
- * 
  */
 public class Page {
 
-	/**
-	 * 起始数据行数
-	 */
+	/** 起始数据行数 */
 	private int start = 0;
-	/**
-	 * 默认分页大小
-	 */
+	/** 默认分页大小 */
 	private int count = 10;
-	/**
-	 * 最大数据行数
-	 */
+	/** 最大数据行数 */
 	private int max;
-	/**
-	 * 当前页数
-	 */
+	/** 当前页数 */
 	private int page = 1;
-	/**
-	 * 最大页数
-	 */
+	/** 最大页数 */
 	private int maxPage;
 
+	/**
+	 * 获取起始位置下标
+	 * 
+	 * @return 起始位置
+	 */
 	public int getStart() {
 		return start;
 	}
 
+	/**
+	 * 设置起始位置
+	 * 
+	 * @param start 起始位置
+	 */
 	public void setStart(int start) {
 		this.start = start;
 	}
 
+	/**
+	 * 获取每页数量
+	 * 
+	 * @return 每页数量
+	 */
 	public int getCount() {
 		return count;
 	}
 
+	/**
+	 * 设置每页数量
+	 * 
+	 * @param count 每页数量
+	 */
 	public void setCount(int count) {
 		this.count = count;
 	}
 
+	/**
+	 * 获取总记录数
+	 * 
+	 * @return 总记录数
+	 */
 	public int getMax() {
 		return max;
 	}
@@ -60,6 +74,11 @@ public class Page {
 		this.maxPage = maxToMaxPage(max, count);
 	}
 
+	/**
+	 * 获取当前页数
+	 * 
+	 * @return 当前页数
+	 */
 	public int getPage() {
 		return page;
 	}
@@ -74,10 +93,20 @@ public class Page {
 		this.start = this.count * (this.page - 1);
 	}
 
+	/**
+	 * 获取最大页数
+	 * 
+	 * @return 最大页数
+	 */
 	public int getMaxPage() {
 		return maxPage;
 	}
 
+	/**
+	 * 设置最大页数
+	 * 
+	 * @param maxPage 最大页数
+	 */
 	public void setMaxPage(int maxPage) {
 		this.maxPage = maxPage;
 	}

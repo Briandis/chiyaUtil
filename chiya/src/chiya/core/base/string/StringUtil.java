@@ -21,51 +21,27 @@ import chiya.core.base.random.RandomUtil;
  */
 public class StringUtil {
 
-	/**
-	 * 默认用户名使用的正则表达式
-	 */
+	/** 默认用户名使用的正则表达式 */
 	private static final String EL_USER_NAME = "^\\w{4,16}$";
-	/**
-	 * 默认秘密使用的正则表达式
-	 */
+	/** 默认秘密使用的正则表达式 */
 	private static final String EL_PASSWORD = "^\\w{4,16}$";
-	/**
-	 * 默认邮箱使用的正则表达式
-	 */
+	/** 默认邮箱使用的正则表达式 */
 	private static final String EL_EMAIL = "^\\w+@\\w+\\.\\w+$";
-	/**
-	 * 默认邮手机使用的正则表达式
-	 */
+	/** 默认邮手机使用的正则表达式 */
 	private static final String EL_PHONE = "^1[345789]\\d{9}$";
-	/**
-	 * 全部单个字符
-	 */
+	/** 全部单个字符 */
 	private static final String ALL_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	/**
-	 * 验证码字符串，去除了难以识别的相近字符
-	 */
+	/** 验证码字符串，去除了难以识别的相近字符 */
 	private static final String CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
-	/**
-	 * 图片文件名后缀
-	 */
-	private static final String[] ARRAY_IMG = {
-			".jpg", ".png", ".bmp", ".webp", ".jpge" };
-	/**
-	 * 空字符,对应编码：32、12288、9
-	 */
-	private static final char[] SPACE_CHARS = {
-			'　', '	', ' ' };
-	/**
-	 * 空字符串
-	 */
+	/** 图片文件名后缀 */
+	private static final String[] ARRAY_IMG = { ".jpg", ".png", ".bmp", ".webp", ".jpge" };
+	/** 空字符,对应编码：32、12288、9 */
+	private static final char[] SPACE_CHARS = { '　', '	', ' ' };
+	/** 空字符串 */
 	private static final String STRING_NULL = "";
-	/**
-	 * 空替换正则，对应编码：32、12288、9
-	 */
+	/** 空替换正则，对应编码：32、12288、9 */
 	private static final String EL_SPACE = "[ 　	]";
-	/**
-	 * 字符集编码
-	 */
+	/** 字符集编码 */
 	private static final String CHAR_CODE = "UTF-8";
 
 	/**
