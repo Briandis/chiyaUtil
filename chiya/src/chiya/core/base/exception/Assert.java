@@ -6,7 +6,7 @@ import chiya.core.base.string.StringUtil;
 /**
  * 断言处理类，用于抛出各种API异常
  */
-public class Asserts {
+public class Assert {
 	/**
 	 * 失败错误
 	 * 
