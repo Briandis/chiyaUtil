@@ -19,6 +19,11 @@ public class DateUtil {
 	private static final String DATE = "yyyy-MM-dd";
 	/** UTC标准时间 */
 	private static final String UTC_DATE_TIME = "yyyy-MM-dd'T'HH:mm:ss'+08:00'";
+	/** 一天的时间毫秒长度 */
+	private static final int ONE_DAY_TIME = 1000 * 60 * 60 * 24;
+	/** 东8时区偏移长度 */
+	private static final int EAST_8_TIME_ZONE = 1000 * 60 * 60 * 8;
+
 	/** UTC时间格式化工具 */
 	private static final ThreadLocal<SimpleDateFormat> simpleDateFormatUTCDateTime = new ThreadLocal<SimpleDateFormat>() {
 		protected SimpleDateFormat initialValue() {
@@ -182,7 +187,7 @@ public class DateUtil {
 	 */
 	public static int getNowTimeToTimeDay(Date date) {
 		if (date == null) { return -1; }
-		return (int) ((System.currentTimeMillis() - date.getTime()) / (1000 * 60 * 60 * 24));
+		return (int) ((System.currentTimeMillis() - date.getTime()) / (ONE_DAY_TIME));
 	}
 
 	/**
@@ -323,5 +328,115 @@ public class DateUtil {
 	 */
 	public static String formatDateUTCDateTime(long time) {
 		return formatDateUTCDateTime(new Date(time));
+	}
+
+	/**
+	 * 获取今天的起始时间
+	 * 
+	 * @param time 时间戳
+	 * @return Date 今天的起始时间
+	 */
+	public static Date getStartTimeToDay() {
+		return getStartTimeToDay(System.currentTimeMillis());
+	}
+
+	/**
+	 * 东8时区的时间戳，生成时间对象，请确保时间戳是东8时间戳下在使用
+	 * 
+	 * @param time 时间戳
+	 * @return Date 事件对象
+	 */
+	public static Date newDateBeiJingTimeZone(long time) {
+		return new Date(time - EAST_8_TIME_ZONE);
+	}
+
+	/**
+	 * 获取这个时间戳今天的起始时间
+	 * 
+	 * @param time 时间戳
+	 * @return Date 今天的起始时间
+	 */
+	public static Date getStartTimeToDay(long time) {
+		time = time - (time % (ONE_DAY_TIME));
+		return newDateBeiJingTimeZone(time);
+	}
+
+	/**
+	 * 获取当前星期一的起始时间
+	 * 
+	 * @return Date 这个星期的起始时间
+	 */
+	public static Date getStartTimeToWeek() {
+		return getStartTimeToWeek(System.currentTimeMillis());
+	}
+
+	/**
+	 * 获取这个时间戳当前星期一的起始时间
+	 * 
+	 * @param time 时间戳
+	 * @return Date 这个星期的起始时间
+	 */
+	public static Date getStartTimeToWeek(long time) {
+		time = time + (ONE_DAY_TIME * 4);
+		time = time - (time % (ONE_DAY_TIME * 7));
+		return newDateBeiJingTimeZone(time - ONE_DAY_TIME * 3);
+	}
+
+	/**
+	 * 获取当前月的起始时间
+	 * 
+	 * @return Date 这个月的起始时间
+	 */
+	public static Date getStartTimeToMoon() {
+		return getStartTimeToMoon(new Date());
+	}
+
+	/**
+	 * 获取这个时间戳当前月的起始时间
+	 * 
+	 * @param time 时间戳
+	 * @return Date 这个月的起始时间
+	 */
+	public static Date getStartTimeToMoon(long time) {
+		return getStartTimeToMoon(new Date(time));
+	}
+
+	/**
+	 * 获取这个时间戳当前月的起始时间
+	 * 
+	 * @param time 时间戳
+	 * @return Date 这个月的起始时间
+	 */
+	public static Date getStartTimeToMoon(Date time) {
+		return parseDate(getYear(time), getMonth(time), 1);
+	}
+
+	/**
+	 * 获取当前年的起始时间
+	 * 
+	 * @return Date 这个年的起始时间
+	 */
+	public static Date getStartTimeToYear() {
+		return getStartTimeToYear(new Date());
+	}
+
+	/**
+	 * 获取这个时间戳当前年的起始时间
+	 * 
+	 * @param time 时间戳
+	 * @return Date 这个年的起始时间
+	 */
+	public static Date getStartTimeToYear(long time) {
+		return getStartTimeToYear(new Date(time));
+	}
+
+	/**
+	 * 获取这个时间戳当前年的起始时间
+	 * 
+	 * @param time 时间戳
+	 * @return Date 这个年的起始时间
+	 */
+	public static Date getStartTimeToYear(Date time) {
+		return parseDate(getYear(time), 1, 1);
 	}
 }
