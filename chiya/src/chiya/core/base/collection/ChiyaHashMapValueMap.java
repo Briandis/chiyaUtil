@@ -9,7 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * 线程安全的MAP<T,MAP<K,V>>
  * 
- * @author Brian
+ * @author chiya
  *
  * @param <T> 外层Key
  * @param <K> 内层Key

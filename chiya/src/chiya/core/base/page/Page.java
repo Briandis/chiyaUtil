@@ -3,8 +3,7 @@ package chiya.core.base.page;
 /**
  * 分页相关类
  * 
- * @author Brian
- * @version 1.0.0
+ * @author chiya
  */
 public class Page {
 
@@ -149,5 +148,60 @@ public class Page {
 	public static int maxToMaxPage(int max, int count) {
 		count = count < 1 ? 10 : count;
 		return (max / count) + (max % count == 0 ? 0 : 1);
+	}
+
+	/**
+	 * 链式操作设置起始位置
+	 * 
+	 * @param start 起始位置
+	 * @return 自身
+	 */
+	public Page chainStart(int start) {
+		setStart(start);
+		return this;
+	}
+
+	/**
+	 * 链式操作设置每页数量
+	 * 
+	 * @param count 每页数量
+	 * @return 自身
+	 */
+	public Page chainCount(int count) {
+		setCount(count);
+		return this;
+	}
+
+	/**
+	 * 链式操作根据传入的总数量，自动计算总页数
+	 * 
+	 * @param max 总记录数
+	 * @return 自身
+	 */
+	public Page chainMax(int max) {
+		setMax(max);
+		return this;
+	}
+
+	/**
+	 * 链式操作根据传入的当前页数，自动计算起始行数
+	 * 
+	 * @param page 当前页数
+	 * @return 自身
+	 */
+	public Page chainPage(int page) {
+		setPage(page);
+		return this;
+	}
+
+	/**
+	 * 链式操作设置最大页数
+	 * 
+	 * @param maxPage 最大页数
+	 * @return 自身
+	 */
+	public Page chainMaxPage(int maxPage) {
+		setMaxPage(maxPage);
+		return this;
 	}
 }

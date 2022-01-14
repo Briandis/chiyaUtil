@@ -8,7 +8,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * 位图
  * 
- * @author Brian
+ * @author chiya
  *
  */
 public class BitMap {

@@ -8,8 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * 计数工具，用于解决固定间隔次数
  * 
- * @author Brian
- * @param <T>
+ * @author chiya
  */
 public class CountTimeUtil {
 
@@ -41,7 +40,8 @@ public class CountTimeUtil {
 
 	/**
 	 * 最大值和间隔的构造方法
-	 * @param maxCount 最大值
+	 * 
+	 * @param maxCount     最大值
 	 * @param timeInterval 间隔，毫秒
 	 */
 	public CountTimeUtil(int maxCount, int timeInterval) {

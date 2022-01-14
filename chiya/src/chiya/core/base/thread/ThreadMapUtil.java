@@ -8,8 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * 线程存储空间工具库
  * 
- * @author Brian
- *
+ * @author chiya
  */
 public class ThreadMapUtil {
 	/** 私有化构造方法 */
@@ -133,9 +132,7 @@ public class ThreadMapUtil {
 					Thread threads[] = new Thread[threadGroup.activeCount()];
 					threadGroup.enumerate(threads);
 					HashSet<String> hashSet = new HashSet<String>();
-					for (Thread thread : threads) {
-						if (thread != null) { hashSet.add(thread.getName()); }
-					}
+					for (Thread thread : threads) { if (thread != null) { hashSet.add(thread.getName()); } }
 					threadThisMap.entrySet().removeIf(entry -> !hashSet.contains(entry.getKey()));
 					lastTime = System.currentTimeMillis();
 					claerFlag = false;

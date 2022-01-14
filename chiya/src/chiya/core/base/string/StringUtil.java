@@ -14,10 +14,9 @@ import java.util.regex.Pattern;
 import chiya.core.base.random.RandomUtil;
 
 /**
- * 字符串工具库 最后修改时间 2021-08-04
+ * 字符串工具库
  * 
- * @author Brian
- * @version 1.0.0
+ * @author chiya
  */
 public class StringUtil {
 

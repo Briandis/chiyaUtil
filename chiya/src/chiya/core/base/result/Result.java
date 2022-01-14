@@ -5,7 +5,7 @@ import chiya.core.base.page.Page;
 /**
  * HTTP默认装配的相应信息
  * 
- * @author Brian
+ * @author chiya
  */
 public class Result {
 

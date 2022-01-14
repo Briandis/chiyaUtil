@@ -10,7 +10,7 @@ import chiya.core.base.string.StringUtil;
 /**
  * 日期工具类
  * 
- * @author Brian
+ * @author chiya
  */
 public class DateUtil {
 	/** 日期时间 */
@@ -44,8 +44,7 @@ public class DateUtil {
 		};
 	};
 	/** 每个月份的天数 */
-	private static final int MONTH_DAY[] = {
-			31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+	private static final int MONTH_DAY[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
 	/**
 	 * 获取现在的时间，以yyyy-MM-dd HH:mm:ss的方式显示

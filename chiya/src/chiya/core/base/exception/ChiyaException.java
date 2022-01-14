@@ -5,7 +5,7 @@ import chiya.core.base.result.ResultEnum;
 /**
  * 通用异常
  * 
- * @author Brian
+ * @author chiya
  */
 public class ChiyaException extends RuntimeException {
 

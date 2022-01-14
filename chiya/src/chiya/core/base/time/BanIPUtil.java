@@ -7,7 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * IP锁工具库
  * 
- * @author Brian
+ * @author chiya
  *
  */
 public class BanIPUtil {

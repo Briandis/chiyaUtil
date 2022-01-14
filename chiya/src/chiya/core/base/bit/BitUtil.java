@@ -3,7 +3,7 @@ package chiya.core.base.bit;
 /**
  * 二进制运算工具库
  * 
- * @author Brian
+ * @author chiya
  *
  */
 public class BitUtil {

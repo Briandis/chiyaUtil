@@ -3,6 +3,7 @@ package chiya.core.base.collection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -12,8 +13,7 @@ import chiya.core.base.random.RandomUtil;
 /**
  * 容器工具类
  * 
- * @author Brian
- *
+ * @author chiya
  */
 public class ContainerUtil {
 	/**
@@ -26,9 +26,7 @@ public class ContainerUtil {
 	 */
 	public static boolean compareAllNumbnerMoreNumber(int number, int... all) {
 		if (all == null) { return false; }
-		for (int i = 0; i < all.length; i++) {
-			if (all[i] <= number) { return false; }
-		}
+		for (int i = 0; i < all.length; i++) { if (all[i] <= number) { return false; } }
 		return true;
 	}
 
@@ -42,9 +40,7 @@ public class ContainerUtil {
 	 */
 	public static boolean compareAllNumberLessNumber(int number, int... all) {
 		if (all == null) { return false; }
-		for (int i = 0; i < all.length; i++) {
-			if (all[i] >= number) { return false; }
-		}
+		for (int i = 0; i < all.length; i++) { if (all[i] >= number) { return false; } }
 		return true;
 	}
 
@@ -71,9 +67,7 @@ public class ContainerUtil {
 	 */
 	public static boolean compareAllNumberLessNumberAndMoreNumber(int lower, int upper, int... all) {
 		if (all == null) { return false; }
-		for (int i = 0; i < all.length; i++) {
-			if (all[i] < lower || all[i] > upper) { return false; }
-		}
+		for (int i = 0; i < all.length; i++) { if (all[i] < lower || all[i] > upper) { return false; } }
 		return true;
 	}
 
@@ -127,9 +121,7 @@ public class ContainerUtil {
 	 */
 	public static <T> List<T> upsetList(List<T> list) {
 		if (list == null) { return null; }
-		for (int i = 0; i < list.size(); i++) {
-			swapList(list, i, RandomUtil.randInt(list.size()));
-		}
+		for (int i = 0; i < list.size(); i++) { swapList(list, i, RandomUtil.randInt(list.size())); }
 		return list;
 	}
 
@@ -141,9 +133,7 @@ public class ContainerUtil {
 	 */
 	public static int[] upsetArray(int[] array) {
 		if (array == null) { return null; }
-		for (int i = 0; i < array.length; i++) {
-			swapArrayInt(array, i, RandomUtil.randInt(array.length));
-		}
+		for (int i = 0; i < array.length; i++) { swapArrayInt(array, i, RandomUtil.randInt(array.length)); }
 		return array;
 	}
 
@@ -167,9 +157,7 @@ public class ContainerUtil {
 		// ArrayList初始赋值
 		List<Integer> list = new ArrayList<Integer>(init > 10 ? init : 10);
 		// 对list赋范围内的值
-		for (int i = start; i < end; i++) {
-			list.add(i);
-		}
+		for (int i = start; i < end; i++) { list.add(i); }
 		// 对list进行乱序
 		return upsetList(list);
 	}
@@ -192,9 +180,7 @@ public class ContainerUtil {
 		int init = end - start;
 		if (init == 0) { return null; }
 		int array[] = new int[init];
-		for (int i = start; i < end; i++) {
-			array[i - start] = i;
-		}
+		for (int i = start; i < end; i++) { array[i - start] = i; }
 		// 对数组进行乱序
 		return upsetArray(array);
 	}
@@ -243,5 +229,33 @@ public class ContainerUtil {
 			K key = get.apply(obj);
 			set.accept(obj, map.get(key));
 		});
+	}
+
+	/**
+	 * 获取某个List中某个字段的列表
+	 * 
+	 * @param <T>    列表泛型
+	 * @param <R>    获取的字段类型
+	 * @param list   传入的列表
+	 * @param mapper lambda表达式
+	 * @return List<R> 获取的字段列表
+	 */
+	public static <T, R> List<R> listMapToList(List<T> list, Function<? super T, ? extends R> mapper) {
+		if (list == null) { return null; }
+		return list.stream().map(mapper).collect(Collectors.toList());
+	}
+
+	/**
+	 * 获取某个List中某个字段的列表并去重
+	 * 
+	 * @param <T>    列表泛型
+	 * @param <R>    获取的字段类型
+	 * @param list   传入的列表
+	 * @param mapper lambda表达式
+	 * @return List<R> 获取的字段列表
+	 */
+	public static <T, R> Set<R> listMapToSet(List<T> list, Function<? super T, ? extends R> mapper) {
+		if (list == null) { return null; }
+		return list.stream().map(mapper).collect(Collectors.toSet());
 	}
 }

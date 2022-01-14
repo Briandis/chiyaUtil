@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * 随机数工具库
  * 
- * @author Brian
+ * @author chiya
  *
  */
 public class RandomUtil {

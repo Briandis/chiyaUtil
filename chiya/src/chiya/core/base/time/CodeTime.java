@@ -4,11 +4,11 @@ package chiya.core.base.time;
  * 程序性能时间库
  * 
  * @author Brian
- *
  */
 public class CodeTime {
 	/** 起始时间 */
 	private long startTime;
+	/** 结束时间 */
 	private long endTime;
 
 	/** 记录开始时间 */
@@ -32,7 +32,7 @@ public class CodeTime {
 	public void print() {
 		System.out.println(toString());
 	}
-	
+
 	@Override
 	public String toString() {
 		return "start:" + startTime + "\tned:" + endTime + "\tuse:" + (endTime - startTime);

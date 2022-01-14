@@ -16,10 +16,9 @@ import java.io.Reader;
 import java.io.Writer;
 
 /**
- * 文件工具库 最后修改时间 2021-08-04
+ * 文件工具库
  * 
- * @author Brian
- * @version 1.0.1
+ * @author chiya
  */
 public class FileUtil {
 
@@ -52,7 +51,8 @@ public class FileUtil {
 	public static boolean saveFile(byte[] data, String fileName) {
 		createParentDir(fileName);
 		boolean b = false;
-		try (OutputStream outputStream = new FileOutputStream(fileName); BufferedOutputStream bufferedOutputStrea = new BufferedOutputStream(outputStream)) {
+		try (	OutputStream outputStream = new FileOutputStream(fileName);
+				BufferedOutputStream bufferedOutputStrea = new BufferedOutputStream(outputStream)) {
 			bufferedOutputStrea.write(data);
 			bufferedOutputStrea.flush();
 			b = true;
@@ -114,7 +114,8 @@ public class FileUtil {
 	 */
 	public static byte[] readFile(String fileName) {
 		byte[] bytes = null;
-		try (InputStream inputStream = new FileInputStream(fileName); BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream)) {
+		try (	InputStream inputStream = new FileInputStream(fileName);
+				BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream)) {
 			bytes = IOUtil.readAllBytes(bufferedInputStream);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -144,7 +145,7 @@ public class FileUtil {
 		createParentDir(fileName);
 		boolean b = false;
 		// 在括号中的对象实现了AutoCloseable接口，会自动关闭
-		try (OutputStream outputStream = new FileOutputStream(fileName, true);
+		try (	OutputStream outputStream = new FileOutputStream(fileName, true);
 				BufferedOutputStream bufferedOutputStrea = new BufferedOutputStream(outputStream)) {
 			bufferedOutputStrea.write(data);
 			bufferedOutputStrea.flush();
@@ -216,7 +217,8 @@ public class FileUtil {
 	 * @return String
 	 */
 	public static String readText(String fileName) {
-		try (Reader reader = new FileReader(fileName); BufferedReader bufferedReader = new BufferedReader(reader)) {
+		try (	Reader reader = new FileReader(fileName);
+				BufferedReader bufferedReader = new BufferedReader(reader)) {
 			char c[] = new char[8192];
 			int index = 0;
 			StringBuilder stringBuilder = new StringBuilder();
@@ -266,7 +268,8 @@ public class FileUtil {
 	public static boolean appendText(String text, String fileName) {
 		createParentDir(fileName);
 		boolean b = false;
-		try (Writer writer = new FileWriter(fileName, true); BufferedWriter bufferedWriter = new BufferedWriter(writer)) {
+		try (	Writer writer = new FileWriter(fileName, true);
+				BufferedWriter bufferedWriter = new BufferedWriter(writer)) {
 			bufferedWriter.write(text);
 			bufferedWriter.flush();
 			b = true;

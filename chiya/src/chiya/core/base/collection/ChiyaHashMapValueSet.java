@@ -10,7 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * 线程安全的MAP<T,SET<E>>结构
  * 
- * @author Brian
+ * @author chiya
  *
  * @param <T> MAP的key
  * @param <E> 内部Set的Key

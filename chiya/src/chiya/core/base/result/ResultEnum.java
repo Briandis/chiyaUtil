@@ -3,7 +3,7 @@ package chiya.core.base.result;
 /**
  * 响应数据枚举类型
  * 
- * @author Brian
+ * @author chiya
  */
 public enum ResultEnum {
 	/** 业务执行成功 */
