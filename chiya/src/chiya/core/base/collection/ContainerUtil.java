@@ -258,4 +258,29 @@ public class ContainerUtil {
 		if (list == null) { return null; }
 		return list.stream().map(mapper).collect(Collectors.toSet());
 	}
+
+	/**
+	 * 从MAP中获取对应值，如果没有，则创建
+	 * 
+	 * @param <K>     键的泛型
+	 * @param <V>     值的泛型
+	 * @param map     获取的MAP
+	 * @param key     键
+	 * @param classes 值的实例化对象
+	 * @return MAP中对象或者这个实例化的对象
+	 */
+	public static <K, V> V getValueOrPut(Map<K, V> map, K key, Class<V> classes) {
+		V value = null;
+		value = map.get(key);
+		if (value == null) {
+			try {
+				value = classes.newInstance();
+			} catch (InstantiationException | IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+			map.put(key, value);
+		}
+		return value;
+	}
+
 }
