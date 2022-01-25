@@ -6,9 +6,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import chiya.core.base.random.RandomUtil;
+import chiya.core.base.string.StringUtil;
 
 /**
  * 容器工具类
@@ -260,6 +262,32 @@ public class ContainerUtil {
 	}
 
 	/**
+	 * 获取某个List某个类型
+	 * 
+	 * @param <T>    列表泛型
+	 * @param list   传入的列表
+	 * @param mapper lambda表达式
+	 * @return List<R> 过滤后的列表
+	 */
+	public static <T> List<T> listFilterList(List<T> list, Predicate<? super T> predicate) {
+		if (list == null) { return null; }
+		return list.stream().filter(predicate).collect(Collectors.toList());
+	}
+
+	/**
+	 * 获取某个List某个类型
+	 * 
+	 * @param <T>    列表泛型
+	 * @param list   传入的列表
+	 * @param mapper lambda表达式
+	 * @return Set<R> 过滤后的列表
+	 */
+	public static <T> Set<T> listFilterSet(List<T> list, Predicate<? super T> predicate) {
+		if (list == null) { return null; }
+		return list.stream().filter(predicate).collect(Collectors.toSet());
+	}
+
+	/**
 	 * 从MAP中获取对应值，如果没有，则创建
 	 * 
 	 * @param <K>     键的泛型
@@ -283,4 +311,96 @@ public class ContainerUtil {
 		return value;
 	}
 
+	/**
+	 * 判断字符串是否存在List中
+	 * 
+	 * @param string 需要查找的字符串
+	 * @param list   带查找集合
+	 * @return true:存在/false:不存在
+	 */
+	public static boolean stringInList(String string, List<String> list) {
+		if (list != null) { for (String str : list) { if (StringUtil.eqString(string, str)) { return true; } } }
+		return false;
+	}
+
+	/**
+	 * 判断字符串是否存在数组中
+	 * 
+	 * @param string 需要查找的字符串
+	 * @param str[]  待查找数组
+	 * @return true:存在/false:不存在
+	 */
+	public static boolean stringInArray(String string, String str[]) {
+		if (str != null) { for (String st : str) { if (StringUtil.eqString(string, st)) { return true; } } }
+		return false;
+	}
+
+	/**
+	 * 如果数组中的字符串，出现在字符串中，则返回true，否则返回false<br>
+	 * 不区分大小写
+	 * 
+	 * @param arr  要查找的多个字符串
+	 * @param data 待校验的字符串
+	 * @return true:存在/false:不存在
+	 */
+	public static boolean stringArrayInString(String arr[], String data) {
+		// 如果数组为空，则要匹配的不存在，所以返回空
+		if (arr == null) { return true; }
+		if (data == null) { return false; }
+		data = data.toLowerCase();
+		for (String str : arr) { if (data.indexOf(str) != -1) { return true; } }
+		return false;
+	}
+
+	/**
+	 * 如果列表中的字符串，出现在字符串中，则返回true，否则返回false<br>
+	 * 不区分大小写
+	 * 
+	 * @param list 要查找的多个字符串
+	 * @param data 待校验的字符串
+	 * @return true:存在/false:不存在
+	 */
+	public static boolean listInString(List<String> list, String data) {
+		if (list == null) { return true; }
+		if (data == null) { return false; }
+		data = data.toLowerCase();
+		for (String str : list) { if (data.indexOf(str) != -1) { return true; } }
+		return false;
+	}
+
+	/**
+	 * 判断字符是在字符数组中出现过
+	 * 
+	 * @param chr   待判断字符
+	 * @param chars 要判断在其中出现的数组
+	 * @return true:存在/false:不存在
+	 */
+	public static boolean charInArray(char chr, char[] chars) {
+		if (chars != null) { for (char c : chars) { if (c == chr) { return true; } } }
+		return false;
+	}
+
+	/**
+	 * 判断数字是否在列表中出现过
+	 * 
+	 * @param i    数字
+	 * @param list 列表
+	 * @return true:存在/false:不存在
+	 */
+	public static boolean intInList(int i, List<Integer> list) {
+		for (Integer integer : list) { if (integer == i) { return true; } }
+		return false;
+	}
+
+	/**
+	 * 判断数字是否在列表中出现过
+	 * 
+	 * @param i    数字
+	 * @param list 列表
+	 * @return true:存在/false:不存在
+	 */
+	public static boolean intInArray(int i, int[] ints) {
+		for (int j : ints) { if (j == i) { return true; } }
+		return false;
+	}
 }

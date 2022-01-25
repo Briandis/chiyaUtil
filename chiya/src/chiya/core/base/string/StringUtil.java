@@ -7,10 +7,10 @@ import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
-import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import chiya.core.base.collection.ContainerUtil;
 import chiya.core.base.random.RandomUtil;
 
 /**
@@ -170,7 +170,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * 生成长度为0的验证码
+	 * 生成长度为6的验证码
 	 * 
 	 * @return 生成的验证码字符串
 	 */
@@ -294,14 +294,14 @@ public class StringUtil {
 			int end = str.length() - 1;
 			// 正向查找
 			while (true) {
-				if (!charInArray(str.charAt(start), SPACE_CHARS)) { break; }
+				if (!ContainerUtil.charInArray(str.charAt(start), SPACE_CHARS)) { break; }
 				start++;
 				// 如果没有匹配到其他字符，直接返回null
 				if (start > end) { return null; }
 			}
 			// 反向查找
 			while (true) {
-				if (!charInArray(str.charAt(end), SPACE_CHARS)) { break; }
+				if (!ContainerUtil.charInArray(str.charAt(end), SPACE_CHARS)) { break; }
 				end--;
 				// 反向查找如何小于正向查找，直接终止
 				if (start > end) { break; }
@@ -401,75 +401,6 @@ public class StringUtil {
 	 */
 	public static boolean eqInteger(Integer a, Integer b) {
 		return a != null ? a.equals(b) : false;
-	}
-
-	/**
-	 * 判断字符串是否存在List中
-	 * 
-	 * @param string 需要查找的字符串
-	 * @param list   带查找集合
-	 * @return true:存在/false:不存在
-	 */
-	public static boolean stringInList(String string, List<String> list) {
-		if (list != null) { for (String str : list) { if (eqString(string, str)) { return true; } } }
-		return false;
-	}
-
-	/**
-	 * 判断字符串是否存在数组中
-	 * 
-	 * @param string 需要查找的字符串
-	 * @param str[]  待查找数组
-	 * @return true:存在/false:不存在
-	 */
-	public static boolean stringInArray(String string, String str[]) {
-		if (str != null) { for (String st : str) { if (eqString(string, st)) { return true; } } }
-		return false;
-	}
-
-	/**
-	 * 如果数组中的字符串，出现在字符串中，则返回true，否则返回false<br>
-	 * 不区分大小写
-	 * 
-	 * @param arr  要查找的多个字符串
-	 * @param data 待校验的字符串
-	 * @return true:存在/false:不存在
-	 */
-	public static boolean stringArrayInString(String arr[], String data) {
-		// 如果数组为空，则要匹配的不存在，所以返回空
-		if (arr == null) { return true; }
-		if (data == null) { return false; }
-		data = data.toLowerCase();
-		for (String str : arr) { if (data.indexOf(str) != -1) { return true; } }
-		return false;
-	}
-
-	/**
-	 * 如果列表中的字符串，出现在字符串中，则返回true，否则返回false<br>
-	 * 不区分大小写
-	 * 
-	 * @param list 要查找的多个字符串
-	 * @param data 待校验的字符串
-	 * @return true:存在/false:不存在
-	 */
-	public static boolean listInString(List<String> list, String data) {
-		if (list == null) { return true; }
-		if (data == null) { return false; }
-		data = data.toLowerCase();
-		for (String str : list) { if (data.indexOf(str) != -1) { return true; } }
-		return false;
-	}
-
-	/**
-	 * 判断字符是在字符数组中出现过
-	 * 
-	 * @param chr   待判断字符
-	 * @param chars 要判断在其中出现的数组
-	 * @return true:存在/false:不存在
-	 */
-	public static boolean charInArray(char chr, char[] chars) {
-		if (chars != null) { for (char c : chars) { if (c == chr) { return true; } } }
-		return false;
 	}
 
 	/**
