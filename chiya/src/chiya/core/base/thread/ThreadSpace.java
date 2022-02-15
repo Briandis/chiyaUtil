@@ -10,9 +10,9 @@ import java.util.concurrent.locks.ReentrantLock;
  * 
  * @author chiya
  */
-public class ThreadMapUtil {
+public class ThreadSpace {
 	/** 私有化构造方法 */
-	private ThreadMapUtil() {}
+	private ThreadSpace() {}
 
 	// 懒加载模式，只有使用到了，才创建存储对象
 	/** 存储内容 */
@@ -73,7 +73,7 @@ public class ThreadMapUtil {
 	 */
 	private static ConcurrentHashMap<String, Object> getMap() {
 		if (threadThisMap == null) {
-			synchronized (ThreadMapUtil.class) {
+			synchronized (ThreadSpace.class) {
 				if (threadThisMap == null) { threadThisMap = new ConcurrentHashMap<String, ConcurrentHashMap<String, Object>>(); }
 			}
 
@@ -81,11 +81,11 @@ public class ThreadMapUtil {
 		// 自动检查是否需要回收内存
 		long nowTime = System.currentTimeMillis();
 		if (claerFlag = lastTime + claerTime < nowTime) {
-			claerThreadId = getThreadId();
+			claerThreadId = ThreadUtil.getThreadId();
 			autoTimeClear();
 		}
 
-		String threadName = getThreadName();
+		String threadName = ThreadUtil.getThreadName();
 		if (threadThisMap.get(threadName) == null) {
 			synchronized (threadThisMap) {
 				if (threadThisMap.get(threadName) == null) { threadThisMap.put(threadName, new ConcurrentHashMap<String, Object>()); }
@@ -95,37 +95,10 @@ public class ThreadMapUtil {
 	}
 
 	/**
-	 * 获取线程名字
-	 * 
-	 * @return String:线程名字
-	 */
-	public static String getThreadName() {
-		return Thread.currentThread().getName();
-	}
-
-	/**
-	 * 更改线程名称
-	 * 
-	 * @param name 新的名字
-	 */
-	public static void setThreadName(String name) {
-		Thread.currentThread().setName(name);
-	}
-
-	/**
-	 * 获取当前线程ID
-	 * 
-	 * @return long:线程ID
-	 */
-	public static long getThreadId() {
-		return Thread.currentThread().getId();
-	}
-
-	/**
 	 * 清除线程释放后多余占用空间
 	 */
 	private static void autoTimeClear() {
-		if (claerFlag && claerThreadId == getThreadId()) {
+		if (claerFlag && claerThreadId == ThreadUtil.getThreadId()) {
 			if (LOCK.tryLock()) {
 				if (claerFlag) {
 					ThreadGroup threadGroup = Thread.currentThread().getThreadGroup();
