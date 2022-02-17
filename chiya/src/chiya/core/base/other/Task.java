@@ -1,13 +1,13 @@
-package chiya.core.base.time.task;
+package chiya.core.base.other;
 
 /**
- * 延时任务处理
+ * 任务处理
  * 
  * @author chiya
  * @param <V> 处理的类
  */
 @FunctionalInterface
-public interface TimeTask<V> {
+public interface Task<V> {
 
 	/**
 	 * 任务体
@@ -21,5 +21,5 @@ public interface TimeTask<V> {
 	 * 
 	 * @param e 错误信息
 	 */
-	default void error(InterruptedException e) {}
+	default void error(Exception e) {}
 }

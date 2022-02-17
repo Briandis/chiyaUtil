@@ -3,70 +3,28 @@ package chiya.core.base.time.task;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.DelayQueue;
 import chiya.core.base.collection.MapEnter;
-import chiya.core.base.thread.ThreadUtil;
+import chiya.core.base.other.Task;
+import chiya.core.base.thread.ThreadTask;
 
 /**
  * 延时队列
  * 
  * @author chiya
  */
-public class TimeQueue<K, V> {
+public class TimeQueue<K, V> extends ThreadTask<V> {
 
 	/** 延时队列 */
 	private volatile DelayQueue<TimeKey<K>> delayQueue = new DelayQueue<TimeKey<K>>();
 	/** 实际存储 */
 	private ConcurrentHashMap<K, MapEnter<TimeKey<K>, V>> concurrentHashMap = new ConcurrentHashMap<K, MapEnter<TimeKey<K>, V>>();
 
-	/** 执行自动超时列队 */
-	private volatile boolean isRun = true;
-
-	/** 处理任务 */
-	private TimeTask<V> timeTask;
-
-	/** 判断是否开始 */
-	private Boolean isStart = false;
-
 	/**
 	 * 构造方法，需要传入任务体
 	 * 
-	 * @param timeTask 任务执法方法
+	 * @param task 任务执法方法
 	 */
-	public TimeQueue(TimeTask<V> timeTask) {
-		this.timeTask = timeTask;
-	}
-
-	/**
-	 * 执行下一个任务后停止
-	 */
-	public void nextStop() {
-		isRun = false;
-		isStart = false;
-	}
-
-	/**
-	 * 执行
-	 * 
-	 * @param isDaemon 是否是守护线程
-	 */
-	public void start(boolean isDaemon) {
-		if (isStart) { throw new IllegalThreadStateException("该任务已经启动"); }
-		synchronized (isStart) {
-			if (isStart) { throw new IllegalThreadStateException("该任务已经启动"); }
-			isStart = true;
-		}
-		isRun = true;
-		if (isDaemon) {
-			ThreadUtil.createDaemonAndStart(() -> task());
-		} else {
-			ThreadUtil.createAndStart(() -> task());
-		}
-	}
-
-	/**
-	 * 以守护进程方式启动
-	 */
-	public void start() {
-		start(true);
+	public TimeQueue(Task<V> task) {
+		super(task);
 	}
 
 	/**
@@ -92,21 +50,6 @@ public class TimeQueue<K, V> {
 	 */
 	public void put(K key, V value, long timeOut) {
 		put(key, value, System.currentTimeMillis(), timeOut);
-	}
-
-	/**
-	 * 任务检测体，永远执行
-	 */
-	public void task() {
-		while (isRun) {
-			try {
-				TimeKey<K> timeShell = delayQueue.take();
-				timeTask.task(concurrentHashMap.remove(timeShell.getKey()).getValue());
-			} catch (InterruptedException e) {
-				timeTask.error(e);
-			}
-		}
-
 	}
 
 	/**
@@ -162,5 +105,11 @@ public class TimeQueue<K, V> {
 		} else {
 			put(key, value, timeOut);
 		}
+	}
+
+	@Override
+	public V next() throws Exception {
+		TimeKey<K> timeShell = delayQueue.take();
+		return concurrentHashMap.remove(timeShell.getKey()).getValue();
 	}
 }
