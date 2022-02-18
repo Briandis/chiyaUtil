@@ -1,32 +1,36 @@
 package chiya.core.base.time;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+
+import chiya.core.base.other.GarbageCollection;
 
 /**
  * IP锁工具库
  * 
  * @author chiya
- *
  */
 public class BanIPUtil {
 
-	/** 全局统一，私有化构造方法 */
-	private BanIPUtil() {}
-
 	/** 计数工具，1s种超过25次则封禁 */
-	private static CountTimeUtil countTimeUtil = new CountTimeUtil(25);
+	private CountTimeUtil countTimeUtil;
 	/** 封禁的IP */
-	private static ConcurrentHashMap<String, Long> banIPMap = new ConcurrentHashMap<String, Long>();
+	private ConcurrentHashMap<String, Long> banIPMap;
 	/** 默认封禁时间 */
-	private static int banTime = 1000 * 60 * 60 * 24;
-	/** 过期自动回收锁 */
-	private static Lock lock = new ReentrantLock();
-	/** 最后清理时间 */
-	private volatile static long lastTIme = System.currentTimeMillis();
-	/** 默认间隔，回收机制才用某个业务线程中断回收后执行业务 */
-	private static int timeInterval = 1000 * 60 * 5;
+	private int banTime = 1000 * 60 * 60 * 24;
+	/** 垃圾回收期 */
+	private GarbageCollection garbageCollection;
+
+	/**
+	 * 构造方法
+	 */
+	public BanIPUtil() {
+		garbageCollection = new GarbageCollection(() -> {
+			long nowTime = System.currentTimeMillis();
+			banIPMap.entrySet().removeIf(entry -> entry.getValue() + banTime < nowTime);
+		});
+		banIPMap = new ConcurrentHashMap<String, Long>();
+		countTimeUtil = new CountTimeUtil(25);
+	}
 
 	/**
 	 * 检查IP是规定次数内，以及是否封禁
@@ -34,15 +38,11 @@ public class BanIPUtil {
 	 * @param ip 待测IP
 	 * @return true:被封禁/false:未被封禁
 	 */
-	public static boolean check(String ip) {
+	public boolean check(String ip) {
 		long nowTime = System.currentTimeMillis();
 		// 优先执行回收任务
-		if (lastTIme + timeInterval > nowTime) {
-			if (lock.tryLock()) {
-				autoRemoveBanIp();
-				lock.unlock();
-			}
-		}
+		garbageCollection.recycle();
+
 		if (banIPMap.get(ip) != null) {
 			// 如果IP封禁已过期则移除，否则直接返回
 			if (banIPMap.get(ip) + banTime < nowTime) {
@@ -64,20 +64,11 @@ public class BanIPUtil {
 	}
 
 	/**
-	 * 自动扫描移除过期封禁IP
-	 */
-	public static void autoRemoveBanIp() {
-		long nowTime = System.currentTimeMillis();
-		banIPMap.entrySet().removeIf(entry -> entry.getValue() + banTime < nowTime);
-		lastTIme = System.currentTimeMillis();
-	}
-
-	/**
 	 * 移除封禁的IP
 	 * 
 	 * @param ip 待移除IP
 	 */
-	public static void remove(String ip) {
+	public void remove(String ip) {
 		banIPMap.remove(ip);
 	}
 
@@ -87,7 +78,7 @@ public class BanIPUtil {
 	 * @param ip   待封禁IP
 	 * @param time 封禁时间
 	 */
-	public static void banIP(String ip, long time) {
+	public void banIP(String ip, long time) {
 		banIPMap.put(ip, time);
 	}
 
@@ -96,7 +87,7 @@ public class BanIPUtil {
 	 * 
 	 * @param ip 待封禁IP
 	 */
-	public static void banIp(String ip) {
+	public void banIp(String ip) {
 		banIPMap.put(ip, (long) banTime);
 	}
 

@@ -2,8 +2,8 @@ package chiya.core.base.time;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+
+import chiya.core.base.other.GarbageCollection;
 
 /**
  * 计数工具，用于解决固定间隔次数
@@ -13,21 +13,27 @@ import java.util.concurrent.locks.ReentrantLock;
 public class CountTimeUtil {
 
 	/** 计数块，每个不同的key，将用链式列队进行存储 */
-	private ConcurrentHashMap<String, ArrayBlockingQueue<Long>> concurrentHashMap = new ConcurrentHashMap<String, ArrayBlockingQueue<Long>>();
+	private ConcurrentHashMap<String, ArrayBlockingQueue<Long>> concurrentHashMap;
 	/** 默认总次数 */
 	private int maxCount = 10;
-	/** 默认间隔，回收机制才用某个业务线程中断回收后执行业务 */
-	private int timeInterval = 1000 * 60 * 5;
+	/** 统计间隔,毫秒 */
+	private int timeInterval = 1000;
+	/** 垃圾回收 */
+	private GarbageCollection garbageCollection;
 
-	/** 清除失效key时间间隔 */
-	private int claerLossKeyTime = 1000;
-	/** 最后一次自动回收key时间 */
-	private volatile long lastClaerTime = System.currentTimeMillis();
-	/** 自动回收锁 */
-	private Lock lock = new ReentrantLock();
+	/** 初始化 */
+	private void init() {
+		concurrentHashMap = new ConcurrentHashMap<String, ArrayBlockingQueue<Long>>();
+		garbageCollection = new GarbageCollection(() -> {
+			long nowTime = System.currentTimeMillis();
+			concurrentHashMap.entrySet().removeIf(entry -> entry.getValue().stream().allMatch(lastTime -> lastTime + timeInterval < nowTime));
+		});
+	}
 
 	/** 默认构造方法 */
-	public CountTimeUtil() {}
+	public CountTimeUtil() {
+		init();
+	}
 
 	/**
 	 * 最大值的构造方法
@@ -36,6 +42,7 @@ public class CountTimeUtil {
 	 */
 	public CountTimeUtil(int maxCount) {
 		setMaxCount(maxCount);
+		init();
 	}
 
 	/**
@@ -47,6 +54,7 @@ public class CountTimeUtil {
 	public CountTimeUtil(int maxCount, int timeInterval) {
 		setMaxCount(maxCount);
 		setTimeInterval(timeInterval);
+		init();
 	}
 
 	/**
@@ -68,34 +76,14 @@ public class CountTimeUtil {
 	}
 
 	/**
-	 * 自动回收失效key间隔
-	 * 
-	 * @param claerLossKeyTime 自动回收间隔，毫秒
-	 */
-	public void setClaerLossKeyTime(int claerLossKeyTime) {
-		this.claerLossKeyTime = claerLossKeyTime < 1 ? 1000 * 60 * 5 : claerLossKeyTime;
-	}
-
-	/**
 	 * 放入KEY，自动会根据时间间隔次数配置进行检查
 	 * 
-	 * @param key key
+	 * @param key 键
 	 * @return true:在规定次数内/false:超出次数
 	 */
 	public boolean put(String key) {
 		long nowTime = System.currentTimeMillis();
-
-		// 自动回收key，如果有线程占获取锁，则由该线程来执行，其余线继续执行业务
-		if (lastClaerTime + claerLossKeyTime < nowTime) {
-			if (lock.tryLock()) {
-				if (lastClaerTime + claerLossKeyTime < nowTime) {
-					autoTimeClaer();
-					lastClaerTime = nowTime;
-				}
-				lock.unlock();
-			}
-		}
-
+		garbageCollection.recycle();
 		ArrayBlockingQueue<Long> queue = concurrentHashMap.get(key);
 		if (queue == null) {
 			synchronized (concurrentHashMap) {
@@ -112,7 +100,7 @@ public class CountTimeUtil {
 	/**
 	 * 获取key当前次数
 	 * 
-	 * @param key
+	 * @param key 键
 	 * @return count:次数
 	 */
 	public int get(String key) {
@@ -122,19 +110,11 @@ public class CountTimeUtil {
 	/**
 	 * 手动检查过期次数并移除
 	 * 
-	 * @param key
+	 * @param key 键
 	 */
 	public void check(String key) {
 		ArrayBlockingQueue<Long> queue = concurrentHashMap.get(key);
 		if (queue != null) { queue.removeIf(time -> time + timeInterval < System.currentTimeMillis()); }
-	}
-
-	/**
-	 * 自动回收失效key
-	 */
-	private void autoTimeClaer() {
-		long nowTime = System.currentTimeMillis();
-		concurrentHashMap.entrySet().removeIf(entry -> entry.getValue().stream().allMatch(l -> l + claerLossKeyTime < nowTime));
 	}
 
 	/**
