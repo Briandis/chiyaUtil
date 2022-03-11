@@ -249,6 +249,25 @@ public class StringUtil {
 	}
 
 	/**
+	 * 获取SHA1加密<br>
+	 * 如果失败返回原字符串
+	 * 
+	 * @param string 待加密字符串
+	 * @return SHA1加密后字符串/原字符串
+	 */
+	public static String encoderSHA1(String string) {
+		if (string == null) { return null; }
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-1");
+			String hashtext = new BigInteger(1, md.digest(string.getBytes())).toString(16);
+			while (hashtext.length() < 32) { hashtext = "0" + hashtext; }
+			return hashtext;
+		} catch (NoSuchAlgorithmException e) {
+			return string;
+		}
+	}
+
+	/**
 	 * 获取BASE64加密
 	 * 
 	 * @param string 待加密字符串

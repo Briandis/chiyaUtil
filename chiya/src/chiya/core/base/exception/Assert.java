@@ -148,4 +148,35 @@ public class Assert {
 		isNull(b, message);
 		isTrue(a.intValue() <= b.intValue(), message);
 	}
+
+	/**
+	 * 如果字符串为空的情况，则抛出异常
+	 * 
+	 * @param string  待比较字符串
+	 * @param message 消息
+	 */
+	public static void isStringEmpty(String string, String message) {
+		isTrue(StringUtil.isNullOrZero(string), message);
+	}
+
+	/**
+	 * 如果不符合手机号，则抛出异常
+	 * 
+	 * @param phone   手机号
+	 * @param message 消息
+	 */
+	public static void isNotPhone(String phone, String message) {
+		isFalse(StringUtil.matchPhone(phone), message);
+	}
+
+	/**
+	 * 如果不符合邮箱格式，则抛出异常
+	 * 
+	 * @param mail    邮箱
+	 * @param message 消息
+	 */
+	public static void isNotMail(String mail, String message) {
+		isFalse(StringUtil.matchEmail(mail), message);
+	}
+
 }
