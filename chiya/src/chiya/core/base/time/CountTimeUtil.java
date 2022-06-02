@@ -3,7 +3,7 @@ package chiya.core.base.time;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
-import chiya.core.base.other.GarbageCollection;
+import chiya.core.base.gc.GarbageCollection;
 
 /**
  * 计数工具，用于解决固定间隔次数

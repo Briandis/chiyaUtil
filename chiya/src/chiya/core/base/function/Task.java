@@ -1,4 +1,4 @@
-package chiya.core.base.other;
+package chiya.core.base.function;
 
 /**
  * 任务处理

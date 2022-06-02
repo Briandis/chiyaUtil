@@ -2,7 +2,7 @@ package chiya.core.base.time;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import chiya.core.base.other.GarbageCollection;
+import chiya.core.base.gc.GarbageCollection;
 
 /**
  * IP锁工具库

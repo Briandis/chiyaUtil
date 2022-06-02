@@ -162,7 +162,7 @@ public class BitUtil {
 	 * @return 新的byte
 	 */
 	public static int modifySetBit(int i, int offset) {
-		offset = offset < 0 ? 0 : offset > 7 ? 7 : offset;
+		offset = offset < 0 ? 0 : offset > 31 ? 31 : offset;
 		return i | (1 << offset);
 	}
 
@@ -198,7 +198,7 @@ public class BitUtil {
 	 * @return 新的byte
 	 */
 	public static int modifyRemoveBit(int i, int offset) {
-		offset = offset < 0 ? 0 : offset > 7 ? 7 : offset;
+		offset = offset < 0 ? 0 : offset > 31 ? 31 : offset;
 		return i & ~(1 << offset);
 	}
 

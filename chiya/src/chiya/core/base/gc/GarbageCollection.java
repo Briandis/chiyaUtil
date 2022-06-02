@@ -1,7 +1,9 @@
-package chiya.core.base.other;
+package chiya.core.base.gc;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import chiya.core.base.function.Function;
 
 /**
  * 垃圾回收

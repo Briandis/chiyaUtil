@@ -3,7 +3,7 @@ package chiya.core.base.time.task;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.DelayQueue;
 import chiya.core.base.collection.MapEnter;
-import chiya.core.base.other.Task;
+import chiya.core.base.function.Task;
 import chiya.core.base.thread.ThreadTask;
 
 /**

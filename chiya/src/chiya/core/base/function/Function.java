@@ -1,4 +1,4 @@
-package chiya.core.base.other;
+package chiya.core.base.function;
 
 /**
  * 无无参数，无返回类型接口

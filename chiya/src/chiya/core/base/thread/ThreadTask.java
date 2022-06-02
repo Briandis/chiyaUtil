@@ -1,6 +1,6 @@
 package chiya.core.base.thread;
 
-import chiya.core.base.other.Task;
+import chiya.core.base.function.Task;
 
 /**
  * 线程任务
@@ -53,11 +53,14 @@ public abstract class ThreadTask<T> {
 	 * @param isDaemon 是否是守护线程
 	 */
 	public void start(boolean isDaemon) {
-		if (isStart) { throw new IllegalThreadStateException("该任务已经启动"); }
-		synchronized (isStart) {
-			if (isStart) { throw new IllegalThreadStateException("该任务已经启动"); }
-			isStart = true;
-		}
+		ThreadUtil.conditionLock(
+			() -> {
+				if (isStart) { throw new IllegalThreadStateException("该任务已经启动"); }
+				return isStart;
+			},
+			isStart,
+			() -> isStart = true
+		);
 		isRun = true;
 		for (int i = 0; i < threadSize; i++) {
 			if (isDaemon) {

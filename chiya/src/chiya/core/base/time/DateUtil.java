@@ -7,6 +7,13 @@ import java.util.Date;
 
 import chiya.core.base.string.StringUtil;
 
+/*
+ * -----------------------------------------
+ * 如果涉及到获取该地区的起始时间，请务必考虑时区问题！！！！！
+ * 时区！！！时区！！！时区！！！
+ * 只有%运算的时候需要考虑，其余不用考虑
+ * -----------------------------------------
+ */
 /**
  * 日期工具类
  * 
@@ -330,16 +337,6 @@ public class DateUtil {
 	}
 
 	/**
-	 * 获取今天的起始时间
-	 * 
-	 * @param time 时间戳
-	 * @return Date 今天的起始时间
-	 */
-	public static Date getStartTimeToDay() {
-		return getStartTimeToDay(System.currentTimeMillis());
-	}
-
-	/**
 	 * 东8时区的时间戳，生成时间对象，请确保时间戳是东8时间戳下在使用
 	 * 
 	 * @param time 时间戳
@@ -350,14 +347,107 @@ public class DateUtil {
 	}
 
 	/**
+	 * 获取今天的起始时间
+	 * 
+	 * @param time 时间戳
+	 * @return Date 今天的起始时间
+	 */
+	public static Date getStartTimeToDay() {
+		return getStartTimeToDay(System.currentTimeMillis());
+	}
+
+	/**
 	 * 获取这个时间戳今天的起始时间
 	 * 
 	 * @param time 时间戳
 	 * @return Date 今天的起始时间
 	 */
 	public static Date getStartTimeToDay(long time) {
-		time = time - (time % (ONE_DAY_TIME));
-		return newDateBeiJingTimeZone(time);
+		return new Date(getStartTimeToDayReturnLong(time));
+	}
+
+	/**
+	 * 获取这个时间戳今天的起始时间
+	 * 
+	 * @param time 时间戳
+	 * @return Date 今天的起始时间
+	 */
+	public static Date getStartTimeToDay(Date time) {
+		return new Date(getStartTimeToDayReturnLong(time.getTime()));
+	}
+
+	/**
+	 * 获取这个时间戳今天的起始时间的数值，以东8时区为基准
+	 * 
+	 * @param time 时间戳
+	 * @return long 今天的起始时间的数值
+	 */
+	public static long getStartTimeToDayReturnLong(long time) {
+		return getStartTimeToDayReturnLong(time, EAST_8_TIME_ZONE);
+	}
+
+	/**
+	 * 获取这个时间戳今天的起始时间的数值，其他时区
+	 * 
+	 * @param time     时间戳
+	 * @param timeZone 时区差
+	 * @return long 今天的起始时间的数值
+	 */
+	public static long getStartTimeToDayReturnLong(long time, int timeZone) {
+		// 此处计算是以0时区柏林的作为基准，不加入时区会造成地方起始时间错误
+		return time - ((time + timeZone) % (ONE_DAY_TIME));
+	}
+
+	/**
+	 * 获取昨天的起始时间
+	 * 
+	 * @param time 时间戳
+	 * @return Date 今天的起始时间
+	 */
+	public static Date getStartTimeYesterday() {
+		return getStartTimeYesterday(System.currentTimeMillis());
+	}
+
+	/**
+	 * 获取这个时间戳昨天的起始时间
+	 * 
+	 * @param time 时间戳
+	 * @return Date 今天的起始时间
+	 */
+	public static Date getStartTimeYesterday(long time) {
+		return new Date(getStartTimeYesterdayReturnLong(time));
+	}
+
+	/**
+	 * 获取这个时间戳昨天的起始时间
+	 * 
+	 * @param time 时间戳
+	 * @return Date 今天的起始时间
+	 */
+	public static Date getStartTimeYesterday(Date time) {
+		return new Date(getStartTimeYesterdayReturnLong(time.getTime()));
+	}
+
+	/**
+	 * 获取这个时间戳昨天的起始时间的数值，以东8时区为基准
+	 * 
+	 * @param time 时间戳
+	 * @return long 今天的起始时间的数值
+	 */
+	public static long getStartTimeYesterdayReturnLong(long time) {
+		return getStartTimeYesterdayReturnLong(time, EAST_8_TIME_ZONE);
+	}
+
+	/**
+	 * 获取这个时间戳昨天的起始时间的数值
+	 * 
+	 * @param time     时间戳
+	 * @param timeZone 时区
+	 * @return long 今天的起始时间的数值
+	 */
+	public static long getStartTimeYesterdayReturnLong(long time, int timeZone) {
+		// 此处计算是以0时区柏林的作为基准，不加入时区会造成地方起始时间错误
+		return (time - ((time + timeZone) % (ONE_DAY_TIME))) - ONE_DAY_TIME;
 	}
 
 	/**
@@ -370,15 +460,47 @@ public class DateUtil {
 	}
 
 	/**
+	 * 获取当前星期一的起始时间
+	 * 
+	 * @param time 时间戳
+	 * @return Date 这个星期的起始时间
+	 */
+	public static Date getStartTimeToWeek(Date time) {
+		return getStartTimeToWeek(time.getTime());
+	}
+
+	/**
 	 * 获取这个时间戳当前星期一的起始时间
 	 * 
 	 * @param time 时间戳
 	 * @return Date 这个星期的起始时间
 	 */
 	public static Date getStartTimeToWeek(long time) {
+		return new Date(getStartTimeToWeekReturnLong(time));
+	}
+
+	/**
+	 * 获取这个时间戳当前星期一的起始时间，以东8时区为基准
+	 * 
+	 * @param time 时间戳
+	 * @return Date 这个星期的起始时间
+	 */
+	public static long getStartTimeToWeekReturnLong(long time) {
+		return getStartTimeToWeekReturnLong(time, EAST_8_TIME_ZONE);
+	}
+
+	/**
+	 * 获取这个时间戳当前星期一的起始时间
+	 * 
+	 * @param time     时间戳
+	 * @param timeZone 时区
+	 * @return Date 这个星期的起始时间
+	 */
+	public static long getStartTimeToWeekReturnLong(long time, int timeZone) {
+		// 此处计算是以0时区柏林的作为基准，不加入时区会造成地方起始时间错误
 		time = time + (ONE_DAY_TIME * 4);
-		time = time - (time % (ONE_DAY_TIME * 7));
-		return newDateBeiJingTimeZone(time - ONE_DAY_TIME * 3);
+		time = time - ((time + timeZone) % (ONE_DAY_TIME * 7));
+		return time - ONE_DAY_TIME * 3;
 	}
 
 	/**
@@ -438,4 +560,110 @@ public class DateUtil {
 	public static Date getStartTimeToYear(Date time) {
 		return parseDate(getYear(time), 1, 1);
 	}
+
+	/**
+	 * 获取昨天的时间年月日,时分秒和今天相同
+	 * 
+	 * @return 时间对象
+	 */
+	public static Date getYesterday() {
+		return getYesterday(new Date());
+	}
+
+	/**
+	 * 获取昨天的时间年月日，时分秒和传入的时间相同
+	 * 
+	 * @param time 时间
+	 * @return 时间对象
+	 */
+	public static Date getYesterday(Date time) {
+		return getTimeOffsetTime(time, -1);
+	}
+
+	/**
+	 * 获取昨天的时间年月日，时分秒和传入的时间相同
+	 * 
+	 * @param time 时间
+	 * @return 时间对象
+	 */
+	public static Date getYesterday(long time) {
+		return new Date(getTimeOffsetTime(time, -1));
+	}
+
+	/**
+	 * 获取昨天的时间年月日，时分秒和传入的时间相同
+	 * 
+	 * @param time 时间
+	 * @return 时间戳
+	 */
+	public static long getYesterdayReturnLong(long time) {
+		return getTimeOffsetTime(time, -1);
+	}
+
+	/**
+	 * 获取这个日期偏移几天的日期，输入偏移正数则向后偏移，负数向前偏移<br>
+	 * 举例，offset=1是明天，offset=-1是昨天
+	 * 
+	 * @param time      时间
+	 * @param offsetDay 偏移的天数
+	 * @return 偏移后的时间对象
+	 */
+	public static Date getTimeOffsetTime(Date time, int offsetDay) {
+		return new Date(getTimeOffsetTime(time.getTime(), offsetDay));
+	}
+
+	/**
+	 * 获取这个日期偏移几天的日期，输入偏移正数则向后偏移，负数向前偏移<br>
+	 * 举例，offset=1是明天，offset=-1是昨天
+	 * 
+	 * @param time      时间
+	 * @param offsetDay 偏移的天数
+	 * @return 偏移后的时间对象
+	 */
+	public static long getTimeOffsetTime(long time, int offsetDay) {
+		return time + ONE_DAY_TIME * offsetDay;
+	}
+
+	/**
+	 * 比较两个时间是否是同一天
+	 * 
+	 * @param date1 待比较的时间1
+	 * @param date2 待比较的时间2
+	 * @return true:是同一天/false/不是同一天
+	 */
+	public static boolean compareSameDay(Date date1, Date date2) {
+		return getStartTimeToDayReturnLong(date1.getTime()) == getStartTimeToDayReturnLong(date2.getTime());
+	}
+
+	/**
+	 * 判断时间是否是昨天
+	 * 
+	 * @param time 时间戳
+	 * @return true:是/false:不是
+	 */
+	public static boolean isYesterday(Date time) {
+		return getStartTimeToDayReturnLong(time.getTime()) == getStartTimeYesterdayReturnLong(System.currentTimeMillis());
+	}
+
+	/**
+	 * 判断时间是否是昨天
+	 * 
+	 * @param time 时间戳
+	 * @return true:是/false:不是
+	 */
+	public static boolean isYesterday(long time) {
+		return getStartTimeToDayReturnLong(time) == getStartTimeYesterdayReturnLong(System.currentTimeMillis());
+	}
+
+	/**
+	 * 判断a是不是b的昨天
+	 * 
+	 * @param a 要被当作昨天的时间戳
+	 * @param b 判断的时间戳
+	 * @return true:是/false:不是
+	 */
+	public static boolean isYesterday(Date a, Date b) {
+		return getStartTimeToDayReturnLong(a.getTime()) == getStartTimeYesterdayReturnLong(b.getTime());
+	}
+
 }

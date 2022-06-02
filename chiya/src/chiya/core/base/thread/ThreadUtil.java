@@ -1,5 +1,8 @@
 package chiya.core.base.thread;
 
+import chiya.core.base.function.BooleanReturnFunction;
+import chiya.core.base.function.Function;
+
 /**
  * 线程工具
  * 
@@ -57,4 +60,20 @@ public class ThreadUtil {
 	public static long getThreadId() {
 		return Thread.currentThread().getId();
 	}
+
+	/**
+	 * 双重条件锁
+	 * 
+	 * @param booleanReturnFunction 布尔类型返回值检测方法
+	 * @param lock                  同步的锁
+	 * @param function              执行的方法
+	 */
+	public static void conditionLock(BooleanReturnFunction booleanReturnFunction, Object lock, Function function) {
+		if (booleanReturnFunction.task()) {
+			synchronized (lock) {
+				if (booleanReturnFunction.task()) { function.task(); }
+			}
+		}
+	}
+
 }

@@ -2,7 +2,7 @@ package chiya.core.base.collection;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
-import chiya.core.base.other.Task;
+import chiya.core.base.function.Task;
 import chiya.core.base.thread.ThreadTask;
 
 /**
@@ -39,6 +39,15 @@ public class MessageQueue<T> extends ThreadTask<T> {
 	@Override
 	public T next() throws Exception {
 		return queue.take();
+	}
+
+	/**
+	 * 添加传递信息
+	 * 
+	 * @param t 传递的对象数据
+	 */
+	public void put(T t) {
+		queue.add(t);
 	}
 
 }
