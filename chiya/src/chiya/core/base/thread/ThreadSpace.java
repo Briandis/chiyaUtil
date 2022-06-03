@@ -19,6 +19,8 @@ public class ThreadSpace {
 	private static ConcurrentHashMap<String, ConcurrentHashMap<String, Object>> threadThisMap = null;
 	/** 垃圾回收期 */
 	private static GarbageCollection garbageCollection;
+	/** 需要初始化标记 */
+	private static Boolean needInit = true;
 
 	/**
 	 * 获取当前map中key的值
@@ -64,7 +66,7 @@ public class ThreadSpace {
 	 */
 	private static ConcurrentHashMap<String, Object> getMap() {
 		ThreadUtil.conditionLock(
-			() -> threadThisMap == null,
+			() -> needInit,
 			ThreadSpace.class,
 			() -> {
 				// 构建存储容器
@@ -82,6 +84,7 @@ public class ThreadSpace {
 					// 如果线程没有存活，则回收
 					threadThisMap.entrySet().removeIf(entry -> !hashSet.contains(entry.getKey()));
 				});
+				needInit = false;
 			}
 		);
 		garbageCollection.recycle();

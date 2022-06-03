@@ -6,14 +6,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import chiya.core.base.gc.GarbageCollection;
 
 /**
- * 计数工具，用于解决固定间隔次数
+ * 时间段内，进行次数统计
  * 
  * @author chiya
  */
-public class CountTimeUtil {
+public class PeriodCount<K> {
 
 	/** 计数块，每个不同的key，将用链式列队进行存储 */
-	private ConcurrentHashMap<String, ArrayBlockingQueue<Long>> concurrentHashMap;
+	private ConcurrentHashMap<K, ArrayBlockingQueue<Long>> concurrentHashMap;
 	/** 默认总次数 */
 	private int maxCount = 10;
 	/** 统计间隔,毫秒 */
@@ -23,7 +23,7 @@ public class CountTimeUtil {
 
 	/** 初始化 */
 	private void init() {
-		concurrentHashMap = new ConcurrentHashMap<String, ArrayBlockingQueue<Long>>();
+		concurrentHashMap = new ConcurrentHashMap<K, ArrayBlockingQueue<Long>>();
 		garbageCollection = new GarbageCollection(() -> {
 			long nowTime = System.currentTimeMillis();
 			concurrentHashMap.entrySet().removeIf(entry -> entry.getValue().stream().allMatch(lastTime -> lastTime + timeInterval < nowTime));
@@ -31,7 +31,7 @@ public class CountTimeUtil {
 	}
 
 	/** 默认构造方法 */
-	public CountTimeUtil() {
+	public PeriodCount() {
 		init();
 	}
 
@@ -40,7 +40,7 @@ public class CountTimeUtil {
 	 * 
 	 * @param maxCount 最大数值
 	 */
-	public CountTimeUtil(int maxCount) {
+	public PeriodCount(int maxCount) {
 		setMaxCount(maxCount);
 		init();
 	}
@@ -51,7 +51,7 @@ public class CountTimeUtil {
 	 * @param maxCount     最大值
 	 * @param timeInterval 间隔，毫秒
 	 */
-	public CountTimeUtil(int maxCount, int timeInterval) {
+	public PeriodCount(int maxCount, int timeInterval) {
 		setMaxCount(maxCount);
 		setTimeInterval(timeInterval);
 		init();
@@ -81,7 +81,7 @@ public class CountTimeUtil {
 	 * @param key 键
 	 * @return true:在规定次数内/false:超出次数
 	 */
-	public boolean put(String key) {
+	public boolean put(K key) {
 		long nowTime = System.currentTimeMillis();
 		garbageCollection.recycle();
 		ArrayBlockingQueue<Long> queue = concurrentHashMap.get(key);
@@ -103,7 +103,7 @@ public class CountTimeUtil {
 	 * @param key 键
 	 * @return count:次数
 	 */
-	public int get(String key) {
+	public int get(K key) {
 		return concurrentHashMap.get(key) != null ? concurrentHashMap.get(key).size() : 0;
 	}
 
@@ -112,7 +112,7 @@ public class CountTimeUtil {
 	 * 
 	 * @param key 键
 	 */
-	public void check(String key) {
+	public void check(K key) {
 		ArrayBlockingQueue<Long> queue = concurrentHashMap.get(key);
 		if (queue != null) { queue.removeIf(time -> time + timeInterval < System.currentTimeMillis()); }
 	}
@@ -123,7 +123,7 @@ public class CountTimeUtil {
 	 * @param key
 	 * @return count:列队中的数量
 	 */
-	public int remove(String key) {
+	public int remove(K key) {
 		ArrayBlockingQueue<Long> queue = concurrentHashMap.remove(key);
 		return queue != null ? queue.size() : 0;
 	}

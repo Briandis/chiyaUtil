@@ -12,7 +12,7 @@ import chiya.core.base.gc.GarbageCollection;
 public class BanIPUtil {
 
 	/** 计数工具，1s种超过25次则封禁 */
-	private CountTimeUtil countTimeUtil;
+	private PeriodCount<String> periodCount;
 	/** 封禁的IP */
 	private ConcurrentHashMap<String, Long> banIPMap;
 	/** 默认封禁时间 */
@@ -29,7 +29,7 @@ public class BanIPUtil {
 			banIPMap.entrySet().removeIf(entry -> entry.getValue() + banTime < nowTime);
 		});
 		banIPMap = new ConcurrentHashMap<String, Long>();
-		countTimeUtil = new CountTimeUtil(25);
+		periodCount = new PeriodCount<String>(25);
 	}
 
 	/**
@@ -52,11 +52,11 @@ public class BanIPUtil {
 			}
 		}
 		// 次数超出取反
-		boolean b = !countTimeUtil.put(ip);
+		boolean b = !periodCount.put(ip);
 		// 如果超出次数，则直接封禁IP
 		if (b) {
 			// 已被封禁则直接移除IP计数器，节省空间，提高效率
-			countTimeUtil.remove(ip);
+			periodCount.remove(ip);
 			banIp(ip);
 		}
 		return b;

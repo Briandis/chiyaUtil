@@ -23,7 +23,7 @@ public class ServiceCount {
 	/**
 	 * 获取平均时间
 	 * 
-	 * @return
+	 * @return 平均时间
 	 */
 	public double averageTime() {
 		return allTime.longValue() / count.longValue();

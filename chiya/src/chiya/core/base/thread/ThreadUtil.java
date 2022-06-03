@@ -76,4 +76,16 @@ public class ThreadUtil {
 		}
 	}
 
+	/**
+	 * 让当前线程睡眠多少秒
+	 * 
+	 * @param second 秒
+	 */
+	public static void sleep(int second) {
+		try {
+			Thread.sleep(1000 * second);
+		} catch (InterruptedException e) {
+			new RuntimeException(e);
+		}
+	}
 }
