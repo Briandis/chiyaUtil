@@ -18,6 +18,7 @@ public class ServiceCount {
 	/** 添加时间 */
 	public void add(int time) {
 		count.increment();
+		allTime.add(time);
 	}
 
 	/**
