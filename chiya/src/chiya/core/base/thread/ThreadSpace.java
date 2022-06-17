@@ -55,7 +55,7 @@ public class ThreadSpace {
 	/**
 	 * 清除当前线程Map中所有的数据
 	 */
-	public static void claer() {
+	public static void clear() {
 		getMap().clear();
 	}
 

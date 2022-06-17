@@ -471,7 +471,7 @@ public class ContainerUtil {
 	 * @param array 对象数组
 	 * @return true:存在/false:不存在
 	 */
-	public static boolean objectInArrayu(Object key, Object[] array) {
+	public static boolean objectInArray(Object key, Object[] array) {
 		// 查找的key为Null的情况
 		if (key == null) {
 			for (Object object : array) {

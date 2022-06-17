@@ -16,7 +16,7 @@ public class GarbageCollection {
 	/** 默认间隔，回收机制才用某个业务线程中断回收后执行业务 */
 	private int timeInterval = 1000 * 60 * 5;
 	/** 最后清理时间 */
-	private volatile long lastClaerTime = System.currentTimeMillis();
+	private volatile long lastClearTime = System.currentTimeMillis();
 	/** 清除的方法 */
 	private Function function;
 
@@ -74,12 +74,12 @@ public class GarbageCollection {
 	 */
 	public void recycle() {
 		long nowTime = System.currentTimeMillis();
-		if (lastClaerTime + timeInterval < nowTime) {
+		if (lastClearTime + timeInterval < nowTime) {
 			if (lock.tryLock()) {
 				try {
-					if (lastClaerTime + timeInterval < nowTime) {
+					if (lastClearTime + timeInterval < nowTime) {
 						function.task();
-						lastClaerTime = nowTime;
+						lastClearTime = nowTime;
 					}
 				} finally {
 					lock.unlock();
