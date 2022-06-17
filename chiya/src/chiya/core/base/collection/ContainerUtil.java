@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import chiya.core.base.random.RandomUtil;
 import chiya.core.base.string.StringUtil;
+import chiya.core.base.thread.ThreadUtil;
 
 /**
  * 容器工具类
@@ -312,20 +313,19 @@ public class ContainerUtil {
 	 * @return MAP中对象或者这个实例化的对象
 	 */
 	public static <K, V> V getValueOrPut(Map<K, V> map, K key, Class<V> classes) {
-		V value = null;
-		value = map.get(key);
-		if (value == null) {
-			try {
-				// jdk8的方法
-//				value = classes.newInstance();
-				// jdk9之后的方法
-				value = classes.getDeclaredConstructor().newInstance();
-			} catch (Exception e) {
-				throw new RuntimeException(e);
+		// 多线程下保证数据一致
+		ThreadUtil.conditionLock(
+			() -> map.get(key) == null,
+			map,
+			() -> {
+				try {
+					map.put(key, classes.getDeclaredConstructor().newInstance());
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
 			}
-			map.put(key, value);
-		}
-		return value;
+		);
+		return map.get(key);
 	}
 
 	/**
