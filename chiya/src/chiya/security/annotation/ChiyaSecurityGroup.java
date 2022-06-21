@@ -7,14 +7,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * 角色的权限设置
+ * 群组权限设置
  * 
  * @author brain
  *
  */
 @Retention(RUNTIME)
 @Target(METHOD)
-public @interface ChiyaSecurity {
+public @interface ChiyaSecurityGroup {
 
 	/** 该接口支持的角色 */
 	int[] value();

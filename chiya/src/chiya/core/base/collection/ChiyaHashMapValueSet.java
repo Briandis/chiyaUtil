@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.BiConsumer;
 
 /**
  * 线程安全的MAP<T,SET<E>>结构
@@ -115,5 +116,14 @@ public class ChiyaHashMapValueSet<T, E> {
 	 */
 	public Set<Map.Entry<T, ConcurrentSkipListSet<E>>> entrySet() {
 		return concurrentHashMap.entrySet();
+	}
+
+	/**
+	 * 迭代方法
+	 * 
+	 * @param action (k,v)->function的表达式
+	 */
+	public void forEach(BiConsumer<? super T, ? super ConcurrentSkipListSet<E>> action) {
+		concurrentHashMap.forEach(action);
 	}
 }

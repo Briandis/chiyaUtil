@@ -1,6 +1,7 @@
 package chiya.core.base.collection;
 
 import java.util.HashMap;
+import java.util.function.BiConsumer;
 
 /**
  * 简单的键值对，用于封装业务返回对象
@@ -51,6 +52,15 @@ public class ChiyaMap {
 	 */
 	public HashMap<String, Object> getData() {
 		return data;
+	}
+
+	/**
+	 * 迭代方法
+	 * 
+	 * @param action (k,v)->function的表达式
+	 */
+	public void forEach(BiConsumer<String, Object> action) {
+		data.forEach(action);
 	}
 
 }

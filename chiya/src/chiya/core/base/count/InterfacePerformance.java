@@ -24,7 +24,7 @@ public class InterfacePerformance {
 	 * @param time 运行时间
 	 */
 	public void put(String url, int time) {
-		ThreadUtil.conditionLock(
+		ThreadUtil.doubleCheckLock(
 			() -> !count.containsKey(url),
 			count,
 			() -> count.put(url, new ServiceCount())

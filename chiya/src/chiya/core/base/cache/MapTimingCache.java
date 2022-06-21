@@ -53,7 +53,7 @@ public class MapTimingCache<K, V> {
 	 * @return 自身
 	 */
 	public MapTimingCache<K, V> put(K key, V value) {
-		ThreadUtil.conditionLock(
+		ThreadUtil.doubleCheckLock(
 			() -> !concurrentHashMap.containsKey(key),
 			concurrentHashMap,
 			() -> concurrentHashMap.put(key, new TimeEntity<V>(value))

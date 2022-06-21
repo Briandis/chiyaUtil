@@ -29,4 +29,19 @@ public class ObjectUtil {
 	public static Integer toInteger(Object object) {
 		return StringUtil.parseInt(toString(object));
 	}
+
+	/**
+	 * 构建对象
+	 * 
+	 * @param <O>     构建的泛型
+	 * @param classes 对象的class
+	 * @return 对象
+	 */
+	public static <O> O newObject(Class<O> classes) {
+		try {
+			return classes.getDeclaredConstructor().newInstance();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

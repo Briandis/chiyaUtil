@@ -9,6 +9,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import chiya.core.base.object.ObjectUtil;
 import chiya.core.base.random.RandomUtil;
 import chiya.core.base.string.StringUtil;
 import chiya.core.base.thread.ThreadUtil;
@@ -314,16 +315,10 @@ public class ContainerUtil {
 	 */
 	public static <K, V> V getValueOrPut(Map<K, V> map, K key, Class<V> classes) {
 		// 多线程下保证数据一致
-		ThreadUtil.conditionLock(
+		ThreadUtil.doubleCheckLock(
 			() -> map.get(key) == null,
 			map,
-			() -> {
-				try {
-					map.put(key, classes.getDeclaredConstructor().newInstance());
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-			}
+			() -> map.put(key, ObjectUtil.newObject(classes))
 		);
 		return map.get(key);
 	}

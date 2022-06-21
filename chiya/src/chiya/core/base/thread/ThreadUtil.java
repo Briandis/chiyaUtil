@@ -68,7 +68,7 @@ public class ThreadUtil {
 	 * @param lock                  同步的锁
 	 * @param function              执行的方法
 	 */
-	public static void conditionLock(BooleanReturnFunction booleanReturnFunction, Object lock, Function function) {
+	public static void doubleCheckLock(BooleanReturnFunction booleanReturnFunction, Object lock, Function function) {
 		if (booleanReturnFunction.task()) {
 			synchronized (lock) {
 				if (booleanReturnFunction.task()) { function.task(); }

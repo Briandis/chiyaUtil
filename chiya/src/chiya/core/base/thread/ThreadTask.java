@@ -53,7 +53,7 @@ public abstract class ThreadTask<T> {
 	 * @param isDaemon 是否是守护线程
 	 */
 	public void start(boolean isDaemon) {
-		ThreadUtil.conditionLock(
+		ThreadUtil.doubleCheckLock(
 			() -> {
 				if (isStart) { throw new IllegalThreadStateException("该任务已经启动"); }
 				return isStart;

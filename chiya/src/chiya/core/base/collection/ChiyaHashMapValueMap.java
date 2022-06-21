@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.BiConsumer;
 
 /**
  * 线程安全的MAP<T,MAP<K,V>>
@@ -62,7 +63,7 @@ public class ChiyaHashMapValueMap<T, K, V> {
 	/**
 	 * 移除key
 	 * 
-	 * @param key:Map的key
+	 * @param key Map的key
 	 * @return ConcurrentHashMap<K, V>
 	 */
 	public ConcurrentHashMap<K, V> remove(T key) {
@@ -72,9 +73,9 @@ public class ChiyaHashMapValueMap<T, K, V> {
 	/**
 	 * 移除内部MAP的key
 	 * 
-	 * @param key:Map的key
-	 * @param valueKey:内层Map的key
-	 * @return value:值
+	 * @param key      Map的key
+	 * @param valueKey 内层Map的key
+	 * @return value 值
 	 */
 	public V remove(T key, K valueKey) {
 		return concurrentHashMap.containsKey(key) ? concurrentHashMap.get(key).remove(valueKey) : null;
@@ -102,7 +103,7 @@ public class ChiyaHashMapValueMap<T, K, V> {
 	/**
 	 * 获取Map
 	 * 
-	 * @param key:Map的key
+	 * @param key Map的key
 	 * @return ConcurrentHashMap<K, V>
 	 */
 	public ConcurrentHashMap<K, V> get(T key) {
@@ -112,8 +113,8 @@ public class ChiyaHashMapValueMap<T, K, V> {
 	/**
 	 * 获取Map中的值
 	 * 
-	 * @param key:Map的key
-	 * @param valueKey:内层map的key
+	 * @param key      Map的key
+	 * @param valueKey 内层map的key
 	 * @return Map中的值
 	 */
 	public V get(T key, K valueKey) {
@@ -128,4 +129,14 @@ public class ChiyaHashMapValueMap<T, K, V> {
 	public Set<Map.Entry<T, ConcurrentHashMap<K, V>>> entrySet() {
 		return concurrentHashMap.entrySet();
 	}
+
+	/**
+	 * 迭代方法
+	 * 
+	 * @param action (k,v)->function的表达式
+	 */
+	public void forEach(BiConsumer<? super T, ? super ConcurrentHashMap<K, V>> action) {
+		concurrentHashMap.forEach(action);
+	}
+
 }

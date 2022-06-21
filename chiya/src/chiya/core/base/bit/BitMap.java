@@ -1,7 +1,7 @@
 package chiya.core.base.bit;
 
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -25,7 +25,7 @@ public class BitMap {
 	/**
 	 * 计数器
 	 */
-	private AtomicInteger atomicInteger = new AtomicInteger();
+	private LongAdder longAdder = new LongAdder();
 
 	/**
 	 * 默认1k,可记录8192个单位
@@ -67,7 +67,7 @@ public class BitMap {
 			boolean b = false;
 			if (!BitUtil.macthBit(allBit[index], offset)) {
 				allBit[index] = BitUtil.modifySetBit(allBit[index], offset);
-				atomicInteger.incrementAndGet();
+				longAdder.increment();
 				b = true;
 			}
 
@@ -84,15 +84,14 @@ public class BitMap {
 	 * @return true:移除成功/false:移除失败
 	 */
 	public boolean remove(int location) {
-		if (location > -1) {
-
+		if (location > -1 && location < allBit.length * 8) {
 			int offset = location % 8;
 			int index = location / 8;
 			boolean b = false;
 			readWriteLock.writeLock().lock();
 			if (BitUtil.macthBit(allBit[index], offset)) {
 				allBit[index] = BitUtil.modifyRemoveBit(allBit[index], offset);
-				atomicInteger.decrementAndGet();
+				longAdder.decrement();
 				b = true;
 			}
 			readWriteLock.writeLock().unlock();
@@ -143,7 +142,7 @@ public class BitMap {
 	 * @return 实际使用数量
 	 */
 	public int size() {
-		return atomicInteger.get();
+		return longAdder.intValue();
 	}
 
 	/**
@@ -205,6 +204,28 @@ public class BitMap {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * 把位图中所有1的下标汇聚成数组，返回所有的下标
+	 * 
+	 * @return 所有存储的下标数组
+	 */
+	public int[] valueToIntArray() {
+		synchronized (this) {
+			int[] all = new int[longAdder.intValue()];
+			int count = 0;
+			// 不使用get的方法，减少锁获取
+			for (int i = 0; i < allBit.length; i++) {
+				for (int j = 0; j < 8; j++) {
+					if (BitUtil.macthBit(allBit[i], j)) {
+						all[count] = i * 8 + j;
+						count++;
+					}
+				}
+			}
+			return all;
+		}
 	}
 
 }
