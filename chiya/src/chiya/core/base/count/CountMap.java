@@ -1,7 +1,7 @@
 package chiya.core.base.count;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAdder;
 
 import chiya.core.base.collection.ContainerUtil;
 
@@ -13,16 +13,16 @@ import chiya.core.base.collection.ContainerUtil;
 public class CountMap<T> {
 
 	/** 计数器 */
-	private ConcurrentHashMap<T, AtomicLong> count = new ConcurrentHashMap<T, AtomicLong>();
+	private ConcurrentHashMap<T, LongAdder> count = new ConcurrentHashMap<T, LongAdder>();
 
 	/**
 	 * 获取或创建一个新的值
 	 * 
 	 * @param key 键
-	 * @return 原子自增值
+	 * @return 原子累加类
 	 */
-	private AtomicLong getOrNewValue(T key) {
-		return ContainerUtil.getValueOrPut(count, key, AtomicLong.class);
+	private LongAdder getOrNewValue(T key) {
+		return ContainerUtil.getValueOrPut(count, key, LongAdder.class);
 	}
 
 	/**
@@ -30,8 +30,8 @@ public class CountMap<T> {
 	 * 
 	 * @param key 键
 	 */
-	public long increment(T key) {
-		return getOrNewValue(key).incrementAndGet();
+	public void increment(T key) {
+		getOrNewValue(key).increment();
 	}
 
 	/**
@@ -39,16 +39,16 @@ public class CountMap<T> {
 	 * 
 	 * @param key 键
 	 */
-	public long decrement(T key) {
-		return getOrNewValue(key).decrementAndGet();
+	public void decrement(T key) {
+		getOrNewValue(key).decrement();
 	}
 
 	/**
 	 * 获取计数器
 	 *
-	 * @return ConcurrentHashMap<T, AtomicLong> 计数器
+	 * @return ConcurrentHashMap<T, LongAdder> 计数器
 	 */
-	public ConcurrentHashMap<T, AtomicLong> getCount() {
+	public ConcurrentHashMap<T, LongAdder> getCount() {
 		return count;
 	}
 
@@ -56,7 +56,7 @@ public class CountMap<T> {
 	 * 重置所有为0
 	 */
 	public void reset() {
-		count.forEach((key, value) -> value.set(0));
+		count.forEach((key, value) -> value.reset());
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class CountMap<T> {
 	 * @param key
 	 */
 	public void reset(T key) {
-		if (count.containsKey(key)) { count.get(key).set(0); }
+		if (count.containsKey(key)) { count.get(key).reset(); }
 	}
 
 	/**
@@ -84,8 +84,15 @@ public class CountMap<T> {
 	 * @param key
 	 * @return 原子自增对象
 	 */
-	public AtomicLong remove(T key) {
+	public LongAdder remove(T key) {
 		return count.remove(key);
+	}
+
+	/**
+	 * 删除全部
+	 */
+	public void remove() {
+		count.clear();;
 	}
 
 	@Override
