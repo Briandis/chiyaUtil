@@ -10,6 +10,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import chiya.core.base.object.ObjectUtil;
+import chiya.core.base.page.Page;
 import chiya.core.base.random.RandomUtil;
 import chiya.core.base.string.StringUtil;
 import chiya.core.base.thread.ThreadUtil;
@@ -30,9 +31,7 @@ public class ContainerUtil {
 	 */
 	public static boolean compareAllNumbnerMoreNumber(int number, int... all) {
 		if (all == null) { return false; }
-		for (int i = 0; i < all.length; i++) {
-			if (all[i] <= number) { return false; }
-		}
+		for (int i = 0; i < all.length; i++) { if (all[i] <= number) { return false; } }
 		return true;
 	}
 
@@ -46,9 +45,7 @@ public class ContainerUtil {
 	 */
 	public static boolean compareAllNumberLessNumber(int number, int... all) {
 		if (all == null) { return false; }
-		for (int i = 0; i < all.length; i++) {
-			if (all[i] >= number) { return false; }
-		}
+		for (int i = 0; i < all.length; i++) { if (all[i] >= number) { return false; } }
 		return true;
 	}
 
@@ -75,9 +72,7 @@ public class ContainerUtil {
 	 */
 	public static boolean compareAllNumberLessNumberAndMoreNumber(int lower, int upper, int... all) {
 		if (all == null) { return false; }
-		for (int i = 0; i < all.length; i++) {
-			if (all[i] < lower || all[i] > upper) { return false; }
-		}
+		for (int i = 0; i < all.length; i++) { if (all[i] < lower || all[i] > upper) { return false; } }
 		return true;
 	}
 
@@ -131,9 +126,7 @@ public class ContainerUtil {
 	 */
 	public static <T> List<T> upsetList(List<T> list) {
 		if (list == null) { return null; }
-		for (int i = 0; i < list.size(); i++) {
-			swapList(list, i, RandomUtil.randInt(list.size()));
-		}
+		for (int i = 0; i < list.size(); i++) { swapList(list, i, RandomUtil.randInt(list.size())); }
 		return list;
 	}
 
@@ -145,9 +138,7 @@ public class ContainerUtil {
 	 */
 	public static int[] upsetArray(int[] array) {
 		if (array == null) { return null; }
-		for (int i = 0; i < array.length; i++) {
-			swapArrayInt(array, i, RandomUtil.randInt(array.length));
-		}
+		for (int i = 0; i < array.length; i++) { swapArrayInt(array, i, RandomUtil.randInt(array.length)); }
 		return array;
 	}
 
@@ -171,9 +162,7 @@ public class ContainerUtil {
 		// ArrayList初始赋值
 		List<Integer> list = new ArrayList<Integer>(init > 10 ? init : 10);
 		// 对list赋范围内的值
-		for (int i = start; i < end; i++) {
-			list.add(i);
-		}
+		for (int i = start; i < end; i++) { list.add(i); }
 		// 对list进行乱序
 		return upsetList(list);
 	}
@@ -196,9 +185,7 @@ public class ContainerUtil {
 		int init = end - start;
 		if (init == 0) { return null; }
 		int array[] = new int[init];
-		for (int i = start; i < end; i++) {
-			array[i - start] = i;
-		}
+		for (int i = start; i < end; i++) { array[i - start] = i; }
 		// 对数组进行乱序
 		return upsetArray(array);
 	}
@@ -316,10 +303,9 @@ public class ContainerUtil {
 	public static <K, V> V getValueOrPut(Map<K, V> map, K key, Class<V> classes) {
 		// 多线程下保证数据一致
 		ThreadUtil.doubleCheckLock(
-			() -> map.get(key) == null,
-			map,
-			() -> map.put(key, ObjectUtil.newObject(classes))
-		);
+				() -> map.get(key) == null,
+				map,
+				() -> map.put(key, ObjectUtil.newObject(classes)));
 		return map.get(key);
 	}
 
@@ -331,11 +317,7 @@ public class ContainerUtil {
 	 * @return true:存在/false:不存在
 	 */
 	public static boolean stringInList(String string, List<String> list) {
-		if (list != null) {
-			for (String str : list) {
-				if (StringUtil.eqString(string, str)) { return true; }
-			}
-		}
+		if (list != null) { for (String str : list) { if (StringUtil.eqString(string, str)) { return true; } } }
 		return false;
 	}
 
@@ -347,11 +329,7 @@ public class ContainerUtil {
 	 * @return true:存在/false:不存在
 	 */
 	public static boolean stringInArray(String string, String str[]) {
-		if (str != null) {
-			for (String st : str) {
-				if (StringUtil.eqString(string, st)) { return true; }
-			}
-		}
+		if (str != null) { for (String st : str) { if (StringUtil.eqString(string, st)) { return true; } } }
 		return false;
 	}
 
@@ -368,9 +346,7 @@ public class ContainerUtil {
 		if (arr == null) { return true; }
 		if (data == null) { return false; }
 		data = data.toLowerCase();
-		for (String str : arr) {
-			if (data.indexOf(str) != -1) { return true; }
-		}
+		for (String str : arr) { if (data.indexOf(str) != -1) { return true; } }
 		return false;
 	}
 
@@ -386,9 +362,7 @@ public class ContainerUtil {
 		if (list == null) { return true; }
 		if (data == null) { return false; }
 		data = data.toLowerCase();
-		for (String str : list) {
-			if (data.indexOf(str) != -1) { return true; }
-		}
+		for (String str : list) { if (data.indexOf(str) != -1) { return true; } }
 		return false;
 	}
 
@@ -400,11 +374,7 @@ public class ContainerUtil {
 	 * @return true:存在/false:不存在
 	 */
 	public static boolean charInArray(char chr, char[] chars) {
-		if (chars != null) {
-			for (char c : chars) {
-				if (c == chr) { return true; }
-			}
-		}
+		if (chars != null) { for (char c : chars) { if (c == chr) { return true; } } }
 		return false;
 	}
 
@@ -416,9 +386,7 @@ public class ContainerUtil {
 	 * @return true:存在/false:不存在
 	 */
 	public static boolean intInList(int i, List<Integer> list) {
-		for (Integer integer : list) {
-			if (integer == i) { return true; }
-		}
+		for (Integer integer : list) { if (integer == i) { return true; } }
 		return false;
 	}
 
@@ -430,9 +398,7 @@ public class ContainerUtil {
 	 * @return true:存在/false:不存在
 	 */
 	public static boolean intInArray(int i, int[] ints) {
-		for (int j : ints) {
-			if (j == i) { return true; }
-		}
+		for (int j : ints) { if (j == i) { return true; } }
 		return false;
 	}
 
@@ -447,13 +413,9 @@ public class ContainerUtil {
 	public static boolean objectInList(Object key, List<Object> list) {
 		// 查找的key为Null的情况
 		if (key == null) {
-			for (Object object : list) {
-				if (object == null) { return true; }
-			}
+			for (Object object : list) { if (object == null) { return true; } }
 		} else {
-			for (Object object : list) {
-				if (key.equals(object)) { return true; }
-			}
+			for (Object object : list) { if (key.equals(object)) { return true; } }
 		}
 		return false;
 	}
@@ -469,15 +431,37 @@ public class ContainerUtil {
 	public static boolean objectInArray(Object key, Object[] array) {
 		// 查找的key为Null的情况
 		if (key == null) {
-			for (Object object : array) {
-				if (object == null) { return true; }
-			}
+			for (Object object : array) { if (object == null) { return true; } }
 		} else {
-			for (Object object : array) {
-				if (key.equals(object)) { return true; }
-			}
+			for (Object object : array) { if (key.equals(object)) { return true; } }
 		}
 		return false;
+	}
+
+	/**
+	 * 根据传入的List进行分页
+	 * 
+	 * @param <T>  泛型对象
+	 * @param list 传入的List
+	 * @param page 分页数据
+	 * @return 分页后的数据
+	 */
+	public static <T> List<T> listPage(List<T> list, Page page) {
+		return listPage(list, page.getStart(), page.getCount());
+	}
+
+	/**
+	 * 根据传入的List进行分页
+	 * 
+	 * @param <T>   泛型对象
+	 * @param list  传入的List
+	 * @param start 获取的起始位置
+	 * @param count 获取的数量
+	 * @return 分页后的List
+	 */
+	public static <T> List<T> listPage(List<T> list, int start, int count) {
+		if (list == null) { return null; }
+		return list.stream().skip(start).limit(count).collect(Collectors.toList());
 	}
 
 }
