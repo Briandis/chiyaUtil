@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import chiya.core.base.function.GetUniqueFunction;
+import chiya.core.base.function.ValueGetFunction;
 import chiya.core.base.function.ReturnListFunction;
 import chiya.core.base.thread.ThreadUtil;
 
@@ -13,24 +13,26 @@ import chiya.core.base.thread.ThreadUtil;
  * key-value结构缓存，没有回收机制，主要场景是少量不改变的数据
  * 
  * @author brain
- *
+ * @param <K> 唯一标识的类型
+ * @param <V> 传入存储的对象类型
  */
 public class MapCache<K, V> {
 
 	/** 获取对象唯一标识 */
-	private GetUniqueFunction<K, V> getUniqueFunction;
+	private ValueGetFunction<V, K> valueGetFunction;
+
+	/** 缓存容器 */
+	private ConcurrentHashMap<K, V> concurrentHashMap = null;
 
 	/**
 	 * 构造方法
 	 * 
-	 * @param genericsReturnFunction 获取对象唯一标识
+	 * @param valueGetFunction 获取对象唯一标识
 	 */
-	public MapCache(GetUniqueFunction<K, V> genericsReturnFunction) {
-		this.getUniqueFunction = genericsReturnFunction;
+	public MapCache(ValueGetFunction<V, K> valueGetFunction) {
+		this.valueGetFunction = valueGetFunction;
+		concurrentHashMap = new ConcurrentHashMap<>();
 	}
-
-	/** 缓存容器 */
-	private ConcurrentHashMap<K, V> concurrentHashMap = new ConcurrentHashMap<>();
 
 	/** 缓存更新状态位 */
 	public volatile boolean NEED_UPDATE = true;
@@ -50,7 +52,7 @@ public class MapCache<K, V> {
 	 * @param value 缓存数据
 	 */
 	public void add(V value) {
-		if (value != null) { concurrentHashMap.put(getUniqueFunction.task(value), value); }
+		if (value != null) { concurrentHashMap.put(valueGetFunction.get(value), value); }
 	}
 
 	/**
@@ -69,7 +71,7 @@ public class MapCache<K, V> {
 	 * @param list 列表
 	 */
 	public void add(List<V> list) {
-		if(list!=null) {list.forEach(obj -> add(obj));}
+		if (list != null) { list.forEach(obj -> add(obj)); }
 	}
 
 	/**
@@ -135,13 +137,14 @@ public class MapCache<K, V> {
 	 */
 	public void reacquire(ReturnListFunction<V> function) {
 		ThreadUtil.doubleCheckLock(
-			() -> NEED_UPDATE, 
-			this, 
+			() -> NEED_UPDATE,
+			this,
 			() -> {
 				remove();
 				add(function.getList());
-				NEED_UPDATE=false;
-			});
+				NEED_UPDATE = false;
+			}
+		);
 	}
 
 }

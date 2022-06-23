@@ -176,38 +176,6 @@ public class NumberUitl {
 	}
 
 	/**
-	 * 比较两数大小，反向排序<br>
-	 * 返回值小于0是a>b / 等于0是a=b / 大于0是a<b<br>
-	 * 两数为Null则相等，a为null则大于b，b为null则大于a
-	 * 
-	 * @param a Integer包装类
-	 * @param b Integer包装类
-	 * @return 小于0是a>b / 等于0是a=b / 大于0是a<b
-	 */
-	public static int compareSizeDesc(Integer a, Integer b) {
-		if (a == null && b == null) { return 0; }
-		if (a == null) { return 1; }
-		if (b == null) { return -1; }
-		return b - a;
-	}
-
-	/**
-	 * 比较两数大小<br>
-	 * 返回值小于0是a>b / 等于0是a=b / 大于0是a<b<br>
-	 * 两数为Null则相等，a为null则小于b，b为null则小于a
-	 * 
-	 * @param a Integer包装类
-	 * @param b Integer包装类
-	 * @return 小于0是a>b / 等于0是a=b / 大于0是a<b
-	 */
-	public static int compareSizeDescNullIsMax(Integer a, Integer b) {
-		if (a == null && b == null) { return 0; }
-		if (a == null) { return -1; }
-		if (b == null) { return 1; }
-		return b - a;
-	}
-
-	/**
 	 * 比较两数大小<br>
 	 * 返回值小于0是a<b / 等于0是a=b / 大于0是a>b<br>
 	 * 两数为Null则相等，a为null则小于b，b为null则小于a
@@ -220,7 +188,112 @@ public class NumberUitl {
 		if (a == null && b == null) { return 0; }
 		if (a == null) { return -1; }
 		if (b == null) { return 1; }
+		return compareSize(a.longValue(), b.longValue());
+	}
+
+	/**
+	 * 比较两数大小<br>
+	 * 返回值小于0是a<b / 等于0是a=b / 大于0是a>b<br>
+	 * 两数为Null则相等，a为null则大于b，b为null则大于a
+	 * 
+	 * @param a Long包装类
+	 * @param b Long包装类
+	 * @return 小于0是a<b / 等于0是a=b / 大于0是a>b
+	 */
+	public static int compareSizeNullIsMax(Long a, Long b) {
+		if (a == null && b == null) { return 0; }
+		if (a == null) { return -1; }
+		if (b == null) { return 1; }
+		return compareSize(a.longValue(), b.longValue());
+	}
+
+	/**
+	 * 比较两数大小<br>
+	 * 返回值小于0是a<b / 等于0是a=b / 大于0是a>b<br>
+	 * 两数为Null则相等，a为null则小于b，b为null则小于a
+	 * 
+	 * @param a Double包装类
+	 * @param b Double包装类
+	 * @return 小于0是a<b / 等于0是a=b / 大于0是a>b
+	 */
+	public static int compareSize(Double a, Double b) {
+		if (a == null && b == null) { return 0; }
+		if (a == null) { return -1; }
+		if (b == null) { return 1; }
+		return compareSize(a.doubleValue(), b.doubleValue());
+	}
+
+	/**
+	 * 比较两数大小<br>
+	 * 返回值小于0是a<b / 等于0是a=b / 大于0是a>b<br>
+	 * 两数为Null则相等，a为null则大于b，b为null则大于a
+	 * 
+	 * @param a Double包装类
+	 * @param b Double包装类
+	 * @return 小于0是a<b / 等于0是a=b / 大于0是a>b
+	 */
+	public static int compareSizeNullIsMax(Double a, Double b) {
+		if (a == null && b == null) { return 0; }
+		if (a == null) { return -1; }
+		if (b == null) { return 1; }
+		return compareSize(a.doubleValue(), b.doubleValue());
+	}
+
+	/**
+	 * 比较两数大小
+	 * 
+	 * @param a long类型
+	 * @param b long类型
+	 * @return 小于0是a<b / 等于0是a=b / 大于0是a>b
+	 */
+	public static int compareSize(long a, long b) {
 		long l = a - b;
 		return l > 0 ? 1 : l == 0 ? 0 : -1;
+	}
+
+	/**
+	 * 比较两数大小
+	 * 
+	 * @param a double类型
+	 * @param b double类型
+	 * @return 小于0是a<b / 等于0是a=b / 大于0是a>b
+	 */
+	public static int compareSize(double a, double b) {
+		double number = a - b;
+		return number > 0 ? 1 : number < 0 ? -1 : 0;
+	}
+
+	/**
+	 * 比较两数大小<br>
+	 * 返回值小于0是a<b / 等于0是a=b / 大于0是a>b<br>
+	 * 两数为Null则相等，a为null则小于b，b为null则小于a
+	 * 
+	 * @param a Number包装类
+	 * @param b Number包装类
+	 * @return 小于0是a<b / 等于0是a=b / 大于0是a>b
+	 */
+	public static int compareSize(Number a, Number b) {
+		if (a == null && b == null) { return 0; }
+		if (a == null) { return -1; }
+		if (b == null) { return 1; }
+		// 未知的数据类型，选择双浮点数处理
+		return compareSize(a.doubleValue(), b.doubleValue());
+	}
+
+	/**
+	 * 比较两数大小<br>
+	 * 返回值小于0是a<b / 等于0是a=b / 大于0是a>b<br>
+	 * 两数为Null则相等，a为null则大于b，b为null则大于a
+	 * 
+	 * @param a Number包装类
+	 * @param b Number包装类
+	 * @return 小于0是a<b / 等于0是a=b / 大于0是a>b
+	 */
+	public static int compareSizeNullIsMax(Number a, Number b) {
+		if (a == null && b == null) { return 0; }
+		if (a == null) { return 1; }
+		if (b == null) { return -1; }
+		// 未知的数据类型，选择双浮点数处理
+		return compareSizeNullIsMax(a.doubleValue(), b.doubleValue());
 	}
 }

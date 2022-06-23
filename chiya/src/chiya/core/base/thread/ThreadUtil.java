@@ -1,6 +1,6 @@
 package chiya.core.base.thread;
 
-import chiya.core.base.function.BooleanReturnFunction;
+import chiya.core.base.function.BooleanFunction;
 import chiya.core.base.function.Function;
 
 /**
@@ -64,14 +64,14 @@ public class ThreadUtil {
 	/**
 	 * 双重条件锁
 	 * 
-	 * @param booleanReturnFunction 布尔类型返回值检测方法
-	 * @param lock                  同步的锁
-	 * @param function              执行的方法
+	 * @param booleanFunction 布尔类型返回值检测方法
+	 * @param lock            同步的锁
+	 * @param function        执行的方法
 	 */
-	public static void doubleCheckLock(BooleanReturnFunction booleanReturnFunction, Object lock, Function function) {
-		if (booleanReturnFunction.task()) {
+	public static void doubleCheckLock(BooleanFunction booleanFunction, Object lock, Function function) {
+		if (booleanFunction.task()) {
 			synchronized (lock) {
-				if (booleanReturnFunction.task()) { function.task(); }
+				if (booleanFunction.task()) { function.task(); }
 			}
 		}
 	}

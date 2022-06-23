@@ -1,5 +1,8 @@
 package chiya.core.base.loop;
 
+import java.util.Collection;
+import java.util.function.Consumer;
+
 import chiya.core.base.function.GenericityFunction;
 import chiya.core.base.function.IntegerFunction;
 
@@ -72,4 +75,15 @@ public class Loop {
 		}
 	}
 
+	/**
+	 * 迭代任意对象集合
+	 * 
+	 * @param <T>        对象数组类型
+	 * @param collection 可迭代的集合
+	 * @param action     泛型迭代方法
+	 */
+	public static <T> void forEach(Collection<T> collection, Consumer<? super T> action) {
+		if (collection == null) { return; }
+		collection.forEach(action);
+	}
 }

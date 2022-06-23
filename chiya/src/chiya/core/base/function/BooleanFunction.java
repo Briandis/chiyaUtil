@@ -7,7 +7,7 @@ package chiya.core.base.function;
  *
  */
 @FunctionalInterface
-public interface BooleanReturnFunction {
+public interface BooleanFunction {
 	/**
 	 * 执行某个方法，返回true/false
 	 * 
