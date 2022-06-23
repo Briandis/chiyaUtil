@@ -133,7 +133,7 @@ public class MapCache<K, V> {
 	 * 
 	 * @param function 获取数据方法
 	 */
-	public void reacquire(ReturnListFunction function) {
+	public void reacquire(ReturnListFunction<V> function) {
 		ThreadUtil.doubleCheckLock(
 			() -> NEED_UPDATE, 
 			this, 

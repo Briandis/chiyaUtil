@@ -7,13 +7,12 @@ import java.util.List;
  * 
  * @author brian
  */
-public interface ReturnListFunction {
+public interface ReturnListFunction<T> {
 
 	/**
 	 * 获取并返回一个list
 	 * 
-	 * @param <T> 泛型
 	 * @return List对象
 	 */
-	<T> List<T> getList();
+	List<T> getList();
 }
