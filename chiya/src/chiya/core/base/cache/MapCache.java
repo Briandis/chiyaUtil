@@ -134,7 +134,14 @@ public class MapCache<K, V> {
 	 * @param function 获取数据方法
 	 */
 	public void reacquire(Function function) {
-		ThreadUtil.doubleCheckLock(() -> NEED_UPDATE, this, () -> function.task());
+		ThreadUtil.doubleCheckLock(
+			() -> NEED_UPDATE, 
+			this, 
+			() -> {
+				remove();
+				function.task();
+				NEED_UPDATE=false;
+			});
 	}
 
 }
