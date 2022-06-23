@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import chiya.core.base.function.GetUniqueFunction;
+import chiya.core.base.function.ReturnListFunction;
+import chiya.core.base.thread.ThreadUtil;
 
 /**
  * key-value结构缓存，没有回收机制，主要场景是少量不改变的数据
@@ -67,7 +69,7 @@ public class MapCache<K, V> {
 	 * @param list 列表
 	 */
 	public void add(List<V> list) {
-		list.forEach(obj -> add(obj));
+		if(list!=null) {list.forEach(obj -> add(obj));}
 	}
 
 	/**
@@ -125,4 +127,21 @@ public class MapCache<K, V> {
 		}
 		return value;
 	}
+
+	/**
+	 * 重新拉取全部数据
+	 * 
+	 * @param function 获取数据方法
+	 */
+	public void reacquire(ReturnListFunction function) {
+		ThreadUtil.doubleCheckLock(
+			() -> NEED_UPDATE, 
+			this, 
+			() -> {
+				remove();
+				add(function.getList());
+				NEED_UPDATE=false;
+			});
+	}
+
 }
