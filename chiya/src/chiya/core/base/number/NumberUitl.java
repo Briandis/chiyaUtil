@@ -159,4 +159,68 @@ public class NumberUitl {
 		return a - b;
 	}
 
+	/**
+	 * 比较两数大小<br>
+	 * 返回值小于0是a<b / 等于0是a=b / 大于0是a>b<br>
+	 * 两数为Null则相等，a为null则大于b，b为null则大于a
+	 * 
+	 * @param a Integer包装类
+	 * @param b Integer包装类
+	 * @return 小于0是a<b / 等于0是a=b / 大于0是a>b
+	 */
+	public static int compareSizeNullIsMax(Integer a, Integer b) {
+		if (a == null && b == null) { return 0; }
+		if (a == null) { return 1; }
+		if (b == null) { return -1; }
+		return a - b;
+	}
+
+	/**
+	 * 比较两数大小，反向排序<br>
+	 * 返回值小于0是a>b / 等于0是a=b / 大于0是a<b<br>
+	 * 两数为Null则相等，a为null则大于b，b为null则大于a
+	 * 
+	 * @param a Integer包装类
+	 * @param b Integer包装类
+	 * @return 小于0是a>b / 等于0是a=b / 大于0是a<b
+	 */
+	public static int compareSizeDesc(Integer a, Integer b) {
+		if (a == null && b == null) { return 0; }
+		if (a == null) { return 1; }
+		if (b == null) { return -1; }
+		return b - a;
+	}
+
+	/**
+	 * 比较两数大小<br>
+	 * 返回值小于0是a>b / 等于0是a=b / 大于0是a<b<br>
+	 * 两数为Null则相等，a为null则小于b，b为null则小于a
+	 * 
+	 * @param a Integer包装类
+	 * @param b Integer包装类
+	 * @return 小于0是a>b / 等于0是a=b / 大于0是a<b
+	 */
+	public static int compareSizeDescNullIsMax(Integer a, Integer b) {
+		if (a == null && b == null) { return 0; }
+		if (a == null) { return -1; }
+		if (b == null) { return 1; }
+		return b - a;
+	}
+
+	/**
+	 * 比较两数大小<br>
+	 * 返回值小于0是a<b / 等于0是a=b / 大于0是a>b<br>
+	 * 两数为Null则相等，a为null则小于b，b为null则小于a
+	 * 
+	 * @param a Long包装类
+	 * @param b Long包装类
+	 * @return 小于0是a<b / 等于0是a=b / 大于0是a>b
+	 */
+	public static int compareSize(Long a, Long b) {
+		if (a == null && b == null) { return 0; }
+		if (a == null) { return -1; }
+		if (b == null) { return 1; }
+		long l = a - b;
+		return l > 0 ? 1 : l == 0 ? 0 : -1;
+	}
 }
