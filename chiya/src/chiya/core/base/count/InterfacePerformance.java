@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import chiya.core.base.thread.ThreadUtil;
+import chiya.core.base.collection.ContainerUtil;
 import chiya.core.base.time.DateUtil;
 
 /**
  * 接口性能统计
  * 
  * @author brain
- *
  */
 public class InterfacePerformance {
 	/** 计数器 */
@@ -24,12 +23,7 @@ public class InterfacePerformance {
 	 * @param time 运行时间
 	 */
 	public void put(String url, int time) {
-		ThreadUtil.doubleCheckLock(
-			() -> !count.containsKey(url),
-			count,
-			() -> count.put(url, new ServiceCount())
-		);
-		count.get(url).add(time);
+		ContainerUtil.getValueOrPut(count, url, ServiceCount.class).add(time);
 	}
 
 	/**

@@ -3,6 +3,7 @@ package chiya.core.base.stream;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -185,6 +186,17 @@ public abstract class BaseStream<T, E> {
 	 */
 	public E sortDescNullIsMax(ValueObjectFunction<? super T, ? extends Date> method) {
 		stream = stream.sorted((a, b) -> DateUtil.compareSizeNullIsMax(method.get(b), method.get(a)));
+		return (E) this;
+	}
+
+	/**
+	 * 过滤条件
+	 * 
+	 * @param predicate 过滤条件
+	 * @return Stream<T> 操作流
+	 */
+	public E filter(Predicate<? super T> predicate) {
+		stream = stream.filter(predicate);
 		return (E) this;
 	}
 
