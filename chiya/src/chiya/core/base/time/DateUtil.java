@@ -27,6 +27,9 @@ public class DateUtil {
 	private static final String DATE = "yyyy-MM-dd";
 	/** UTC标准时间 */
 	private static final String UTC_DATE_TIME = "yyyy-MM-dd'T'HH:mm:ss'+08:00'";
+	/** 日期时间的纯数字，不是时间戳 */
+	private static final String NUMBER_DATE_TIME = "yyyyMMddHHmmss";
+
 	/** 一天的时间毫秒长度 */
 	private static final int ONE_DAY_TIME = 1000 * 60 * 60 * 24;
 	/** 东8时区偏移长度 */
@@ -51,8 +54,25 @@ public class DateUtil {
 			return new SimpleDateFormat(DATE);
 		};
 	};
+
+	/** 日期时间纯数字的格式化工具 */
+	private static final ThreadLocal<SimpleDateFormat> simpleDateFormatNumberDate = new ThreadLocal<SimpleDateFormat>() {
+		protected SimpleDateFormat initialValue() {
+			return new SimpleDateFormat(NUMBER_DATE_TIME);
+		};
+	};
+
 	/** 每个月份的天数 */
 	private static final int MONTH_DAY[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
+	/**
+	 * 获取现在的时间，以yyyyMMddHHmmss的方式显示
+	 * 
+	 * @return yyyyMMddHHmmss的字符串
+	 */
+	public static String getNowNumberDateTime() {
+		return simpleDateFormatNumberDate.get().format(new Date());
+	}
 
 	/**
 	 * 获取现在的时间，以yyyy-MM-dd HH:mm:ss的方式显示
@@ -92,6 +112,18 @@ public class DateUtil {
 	public static String formatDateYYYYMMDDHHMMSS(Date date) {
 		if (date == null) { return null; }
 		return simpleDateFormatDatetime.get().format(date);
+	}
+
+	/**
+	 * 以年月日 时分秒的方式格式化日期<br>
+	 * yyyyMMddHHmmss的格式
+	 * 
+	 * @param date 待格式化日期
+	 * @return 格式化后的字符串
+	 */
+	public static String formatDateNumberYYYYMMDDHHMMSS(Date date) {
+		if (date == null) { return null; }
+		return simpleDateFormatNumberDate.get().format(date);
 	}
 
 	/**

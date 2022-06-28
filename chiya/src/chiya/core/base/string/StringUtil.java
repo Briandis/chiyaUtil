@@ -135,9 +135,7 @@ public class StringUtil {
 		boolean b = true;
 		for (int i = 0; i < str.length(); i++) {
 			b = true;
-			for (char c : SPACE_CHARS) {
-				b = b && str.charAt(i) != c;
-			}
+			for (char c : SPACE_CHARS) { b = b && str.charAt(i) != c; }
 			if (b) { return false; }
 		}
 		return true;
@@ -217,9 +215,7 @@ public class StringUtil {
 		length = length < 1 ? 4 : length;
 		if (chars == null || chars.length() == 0) { chars = ALL_CHARS; }
 		StringBuilder stringBuilder = new StringBuilder();
-		for (int i = 0; i < length; i++) {
-			stringBuilder.append(chars.charAt(RandomUtil.randInt(chars.length())));
-		}
+		for (int i = 0; i < length; i++) { stringBuilder.append(chars.charAt(RandomUtil.randInt(chars.length()))); }
 		return stringBuilder.toString();
 	}
 
@@ -243,9 +239,7 @@ public class StringUtil {
 	 */
 	public static String extractFileNameIsImg(String fileName) {
 		String s = getFileFormat(fileName);
-		for (int i = 0; i < ARRAY_IMG.length; i++) {
-			if (ARRAY_IMG[i].equalsIgnoreCase(s)) { return ARRAY_IMG[i]; }
-		}
+		for (int i = 0; i < ARRAY_IMG.length; i++) { if (ARRAY_IMG[i].equalsIgnoreCase(s)) { return ARRAY_IMG[i]; } }
 		return null;
 	}
 
@@ -261,9 +255,7 @@ public class StringUtil {
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
 			String hashtext = new BigInteger(1, md.digest(string.getBytes())).toString(16);
-			while (hashtext.length() < 32) {
-				hashtext = "0" + hashtext;
-			}
+			while (hashtext.length() < 32) { hashtext = "0" + hashtext; }
 			return hashtext;
 		} catch (NoSuchAlgorithmException e) {
 			return string;
@@ -282,9 +274,7 @@ public class StringUtil {
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-1");
 			String hashtext = new BigInteger(1, md.digest(string.getBytes())).toString(16);
-			while (hashtext.length() < 32) {
-				hashtext = "0" + hashtext;
-			}
+			while (hashtext.length() < 32) { hashtext = "0" + hashtext; }
 			return hashtext;
 		} catch (NoSuchAlgorithmException e) {
 			return string;
@@ -384,9 +374,7 @@ public class StringUtil {
 			StringBuilder stringBuilder = new StringBuilder();
 			// 截取前index个显示字符
 			stringBuilder.append(head.substring(0, index));
-			for (int i = 0; i < l; i++) {
-				stringBuilder.append("*");
-			}
+			for (int i = 0; i < l; i++) { stringBuilder.append("*"); }
 			stringBuilder.append(less);
 			mail = stringBuilder.toString();
 		}
@@ -614,9 +602,7 @@ public class StringUtil {
 		if (!isNullOrZero(string)) {
 			String s[] = string.split("_");
 			StringBuilder stringBuilder = new StringBuilder();
-			for (int i = 0; i < s.length; i++) {
-				stringBuilder.append(i == 0 ? lowerFirst(s[i]) : upperFirst(s[i]));
-			}
+			for (int i = 0; i < s.length; i++) { stringBuilder.append(i == 0 ? lowerFirst(s[i]) : upperFirst(s[i])); }
 			return stringBuilder.toString();
 		}
 		return null;
@@ -632,9 +618,7 @@ public class StringUtil {
 		if (!isNullOrZero(string)) {
 			String s[] = string.split("_");
 			StringBuilder stringBuilder = new StringBuilder();
-			for (int i = 0; i < s.length; i++) {
-				stringBuilder.append(upperFirst(s[i]));
-			}
+			for (int i = 0; i < s.length; i++) { stringBuilder.append(upperFirst(s[i])); }
 			return stringBuilder.toString();
 		}
 		return null;
@@ -766,9 +750,7 @@ public class StringUtil {
 		}
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(str.substring(0, start));
-		for (int i = 0; i < str.length() - (start + end) + hide; i++) {
-			stringBuilder.append("*");
-		}
+		for (int i = 0; i < str.length() - (start + end) + hide; i++) { stringBuilder.append("*"); }
 		stringBuilder.append(str.substring(str.length() - end));
 		return stringBuilder.toString();
 	}
@@ -804,9 +786,7 @@ public class StringUtil {
 		}
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(str.substring(0, start));
-		for (int i = 0; i < hide; i++) {
-			stringBuilder.append("*");
-		}
+		for (int i = 0; i < hide; i++) { stringBuilder.append("*"); }
 		stringBuilder.append(str.substring(str.length() - end));
 		return stringBuilder.toString();
 	}

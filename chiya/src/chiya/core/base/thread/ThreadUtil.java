@@ -85,7 +85,7 @@ public class ThreadUtil {
 		try {
 			Thread.sleep(1000 * second);
 		} catch (InterruptedException e) {
-			new RuntimeException(e);
+			throw new RuntimeException(e);
 		}
 	}
 }
