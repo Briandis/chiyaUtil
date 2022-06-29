@@ -2,9 +2,7 @@ package chiya.core.base.unique.algorithm;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import chiya.core.base.string.StringUtil;
 import chiya.core.base.thread.BlockLock;
-import chiya.core.base.thread.ThreadUtil;
 import chiya.core.base.unique.UniqueGenerate;
 
 /**
@@ -18,8 +16,8 @@ public class BlockAtomicLong implements UniqueGenerate {
 	private AtomicLong atomicLong = new AtomicLong();
 	/** 自增上限，默认Integer类型上限 */
 	public long length = Integer.MAX_VALUE;
-	/** 重复间隔，毫秒 */
-	public long time = 1000;
+	/** 重复间隔，毫秒，默认1秒 */
+	public long time = 1_000;
 	/** 阻塞锁 */
 	private BlockLock blockLock = new BlockLock();
 
@@ -43,16 +41,11 @@ public class BlockAtomicLong implements UniqueGenerate {
 		try {
 			while (true) {
 				value = atomicLong.getAndIncrement();
-				StringUtil.print(ThreadUtil.getThreadName(), System.currentTimeMillis(), "数值：", value);
 				if (value < length) { return value; }
-				StringUtil.print(ThreadUtil.getThreadName(), "过大重试", value);
 				blockLock.nextWait(
-					time * 1_000_000,
+					time,
 					() -> {
-						if (atomicLong.longValue() >= length) {
-							atomicLong.set(0);
-							StringUtil.print("重置", ThreadUtil.getThreadName(), System.currentTimeMillis());
-						}
+						if (atomicLong.longValue() >= length) { atomicLong.set(0); }
 					}
 				);
 			}

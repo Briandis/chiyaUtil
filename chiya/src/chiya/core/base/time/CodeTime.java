@@ -10,6 +10,8 @@ public class CodeTime {
 	private long startTime;
 	/** 结束时间 */
 	private long endTime;
+	/** 启动时的时间戳 */
+	private static final long RUN_START_TIME = System.currentTimeMillis();
 
 	/** 记录开始时间 */
 	public void start() {
@@ -45,5 +47,24 @@ public class CodeTime {
 	 */
 	public long getUse() {
 		return endTime - startTime;
+	}
+
+	/**
+	 * 获取程序从开始运行到现在的毫秒数
+	 * 
+	 * @return long:所用毫秒
+	 */
+	public static long getRunTime() {
+		return System.currentTimeMillis() - RUN_START_TIME;
+	}
+
+	/**
+	 * 获取程序从开始运行到现在的毫秒数
+	 * 
+	 * @param time 时间
+	 * @return long:所用毫秒
+	 */
+	public static long getRunTime(long time) {
+		return time - RUN_START_TIME;
 	}
 }
