@@ -3,6 +3,8 @@ package chiya.core.base.loop;
 import java.util.Collection;
 import java.util.function.Consumer;
 
+import chiya.core.base.count.CountInteger;
+import chiya.core.base.function.ForEachFunction;
 import chiya.core.base.function.GenericityFunction;
 import chiya.core.base.function.IntegerFunction;
 
@@ -10,7 +12,6 @@ import chiya.core.base.function.IntegerFunction;
  * 循环工具库
  * 
  * @author brain
- *
  */
 public class Loop {
 
@@ -36,16 +37,13 @@ public class Loop {
 	}
 
 	/**
-	 * 
 	 * @param start           起始值
 	 * @param max             最大次数
 	 * @param step            每次迭代出来的步长
 	 * @param integerFunction integer类型迭代方法
 	 */
 	public static void step(int start, int max, int step, IntegerFunction integerFunction) {
-		for (int i = start; i < max; i += step) {
-			integerFunction.loop(i);
-		}
+		for (int i = start; i < max; i += step) { integerFunction.loop(i); }
 	}
 
 	/**
@@ -56,9 +54,7 @@ public class Loop {
 	 */
 	public static void forEach(int array[], IntegerFunction integerFunction) {
 		if (array == null) { return; }
-		for (int i = 0; i < array.length; i++) {
-			integerFunction.loop(array[i]);
-		}
+		for (int i = 0; i < array.length; i++) { integerFunction.loop(array[i]); }
 	}
 
 	/**
@@ -70,9 +66,19 @@ public class Loop {
 	 */
 	public static <T> void forEach(T array[], GenericityFunction<T> genericityFunction) {
 		if (array == null) { return; }
-		for (int i = 0; i < array.length; i++) {
-			genericityFunction.next(null);
-		}
+		for (int i = 0; i < array.length; i++) { genericityFunction.next(null); }
+	}
+
+	/**
+	 * 迭代任意对象数组
+	 * 
+	 * @param <T>             对象数组类型
+	 * @param array           对象数组
+	 * @param forEachFunction 泛型迭代方法
+	 */
+	public static <T> void forEach(T array[], ForEachFunction<T> forEachFunction) {
+		if (array == null) { return; }
+		for (int i = 0; i < array.length; i++) { forEachFunction.next(array[i], i); }
 	}
 
 	/**
@@ -85,5 +91,18 @@ public class Loop {
 	public static <T> void forEach(Collection<T> collection, Consumer<? super T> action) {
 		if (collection == null) { return; }
 		collection.forEach(action);
+	}
+
+	/**
+	 * 迭代任意对象集合
+	 * 
+	 * @param <T>             对象数组类型
+	 * @param collection      可迭代的集合
+	 * @param forEachFunction 泛型迭代方法
+	 */
+	public static <T> void forEach(Collection<T> collection, ForEachFunction<T> forEachFunction) {
+		if (collection == null) { return; }
+		CountInteger countInteger = new CountInteger();
+		collection.forEach(o -> forEachFunction.next(o, countInteger.getAndIncrement()));
 	}
 }
