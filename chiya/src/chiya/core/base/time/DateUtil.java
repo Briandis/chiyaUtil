@@ -701,12 +701,12 @@ public class DateUtil {
 
 	/**
 	 * 比较两个时间的大小<br>
-	 * 返回值小于0是a<b / 等于0是a=b / 大于0是a>b<br>
+	 * 返回值小于0是a &lt; b / 等于0是a=b / 大于0是a &gt; b<br>
 	 * 两数为Null则相等，a为null则小于b，b为null则小于a
 	 * 
 	 * @param d1 日期a
 	 * @param d2 日期b
-	 * @return 小于0是a<b / 等于0是a=b / 大于0是a>b
+	 * @return 小于0是a&lt;b / 等于0是a=b / 大于0是a &gt; b
 	 */
 	public static int compareSize(Date d1, Date d2) {
 		return NumberUitl.compareSize(d1 == null ? null : d1.getTime(), d2 == null ? null : d2.getTime());
@@ -714,12 +714,12 @@ public class DateUtil {
 
 	/**
 	 * 比较两个时间的大小<br>
-	 * 返回值小于0是a<b / 等于0是a=b / 大于0是a>b<br>
+	 * 返回值小于0是a&lt;b / 等于0是a=b / 大于0是a &gt; b<br>
 	 * 两数为Null则相等，a为null则大于b，b为null则大于a
 	 * 
 	 * @param d1 日期a
 	 * @param d2 日期b
-	 * @return 小于0是a<b / 等于0是a=b / 大于0是a>b
+	 * @return 小于0是a&lt;b / 等于0是a=b / 大于0是a &gt; b
 	 */
 	public static int compareSizeNullIsMax(Date d1, Date d2) {
 		return NumberUitl.compareSizeNullIsMax(d1 == null ? null : d1.getTime(), d2 == null ? null : d2.getTime());

@@ -104,7 +104,7 @@ public class NumberUitl {
 	 * 
 	 * @param a Integer包装类
 	 * @param b Integer包装类
-	 * @return true:a<b / false:a>=b
+	 * @return true:a &lt; b / false:a &gt; =b
 	 */
 	public static boolean isLess(Integer a, Integer b) {
 		return compareSize(a, b) < 0;
@@ -115,7 +115,7 @@ public class NumberUitl {
 	 * 
 	 * @param a Integer包装类
 	 * @param b Integer包装类
-	 * @return true:a<=b / false:a>b
+	 * @return true:a &lt; =b / false:a>b
 	 */
 	public static boolean isLessOrEqual(Integer a, Integer b) {
 		return compareSize(a, b) <= 0;
@@ -126,7 +126,7 @@ public class NumberUitl {
 	 * 
 	 * @param a Integer包装类
 	 * @param b Integer包装类
-	 * @return true:a>b / false:a<=b
+	 * @return true:a &gt; b / false:a &lt; =b
 	 */
 	public static boolean isGreater(Integer a, Integer b) {
 		return compareSize(a, b) > 0;
@@ -137,7 +137,7 @@ public class NumberUitl {
 	 * 
 	 * @param a Integer包装类
 	 * @param b Integer包装类
-	 * @return true:a>b / false:a<=b
+	 * @return true:a &gt; b / false:a &lt; =b
 	 */
 	public static boolean isGreaterOrEqual(Integer a, Integer b) {
 		return compareSize(a, b) >= 0;
@@ -145,12 +145,12 @@ public class NumberUitl {
 
 	/**
 	 * 比较两数大小<br>
-	 * 返回值小于0是a<b / 等于0是a=b / 大于0是a>b<br>
+	 * 返回值小于0是a &lt; b / 等于0是a=b / 大于0是a &gt; b<br>
 	 * 两数为Null则相等，a为null则小于b，b为null则小于a
 	 * 
 	 * @param a Integer包装类
 	 * @param b Integer包装类
-	 * @return 小于0是a<b / 等于0是a=b / 大于0是a>b
+	 * @return 小于0是a &lt; b / 等于0是a=b / 大于0是a &gt; b
 	 */
 	public static int compareSize(Integer a, Integer b) {
 		if (a == null && b == null) { return 0; }
@@ -161,12 +161,12 @@ public class NumberUitl {
 
 	/**
 	 * 比较两数大小<br>
-	 * 返回值小于0是a<b / 等于0是a=b / 大于0是a>b<br>
+	 * 返回值小于0是a &lt; b / 等于0是a=b / 大于0是a &gt; b<br>
 	 * 两数为Null则相等，a为null则大于b，b为null则大于a
 	 * 
 	 * @param a Integer包装类
 	 * @param b Integer包装类
-	 * @return 小于0是a<b / 等于0是a=b / 大于0是a>b
+	 * @return 小于0是a &lt; b / 等于0是a=b / 大于0是a &gt; b
 	 */
 	public static int compareSizeNullIsMax(Integer a, Integer b) {
 		if (a == null && b == null) { return 0; }
@@ -177,12 +177,12 @@ public class NumberUitl {
 
 	/**
 	 * 比较两数大小<br>
-	 * 返回值小于0是a<b / 等于0是a=b / 大于0是a>b<br>
+	 * 返回值小于0是a &lt; b / 等于0是a=b / 大于0是a &gt; b<br>
 	 * 两数为Null则相等，a为null则小于b，b为null则小于a
 	 * 
 	 * @param a Long包装类
 	 * @param b Long包装类
-	 * @return 小于0是a<b / 等于0是a=b / 大于0是a>b
+	 * @return 小于0是a &lt; b / 等于0是a=b / 大于0是a &gt; b
 	 */
 	public static int compareSize(Long a, Long b) {
 		if (a == null && b == null) { return 0; }
@@ -193,12 +193,12 @@ public class NumberUitl {
 
 	/**
 	 * 比较两数大小<br>
-	 * 返回值小于0是a<b / 等于0是a=b / 大于0是a>b<br>
+	 * 返回值小于0是a &lt; b / 等于0是a=b / 大于0是a &gt; b<br>
 	 * 两数为Null则相等，a为null则大于b，b为null则大于a
 	 * 
 	 * @param a Long包装类
 	 * @param b Long包装类
-	 * @return 小于0是a<b / 等于0是a=b / 大于0是a>b
+	 * @return 小于0是a &lt; b / 等于0是a=b / 大于0是a &gt; b
 	 */
 	public static int compareSizeNullIsMax(Long a, Long b) {
 		if (a == null && b == null) { return 0; }
@@ -209,12 +209,12 @@ public class NumberUitl {
 
 	/**
 	 * 比较两数大小<br>
-	 * 返回值小于0是a<b / 等于0是a=b / 大于0是a>b<br>
+	 * 返回值小于0是a &lt; b / 等于0是a=b / 大于0是a &gt; b<br>
 	 * 两数为Null则相等，a为null则小于b，b为null则小于a
 	 * 
 	 * @param a Double包装类
 	 * @param b Double包装类
-	 * @return 小于0是a<b / 等于0是a=b / 大于0是a>b
+	 * @return 小于0是a &lt; b / 等于0是a=b / 大于0是a &gt; b
 	 */
 	public static int compareSize(Double a, Double b) {
 		if (a == null && b == null) { return 0; }
@@ -225,12 +225,12 @@ public class NumberUitl {
 
 	/**
 	 * 比较两数大小<br>
-	 * 返回值小于0是a<b / 等于0是a=b / 大于0是a>b<br>
+	 * 返回值小于0是a &lt; b / 等于0是a=b / 大于0是a &gt; b<br>
 	 * 两数为Null则相等，a为null则大于b，b为null则大于a
 	 * 
 	 * @param a Double包装类
 	 * @param b Double包装类
-	 * @return 小于0是a<b / 等于0是a=b / 大于0是a>b
+	 * @return 小于0是a &lt; b / 等于0是a=b / 大于0是a &gt; b
 	 */
 	public static int compareSizeNullIsMax(Double a, Double b) {
 		if (a == null && b == null) { return 0; }
@@ -244,7 +244,7 @@ public class NumberUitl {
 	 * 
 	 * @param a long类型
 	 * @param b long类型
-	 * @return 小于0是a<b / 等于0是a=b / 大于0是a>b
+	 * @return 小于0是a &lt; b / 等于0是a=b / 大于0是a &gt; b
 	 */
 	public static int compareSize(long a, long b) {
 		long l = a - b;
@@ -256,7 +256,7 @@ public class NumberUitl {
 	 * 
 	 * @param a double类型
 	 * @param b double类型
-	 * @return 小于0是a<b / 等于0是a=b / 大于0是a>b
+	 * @return 小于0是a &lt; b / 等于0是a=b / 大于0是a &gt; b
 	 */
 	public static int compareSize(double a, double b) {
 		double number = a - b;
@@ -265,12 +265,12 @@ public class NumberUitl {
 
 	/**
 	 * 比较两数大小<br>
-	 * 返回值小于0是a<b / 等于0是a=b / 大于0是a>b<br>
+	 * 返回值小于0是a &lt; b / 等于0是a=b / 大于0是a &gt; b<br>
 	 * 两数为Null则相等，a为null则小于b，b为null则小于a
 	 * 
 	 * @param a Number包装类
 	 * @param b Number包装类
-	 * @return 小于0是a<b / 等于0是a=b / 大于0是a>b
+	 * @return 小于0是a &lt; b / 等于0是a=b / 大于0是a &gt; b
 	 */
 	public static int compareSize(Number a, Number b) {
 		if (a == null && b == null) { return 0; }
@@ -282,12 +282,12 @@ public class NumberUitl {
 
 	/**
 	 * 比较两数大小<br>
-	 * 返回值小于0是a<b / 等于0是a=b / 大于0是a>b<br>
+	 * 返回值小于0是a &lt; b / 等于0是a=b / 大于0是a &gt; b<br>
 	 * 两数为Null则相等，a为null则大于b，b为null则大于a
 	 * 
 	 * @param a Number包装类
 	 * @param b Number包装类
-	 * @return 小于0是a<b / 等于0是a=b / 大于0是a>b
+	 * @return 小于0是a &lt; b / 等于0是a=b / 大于0是a &gt; b
 	 */
 	public static int compareSizeNullIsMax(Number a, Number b) {
 		if (a == null && b == null) { return 0; }
