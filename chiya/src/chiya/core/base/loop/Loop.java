@@ -66,7 +66,7 @@ public class Loop {
 	 */
 	public static <T> void forEach(T array[], GenericityFunction<T> genericityFunction) {
 		if (array == null) { return; }
-		for (int i = 0; i < array.length; i++) { genericityFunction.next(null); }
+		for (int i = 0; i < array.length; i++) { genericityFunction.next(array[i]); }
 	}
 
 	/**

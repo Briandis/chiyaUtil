@@ -1,5 +1,7 @@
 package chiya.core.base.thread;
 
+import java.util.concurrent.locks.Lock;
+
 import chiya.core.base.function.BooleanFunction;
 import chiya.core.base.function.Function;
 
@@ -73,6 +75,41 @@ public class ThreadUtil {
 			synchronized (lock) {
 				if (booleanFunction.task()) { function.task(); }
 			}
+		}
+	}
+
+	/**
+	 * 双重条件锁
+	 * 
+	 * @param booleanFunction 布尔类型返回值检测方法
+	 * @param lock            lock锁对象
+	 * @param function        执行的方法
+	 */
+	public static void doubleCheckLock(BooleanFunction booleanFunction, Lock lock, Function function) {
+		if (booleanFunction.task()) {
+			lock.lock();
+			try {
+				if (booleanFunction.task()) { function.task(); }
+			}
+			finally {
+				lock.unlock();
+			}
+		}
+	}
+
+	/**
+	 * 执行任务并自动获取和释放锁
+	 * 
+	 * @param lock     Lock锁对象
+	 * @param function 执行的方法
+	 */
+	public static void lock(Lock lock, Function function) {
+		lock.lock();
+		try {
+			function.task();
+		}
+		finally {
+			lock.unlock();
 		}
 	}
 
