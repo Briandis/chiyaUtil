@@ -43,8 +43,7 @@ public class BlockLock {
 			try {
 				lastTime = System.currentTimeMillis();
 				reset.task();
-			}
-			finally {
+			} finally {
 				tryLock.unlock();
 			}
 		} else {
@@ -60,8 +59,8 @@ public class BlockLock {
 	 * @throws InterruptedException
 	 */
 	public void gather(int count) throws InterruptedException {
+		lock.lock();
 		try {
-			lock.lock();
 			threadCount++;
 			if (threadCount < count) {
 				condition.await();
@@ -69,8 +68,7 @@ public class BlockLock {
 				condition.signalAll();
 				threadCount = 0;
 			}
-		}
-		finally {
+		} finally {
 			lock.unlock();
 		}
 
@@ -83,12 +81,11 @@ public class BlockLock {
 	 * @throws InterruptedException
 	 */
 	private void next(long time) throws InterruptedException {
+		lock.lockInterruptibly();
 		try {
-			lock.lockInterruptibly();
 			// 乘百万得到纳秒，并且此处是等待到下一轮
 			condition.awaitNanos(time);
-		}
-		finally {
+		} finally {
 			lock.unlock();
 		}
 	}

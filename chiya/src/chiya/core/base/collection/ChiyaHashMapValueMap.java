@@ -47,8 +47,11 @@ public class ChiyaHashMapValueMap<T, K, V> {
 	public void put(T key, K valueKey, V value) {
 		if (!concurrentHashMap.containsKey(key)) {
 			lock.lock();
-			if (!concurrentHashMap.containsKey(key)) { concurrentHashMap.put(key, new ConcurrentHashMap<K, V>()); }
-			lock.unlock();
+			try {
+				if (!concurrentHashMap.containsKey(key)) { concurrentHashMap.put(key, new ConcurrentHashMap<K, V>()); }
+			} finally {
+				lock.unlock();
+			}
 		}
 		concurrentHashMap.get(key).put(valueKey, value);
 	}

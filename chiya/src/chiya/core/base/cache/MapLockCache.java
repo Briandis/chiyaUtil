@@ -64,8 +64,8 @@ public class MapLockCache<K, V> {
 	 */
 	public void add(V value) {
 		if (value != null) {
+			reentrantReadWriteLock.writeLock().lock();
 			try {
-				reentrantReadWriteLock.writeLock().lock();
 				concurrentHashMap.put(valueGetFunction.get(value), value);
 			}
 			finally {

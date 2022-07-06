@@ -46,8 +46,11 @@ public class ChiyaHashMapValueSet<T, E> {
 	public void put(T key, E setKey) {
 		if (!concurrentHashMap.containsKey(key)) {
 			lock.lock();
-			if (!concurrentHashMap.containsKey(key)) { concurrentHashMap.put(key, new ConcurrentSkipListSet<E>()); }
-			lock.unlock();
+			try {
+				if (!concurrentHashMap.containsKey(key)) { concurrentHashMap.put(key, new ConcurrentSkipListSet<E>()); }
+			} finally {
+				lock.unlock();
+			}
 		}
 		concurrentHashMap.get(key).add(setKey);
 	}
