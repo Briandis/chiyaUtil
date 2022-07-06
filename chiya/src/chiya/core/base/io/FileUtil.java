@@ -14,6 +14,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+import chiya.core.base.loop.Loop;
 
 /**
  * 文件工具库
@@ -51,8 +56,8 @@ public class FileUtil {
 	public static boolean saveFile(byte[] data, String fileName) {
 		createParentDir(fileName);
 		boolean b = false;
-		try (	OutputStream outputStream = new FileOutputStream(fileName);
-				BufferedOutputStream bufferedOutputStrea = new BufferedOutputStream(outputStream)) {
+		try (OutputStream outputStream = new FileOutputStream(fileName);
+			BufferedOutputStream bufferedOutputStrea = new BufferedOutputStream(outputStream)) {
 			bufferedOutputStrea.write(data);
 			bufferedOutputStrea.flush();
 			b = true;
@@ -114,8 +119,8 @@ public class FileUtil {
 	 */
 	public static byte[] readFile(String fileName) {
 		byte[] bytes = null;
-		try (	InputStream inputStream = new FileInputStream(fileName);
-				BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream)) {
+		try (InputStream inputStream = new FileInputStream(fileName);
+			BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream)) {
 			bytes = IOUtil.readAllBytes(bufferedInputStream);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -145,8 +150,8 @@ public class FileUtil {
 		createParentDir(fileName);
 		boolean b = false;
 		// 在括号中的对象实现了AutoCloseable接口，会自动关闭
-		try (	OutputStream outputStream = new FileOutputStream(fileName, true);
-				BufferedOutputStream bufferedOutputStrea = new BufferedOutputStream(outputStream)) {
+		try (OutputStream outputStream = new FileOutputStream(fileName, true);
+			BufferedOutputStream bufferedOutputStrea = new BufferedOutputStream(outputStream)) {
 			bufferedOutputStrea.write(data);
 			bufferedOutputStrea.flush();
 			b = true;
@@ -217,8 +222,8 @@ public class FileUtil {
 	 * @return String
 	 */
 	public static String readText(String fileName) {
-		try (	Reader reader = new FileReader(fileName);
-				BufferedReader bufferedReader = new BufferedReader(reader)) {
+		try (Reader reader = new FileReader(fileName);
+			BufferedReader bufferedReader = new BufferedReader(reader)) {
 			char c[] = new char[8192];
 			int index = 0;
 			StringBuilder stringBuilder = new StringBuilder();
@@ -268,8 +273,8 @@ public class FileUtil {
 	public static boolean appendText(String text, String fileName) {
 		createParentDir(fileName);
 		boolean b = false;
-		try (	Writer writer = new FileWriter(fileName, true);
-				BufferedWriter bufferedWriter = new BufferedWriter(writer)) {
+		try (Writer writer = new FileWriter(fileName, true);
+			BufferedWriter bufferedWriter = new BufferedWriter(writer)) {
 			bufferedWriter.write(text);
 			bufferedWriter.flush();
 			b = true;
@@ -289,6 +294,28 @@ public class FileUtil {
 	 */
 	public static boolean appendText(String text, String dirPath, String fileName) {
 		return appendText(text, dirPath + fileName);
+	}
+
+	/**
+	 * 根据路径，获取文件夹下的全部子文件
+	 * 
+	 * @param path 扫描的文件夹
+	 * @return 当前文件夹下的全部文件
+	 */
+	public static List<String> getAllFile(String path) {
+		List<String> listFile = new ArrayList<String>();
+		File file = new File(path);
+		LinkedList<String> stack = new LinkedList<>();
+		if (file.isDirectory()) { Loop.forEach(file.list(), f -> stack.push(file.getPath() + "\\" + f)); }
+		while (stack.size() != 0) {
+			String root = stack.pop();
+			File nowFile = new File(root);
+			if (nowFile.isFile()) { listFile.add(root); }
+			if (nowFile.isDirectory()) { Loop.forEach(
+				nowFile.list(), f -> stack.push(root + "\\" + f)
+			); }
+		}
+		return listFile;
 	}
 
 }
