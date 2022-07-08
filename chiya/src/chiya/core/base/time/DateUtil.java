@@ -724,4 +724,121 @@ public class DateUtil {
 	public static int compareSizeNullIsMax(Date d1, Date d2) {
 		return NumberUitl.compareSizeNullIsMax(d1 == null ? null : d1.getTime(), d2 == null ? null : d2.getTime());
 	}
+
+	/**
+	 * 获取今天的偏移时间,东8时区基准
+	 * 
+	 * @return 偏移的时间戳
+	 */
+	public static long getNowDayOffset() {
+		return System.currentTimeMillis() - getStartTimeToDayReturnLong(System.currentTimeMillis());
+	}
+
+	/**
+	 * 获取这个时间戳在当天开始后的偏移时间,东8时区基准
+	 * 
+	 * @param time 时间戳
+	 * @return 偏移的时间戳
+	 */
+	public static long getDayOffset(long time) {
+		return System.currentTimeMillis() - getStartTimeToDayReturnLong(time);
+	}
+
+	/**
+	 * 获取这个时间戳在当天开始后的偏移时间,东8时区基准
+	 * 
+	 * @param date 日期
+	 * @return 偏移的时间戳
+	 */
+	public static long getDayOffset(Date date) {
+		return System.currentTimeMillis() - getStartTimeToDayReturnLong(date.getTime());
+	}
+
+	/**
+	 * 获取这个星期的起始偏移时间
+	 * 
+	 * @return 偏移的时间戳
+	 */
+	public static long getNowWeekOffset() {
+		return System.currentTimeMillis() - getStartTimeToWeekReturnLong(System.currentTimeMillis());
+	}
+
+	/**
+	 * 获取这个时间戳在星期一后的偏移时间,东8时区基准
+	 * 
+	 * @param time 时间戳
+	 * @return 偏移的时间戳
+	 */
+	public static long getNowWeekOffset(long time) {
+		return System.currentTimeMillis() - getStartTimeToWeekReturnLong(time);
+	}
+
+	/**
+	 * 获取这个时间戳在星期一后的偏移时间,东8时区基准
+	 * 
+	 * @param date 日期
+	 * @return 偏移的时间戳
+	 */
+	public static long getNowWeekOffset(Date date) {
+		return System.currentTimeMillis() - getStartTimeToWeekReturnLong(date.getTime());
+	}
+
+	/**
+	 * 获取这个月的起始偏移时间
+	 * 
+	 * @return 偏移的时间戳
+	 */
+	public static long getNowMoonOffset() {
+
+		return System.currentTimeMillis() - getStartTimeToMoon().getTime();
+	}
+
+	/**
+	 * 获取这个时间戳在当月后的偏移时间,东8时区基准
+	 * 
+	 * @param time 时间戳
+	 * @return 偏移的时间戳
+	 */
+	public static long getNowMoonOffset(long time) {
+		return System.currentTimeMillis() - getStartTimeToMoon(time).getTime();
+	}
+
+	/**
+	 * 获取这个时间戳在当月后的偏移时间,东8时区基准
+	 * 
+	 * @param date 日期
+	 * @return 偏移的时间戳
+	 */
+	public static long getNowMoonOffset(Date date) {
+		return System.currentTimeMillis() - getStartTimeToMoon(date).getTime();
+	}
+
+	/**
+	 * 获取今年的起始偏移时间
+	 * 
+	 * @return 偏移的时间戳
+	 */
+	public static long getNowYearOffset() {
+		return System.currentTimeMillis() - getStartTimeToYear().getTime();
+	}
+
+	/**
+	 * 获取这个时间戳在当年后的偏移时间,东8时区基准
+	 * 
+	 * @param time 时间戳
+	 * @return 偏移的时间戳
+	 */
+	public static long getNowYearOffset(long time) {
+		return System.currentTimeMillis() - getStartTimeToYear(time).getTime();
+	}
+
+	/**
+	 * 获取这个时间戳在当年后的偏移时间,东8时区基准
+	 * 
+	 * @param date 日期
+	 * @return 偏移的时间戳
+	 */
+	public static long getNowYearOffset(Date date) {
+		return System.currentTimeMillis() - getStartTimeToYear(date).getTime();
+	}
 }
