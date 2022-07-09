@@ -128,15 +128,14 @@ public class MapLockCache<K, V> extends MapCache<K, V> {
 	 * 
 	 * @param function 获取数据方法
 	 */
-	@Override
 	public void reacquire(ReturnListFunction<V> function) {
 		ThreadUtil.doubleCheckLock(
-			() -> NEED_RELOAD,
+			() -> isNeedReload(),
 			reentrantReadWriteLock.writeLock(),
 			() -> {
 				remove();
 				super.add(function.getList());
-				NEED_RELOAD = false;
+				notReload();
 			}
 		);
 	}

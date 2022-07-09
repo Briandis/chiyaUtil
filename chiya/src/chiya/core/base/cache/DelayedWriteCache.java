@@ -116,13 +116,13 @@ public class DelayedWriteCache<K, V> extends MapLockCache<K, V> {
 	@Override
 	public void reacquire(ReturnListFunction<V> function) {
 		ThreadUtil.doubleCheckLock(
-			() -> NEED_RELOAD,
+			() -> isNeedReload(),
 			reentrantReadWriteLock.writeLock(),
 			() -> {
 				changeAll();
 				remove();
 				super.add(function.getList());
-				NEED_RELOAD = false;
+				notReload();
 			}
 		);
 	}

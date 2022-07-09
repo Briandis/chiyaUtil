@@ -1,26 +1,26 @@
 package chiya.core.base.cache;
 
-import chiya.core.base.function.GenericityFunction;
+import chiya.core.base.function.Task;
 import chiya.core.base.thread.ThreadUtil;
 
 /**
  * 自定义缓存
  * 
- * @author brian
+ * @author brain
+ *
+ * @param <V> 待缓存类型
  */
-public class ChiyaCache<T> {
+public class ChiyaCache<V> extends BaseCache {
 
-	/** 缓存更新状态位 */
-	public volatile boolean NEED_UPDATE = true;
 	/** 缓存的数据 */
-	private T data;
+	private V data;
 
 	/**
 	 * 构造方法
 	 * 
 	 * @param data 作为缓存的容器
 	 */
-	public ChiyaCache(T data) {
+	public ChiyaCache(V data) {
 		this.data = data;
 	}
 
@@ -29,22 +29,22 @@ public class ChiyaCache<T> {
 	 * 
 	 * @return 缓存容器
 	 */
-	public T getCache() {
+	public V getCache() {
 		return data;
 	}
 
 	/**
 	 * 重新加载缓存
 	 * 
-	 * @param genericityFunction 更新缓存的方法
+	 * @param task 更新缓存的方法
 	 */
-	public void reacquire(GenericityFunction<T> genericityFunction) {
+	public void reacquire(Task<V> task) {
 		ThreadUtil.doubleCheckLock(
-			() -> NEED_UPDATE,
+			() -> isNeedReload(),
 			this,
 			() -> {
-				genericityFunction.next(data);
-				NEED_UPDATE = false;
+				task.task(data);
+				notReload();
 			}
 		);
 	}

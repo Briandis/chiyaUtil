@@ -16,7 +16,7 @@ import chiya.core.base.thread.ThreadUtil;
  * @param <K> 唯一标识的类型
  * @param <V> 传入存储的对象类型
  */
-public abstract class BaseKeyValueCache<K, V> {
+public abstract class BaseKeyValueCache<K, V> extends BaseCache {
 
 	/** 获取对象唯一标识 */
 	protected final ValueGetFunction<V, K> valueGetFunction;
@@ -31,16 +31,6 @@ public abstract class BaseKeyValueCache<K, V> {
 	 */
 	public BaseKeyValueCache(ValueGetFunction<V, K> valueGetFunction) {
 		this.valueGetFunction = valueGetFunction;
-	}
-
-	/** 缓存更新状态位 */
-	protected volatile boolean NEED_RELOAD = true;
-
-	/**
-	 * 更新标识符
-	 */
-	public final void needReload() {
-		NEED_RELOAD = true;
 	}
 
 	/**
@@ -132,7 +122,9 @@ public abstract class BaseKeyValueCache<K, V> {
 	public List<V> get(K[] array) {
 		if (array == null) { return null; }
 		List<V> value = new ArrayList<>();
-		for (int i = 0; i < array.length; i++) { if (concurrentHashMap.containsKey(array[i])) { value.add(concurrentHashMap.get(array[i])); } }
+		for (int i = 0; i < array.length; i++) {
+			if (concurrentHashMap.containsKey(array[i])) { value.add(concurrentHashMap.get(array[i])); }
+		}
 		return value;
 	}
 
@@ -143,13 +135,14 @@ public abstract class BaseKeyValueCache<K, V> {
 	 */
 	public void reacquire(ReturnListFunction<V> function) {
 		ThreadUtil.doubleCheckLock(
-			() -> NEED_RELOAD,
+			() -> isNeedReload(),
 			this,
 			() -> {
 				remove();
 				add(function.getList());
-				NEED_RELOAD = false;
+				notReload();
 			}
 		);
 	}
+
 }
