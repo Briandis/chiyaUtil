@@ -4,6 +4,7 @@ import java.util.concurrent.locks.Lock;
 
 import chiya.core.base.function.BooleanFunction;
 import chiya.core.base.function.Function;
+import chiya.core.base.function.GetValueFunction;
 
 /**
  * 线程工具
@@ -107,6 +108,23 @@ public class ThreadUtil {
 		lock.lock();
 		try {
 			function.task();
+		}
+		finally {
+			lock.unlock();
+		}
+	}
+
+	/**
+	 * 执行任务并自动获取和释放锁，携带返回值
+	 * 
+	 * @param <T>      泛型类型
+	 * @param lock     Lock锁对象
+	 * @param function 执行的方法
+	 */
+	public static <T> T lock(Lock lock, GetValueFunction<T> function) {
+		lock.lock();
+		try {
+			return function.getValue();
 		}
 		finally {
 			lock.unlock();

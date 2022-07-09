@@ -1,5 +1,6 @@
 package chiya.core.base.time.task;
 
+import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.DelayQueue;
 import chiya.core.base.collection.MapEnter;
@@ -65,6 +66,14 @@ public class TimeQueue<K, V> extends ThreadTask<V> {
 	}
 
 	/**
+	 * 移除全部
+	 */
+	public void remove() {
+		concurrentHashMap.clear();
+		delayQueue.clear();
+	}
+
+	/**
 	 * 改变触发时间
 	 * 
 	 * @param key        键
@@ -112,4 +121,14 @@ public class TimeQueue<K, V> extends ThreadTask<V> {
 		TimeKey<K> timeShell = delayQueue.take();
 		return concurrentHashMap.remove(timeShell.getKey()).getValue();
 	}
+
+	/**
+	 * 获取当前延时队列中的所有key
+	 * 
+	 * @return 可迭代的set集合
+	 */
+	public Collection<K> getKeys() {
+		return concurrentHashMap.keySet();
+	}
+
 }

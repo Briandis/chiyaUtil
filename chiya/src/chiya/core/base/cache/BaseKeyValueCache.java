@@ -1,34 +1,46 @@
 package chiya.core.base.cache;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.ConcurrentHashMap;
 
 import chiya.core.base.function.ReturnListFunction;
 import chiya.core.base.function.ValueGetFunction;
 import chiya.core.base.thread.ThreadUtil;
 
 /**
- * key-value结构缓存，没有回收机制，主要场景是少量不改变的数据<br>
- * 包含一个读写锁
+ * 基础key-value缓存结构
  * 
  * @author brain
  * @param <K> 唯一标识的类型
  * @param <V> 传入存储的对象类型
  */
-public class MapLockCache<K, V> extends MapCache<K, V> {
+public abstract class BaseKeyValueCache<K, V> {
 
-	/** 读写锁 */
-	protected ReentrantReadWriteLock reentrantReadWriteLock = null;
+	/** 获取对象唯一标识 */
+	protected final ValueGetFunction<V, K> valueGetFunction;
+
+	/** 缓存容器 */
+	protected final ConcurrentHashMap<K, V> concurrentHashMap = new ConcurrentHashMap<>();
 
 	/**
 	 * 构造方法
 	 * 
 	 * @param valueGetFunction 获取对象唯一标识
 	 */
-	public MapLockCache(ValueGetFunction<V, K> valueGetFunction) {
-		super(valueGetFunction);
-		reentrantReadWriteLock = new ReentrantReadWriteLock();
+	public BaseKeyValueCache(ValueGetFunction<V, K> valueGetFunction) {
+		this.valueGetFunction = valueGetFunction;
+	}
+
+	/** 缓存更新状态位 */
+	protected volatile boolean NEED_RELOAD = true;
+
+	/**
+	 * 更新标识符
+	 */
+	public final void needReload() {
+		NEED_RELOAD = true;
 	}
 
 	/**
@@ -36,17 +48,8 @@ public class MapLockCache<K, V> extends MapCache<K, V> {
 	 * 
 	 * @param kye 键
 	 */
-	@Override
 	public void remove(K key) {
-		ThreadUtil.lock(reentrantReadWriteLock.writeLock(), () -> super.remove(key));
-	}
-
-	/**
-	 * 删除所有缓存
-	 */
-	@Override
-	public void remove() {
-		ThreadUtil.lock(reentrantReadWriteLock.writeLock(), () -> super.remove());
+		concurrentHashMap.remove(key);
 	}
 
 	/**
@@ -54,9 +57,8 @@ public class MapLockCache<K, V> extends MapCache<K, V> {
 	 * 
 	 * @param value 缓存数据
 	 */
-	@Override
 	public void add(V value) {
-		ThreadUtil.lock(reentrantReadWriteLock.writeLock(), () -> super.add(value));
+		if (value != null) { concurrentHashMap.put(valueGetFunction.get(value), value); }
 	}
 
 	/**
@@ -65,9 +67,8 @@ public class MapLockCache<K, V> extends MapCache<K, V> {
 	 * @param key   缓存的key
 	 * @param value 缓存数据
 	 */
-	@Override
 	public void add(K key, V value) {
-		ThreadUtil.lock(reentrantReadWriteLock.writeLock(), () -> super.add(key, value));
+		if (key != null && value != null) { concurrentHashMap.put(key, value); }
 	}
 
 	/**
@@ -75,9 +76,15 @@ public class MapLockCache<K, V> extends MapCache<K, V> {
 	 * 
 	 * @param list 列表
 	 */
-	@Override
 	public void add(List<V> list) {
-		ThreadUtil.lock(reentrantReadWriteLock.writeLock(), () -> super.add(list));
+		if (list != null) { list.forEach(obj -> add(obj)); }
+	}
+
+	/**
+	 * 删除所有缓存
+	 */
+	public void remove() {
+		concurrentHashMap.clear();
 	}
 
 	/**
@@ -86,9 +93,8 @@ public class MapLockCache<K, V> extends MapCache<K, V> {
 	 * @param key 键
 	 * @return Object 缓存的数据
 	 */
-	@Override
 	public V get(K key) {
-		return ThreadUtil.lock(reentrantReadWriteLock.readLock(), () -> super.get(key));
+		return concurrentHashMap.get(key);
 	}
 
 	/**
@@ -96,9 +102,8 @@ public class MapLockCache<K, V> extends MapCache<K, V> {
 	 * 
 	 * @return List<V> 全部缓存的对象
 	 */
-	@Override
 	public List<V> get() {
-		return ThreadUtil.lock(reentrantReadWriteLock.readLock(), () -> super.get());
+		return new ArrayList<>(concurrentHashMap.values());
 	}
 
 	/**
@@ -107,9 +112,15 @@ public class MapLockCache<K, V> extends MapCache<K, V> {
 	 * @param list 唯一标识列表
 	 * @return List<V> 找到的缓存对象
 	 */
-	@Override
 	public List<V> get(Collection<K> list) {
-		return ThreadUtil.lock(reentrantReadWriteLock.readLock(), () -> super.get(list));
+		if (list == null) { return null; }
+		List<V> value = new ArrayList<>();
+		list.forEach(
+			k -> {
+				if (concurrentHashMap.containsKey(k)) { value.add(concurrentHashMap.get(k)); }
+			}
+		);
+		return value;
 	}
 
 	/**
@@ -118,9 +129,11 @@ public class MapLockCache<K, V> extends MapCache<K, V> {
 	 * @param array 唯一标识列表
 	 * @return List<V> 找到的缓存对象
 	 */
-	@Override
 	public List<V> get(K[] array) {
-		return ThreadUtil.lock(reentrantReadWriteLock.readLock(), () -> super.get(array));
+		if (array == null) { return null; }
+		List<V> value = new ArrayList<>();
+		for (int i = 0; i < array.length; i++) { if (concurrentHashMap.containsKey(array[i])) { value.add(concurrentHashMap.get(array[i])); } }
+		return value;
 	}
 
 	/**
@@ -128,14 +141,13 @@ public class MapLockCache<K, V> extends MapCache<K, V> {
 	 * 
 	 * @param function 获取数据方法
 	 */
-	@Override
 	public void reacquire(ReturnListFunction<V> function) {
 		ThreadUtil.doubleCheckLock(
 			() -> NEED_RELOAD,
-			reentrantReadWriteLock.writeLock(),
+			this,
 			() -> {
 				remove();
-				super.add(function.getList());
+				add(function.getList());
 				NEED_RELOAD = false;
 			}
 		);
