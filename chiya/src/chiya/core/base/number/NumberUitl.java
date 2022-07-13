@@ -1,5 +1,7 @@
 package chiya.core.base.number;
 
+import java.util.List;
+
 /**
  * 数值工具库
  * 
@@ -296,4 +298,110 @@ public class NumberUitl {
 		// 未知的数据类型，选择双浮点数处理
 		return compareSizeNullIsMax(a.doubleValue(), b.doubleValue());
 	}
+
+	/**
+	 * 比较所有的所有数是否大于一个数 <br>
+	 * number < all
+	 * 
+	 * @param number 待比较的数值
+	 * @param all    需要判断的数据，可以传入多个
+	 * @return true:全大于/false:有的数小于、未传入比较数
+	 */
+	public static boolean compareAllNumbnerGreaterNumber(int number, int... all) {
+		if (all == null) { return false; }
+		for (int i = 0; i < all.length; i++) { if (all[i] <= number) { return false; } }
+		return true;
+	}
+
+	/**
+	 * 比较所有的数是否小于一个数 <br>
+	 * all < number
+	 * 
+	 * @param number 待比较的数值
+	 * @param all    需要判断的数据，可以传入多个
+	 * @return true:全小于/false:有的数大于、未传入比较数
+	 */
+	public static boolean compareAllNumberLessNumber(int number, int... all) {
+		if (all == null) { return false; }
+		for (int i = 0; i < all.length; i++) { if (all[i] >= number) { return false; } }
+		return true;
+	}
+
+	/**
+	 * 比较所有的数是否小于一个数，所有数必须大于0 <br>
+	 * 0 <= all <= number
+	 * 
+	 * @param number 待比较的数值
+	 * @param all    需要判断的数据，可以传入多个
+	 * @return true:全在范围/false:有的数大于、小于、未传入比较数
+	 */
+	public static boolean compareAllNumberLessNumberAndGreaterZero(int number, int... all) {
+		return compareAllNumberLessNumberAndGreaterNumber(0, number, all);
+	}
+
+	/**
+	 * 所有数都要满足大于上限，小于下限<br>
+	 * lower <= all <= upper
+	 * 
+	 * @param lower 下限
+	 * @param upper 上限
+	 * @param all   需要判断的数据，可以传入多个
+	 * @return true:全在范围/false:有的数大于、小于、未传入比较数
+	 */
+	public static boolean compareAllNumberLessNumberAndGreaterNumber(int lower, int upper, int... all) {
+		if (all == null) { return false; }
+		for (int i = 0; i < all.length; i++) { if (all[i] < lower || all[i] > upper) { return false; } }
+		return true;
+	}
+
+	/**
+	 * 判断数字是否在列表中出现过
+	 * 
+	 * @param i    数字
+	 * @param list 列表
+	 * @return true:存在/false:不存在
+	 */
+	public static boolean intInList(int i, List<Integer> list) {
+		for (Integer integer : list) { if (integer == i) { return true; } }
+		return false;
+	}
+
+	/**
+	 * 判断数字是否在列表中出现过
+	 * 
+	 * @param i    数字
+	 * @param list 列表
+	 * @return true:存在/false:不存在
+	 */
+	public static boolean intInArray(int i, int[] ints) {
+		for (int j : ints) { if (j == i) { return true; } }
+		return false;
+	}
+
+	/**
+	 * 如果number等于数组中任意一个值，则返回true
+	 * 
+	 * @param number 待比较数值
+	 * @param array  候选的比较值
+	 * @return true:有值相等/false:没有相等
+	 */
+	public static boolean intEqualToAny(int number, int... array) {
+		if (array == null) { return false; }
+		for (Integer i : array) { if (i == number) { return true; } }
+		return false;
+	}
+
+	/**
+	 * 如果number等于数组中任意一个值，则返回true
+	 * 
+	 * @param number 待比较数值
+	 * @param array  候选的比较值
+	 * @return true:有值相等/false:没有相等
+	 */
+	public static boolean intEqualToAny(int number, Integer... array) {
+		if (array == null) { return false; }
+		for (Integer i : array) { if (equalInteger(number, i)) { return true; } }
+		return false;
+	}
+
 }

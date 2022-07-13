@@ -10,7 +10,6 @@ import java.util.Base64;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-import chiya.core.base.collection.ContainerUtil;
 import chiya.core.base.random.RandomUtil;
 
 /**
@@ -101,6 +100,7 @@ public class StringUtil {
 	 * @param str 待转换字符串
 	 * @return Integer包装类
 	 */
+	@Deprecated
 	public static Integer parseInt(String str) {
 		try {
 			return Integer.parseInt(str);
@@ -115,6 +115,7 @@ public class StringUtil {
 	 * @param str 待转换字符串
 	 * @return Integer包装类
 	 */
+	@Deprecated
 	public static Long parseLong(String str) {
 		try {
 			return Long.parseLong(str);
@@ -327,14 +328,14 @@ public class StringUtil {
 			int end = str.length() - 1;
 			// 正向查找
 			while (true) {
-				if (!ContainerUtil.charInArray(str.charAt(start), SPACE_CHARS)) { break; }
+				if (!charInArray(str.charAt(start), SPACE_CHARS)) { break; }
 				start++;
 				// 如果没有匹配到其他字符，直接返回null
 				if (start > end) { return null; }
 			}
 			// 反向查找
 			while (true) {
-				if (!ContainerUtil.charInArray(str.charAt(end), SPACE_CHARS)) { break; }
+				if (!charInArray(str.charAt(end), SPACE_CHARS)) { break; }
 				end--;
 				// 反向查找如何小于正向查找，直接终止
 				if (start > end) { break; }
@@ -789,5 +790,17 @@ public class StringUtil {
 		for (int i = 0; i < hide; i++) { stringBuilder.append("*"); }
 		stringBuilder.append(str.substring(str.length() - end));
 		return stringBuilder.toString();
+	}
+
+	/**
+	 * 判断字符是在字符数组中出现过
+	 * 
+	 * @param chr   待判断字符
+	 * @param chars 要判断在其中出现的数组
+	 * @return true:存在/false:不存在
+	 */
+	public static boolean charInArray(char chr, char[] chars) {
+		if (chars != null) { for (char c : chars) { if (c == chr) { return true; } } }
+		return false;
 	}
 }
