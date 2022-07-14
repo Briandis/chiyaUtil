@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import chiya.core.base.number.NumberUitl;
+import chiya.core.base.number.NumberUtil;
 import chiya.core.base.string.StringUtil;
 
 /*
@@ -709,7 +709,7 @@ public class DateUtil {
 	 * @return 小于0是a&lt;b / 等于0是a=b / 大于0是a &gt; b
 	 */
 	public static int compareSize(Date d1, Date d2) {
-		return NumberUitl.compareSize(d1 == null ? null : d1.getTime(), d2 == null ? null : d2.getTime());
+		return NumberUtil.compareSize(d1 == null ? null : d1.getTime(), d2 == null ? null : d2.getTime());
 	}
 
 	/**
@@ -722,7 +722,7 @@ public class DateUtil {
 	 * @return 小于0是a&lt;b / 等于0是a=b / 大于0是a &gt; b
 	 */
 	public static int compareSizeNullIsMax(Date d1, Date d2) {
-		return NumberUitl.compareSizeNullIsMax(d1 == null ? null : d1.getTime(), d2 == null ? null : d2.getTime());
+		return NumberUtil.compareSizeNullIsMax(d1 == null ? null : d1.getTime(), d2 == null ? null : d2.getTime());
 	}
 
 	/**

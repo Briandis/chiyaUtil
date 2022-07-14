@@ -7,7 +7,7 @@ import java.util.List;
  * 
  * @author chiya
  */
-public class NumberUitl {
+public class NumberUtil {
 
 	/**
 	 * 比较两个Integer包装类

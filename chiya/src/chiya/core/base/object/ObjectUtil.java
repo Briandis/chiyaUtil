@@ -1,6 +1,6 @@
 package chiya.core.base.object;
 
-import chiya.core.base.number.NumberUitl;
+import chiya.core.base.number.NumberUtil;
 
 /**
  * 对象转换工具
@@ -38,7 +38,7 @@ public class ObjectUtil {
 	 * @return Integer包装类
 	 */
 	public static Integer StringtoInteger(Object object) {
-		return NumberUitl.parseIntOrNull(toString(object));
+		return NumberUtil.parseIntOrNull(toString(object));
 	}
 
 	/**

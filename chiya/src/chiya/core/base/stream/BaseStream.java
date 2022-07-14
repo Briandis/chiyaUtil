@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import chiya.core.base.function.ValueObjectFunction;
-import chiya.core.base.number.NumberUitl;
+import chiya.core.base.number.NumberUtil;
 import chiya.core.base.page.Page;
 import chiya.core.base.time.DateUtil;
 
@@ -107,7 +107,7 @@ public abstract class BaseStream<T, E> {
 	 * @return Stream<T> 操作流
 	 */
 	public E sort(Function<? super T, ? extends Number> method) {
-		stream = stream.sorted((a, b) -> NumberUitl.compareSize(method.apply(a), method.apply(b)));
+		stream = stream.sorted((a, b) -> NumberUtil.compareSize(method.apply(a), method.apply(b)));
 		return (E) this;
 	}
 
@@ -118,7 +118,7 @@ public abstract class BaseStream<T, E> {
 	 * @return Stream<T> 操作流
 	 */
 	public E sortNullIsMax(Function<? super T, ? extends Number> method) {
-		stream = stream.sorted((a, b) -> NumberUitl.compareSizeNullIsMax(method.apply(a), method.apply(b)));
+		stream = stream.sorted((a, b) -> NumberUtil.compareSizeNullIsMax(method.apply(a), method.apply(b)));
 		return (E) this;
 	}
 
@@ -129,7 +129,7 @@ public abstract class BaseStream<T, E> {
 	 * @return Stream<T> 操作流
 	 */
 	public E sortDesc(Function<? super T, ? extends Number> method) {
-		stream = stream.sorted((a, b) -> NumberUitl.compareSize(method.apply(b), method.apply(a)));
+		stream = stream.sorted((a, b) -> NumberUtil.compareSize(method.apply(b), method.apply(a)));
 		return (E) this;
 	}
 
@@ -140,7 +140,7 @@ public abstract class BaseStream<T, E> {
 	 * @return Stream<T> 操作流
 	 */
 	public E sortDescNullIsMax(Function<? super T, ? extends Number> method) {
-		stream = stream.sorted((a, b) -> NumberUitl.compareSizeNullIsMax(method.apply(b), method.apply(a)));
+		stream = stream.sorted((a, b) -> NumberUtil.compareSizeNullIsMax(method.apply(b), method.apply(a)));
 		return (E) this;
 	}
 
