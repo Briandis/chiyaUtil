@@ -7,10 +7,7 @@ import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
-import java.util.UUID;
 import java.util.regex.Pattern;
-
-import chiya.core.base.random.RandomUtil;
 
 /**
  * 字符串工具库
@@ -27,10 +24,6 @@ public class StringUtil {
 	private static final String EL_EMAIL = "^\\w+@\\w+\\.\\w+$";
 	/** 默认邮手机使用的正则表达式 */
 	private static final String EL_PHONE = "^1[345789]\\d{9}$";
-	/** 全部单个字符 */
-	private static final String ALL_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	/** 验证码字符串，去除了难以识别的相近字符 */
-	private static final String CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
 	/** 图片文件名后缀 */
 	private static final String[] ARRAY_IMG = { ".jpg", ".png", ".bmp", ".webp", ".jpge" };
 	/** 空字符,对应编码：32、12288、9 */
@@ -140,84 +133,6 @@ public class StringUtil {
 			if (b) { return false; }
 		}
 		return true;
-	}
-
-	/**
-	 * 基于UUID随机生成一个去掉[-]的字符串
-	 * 
-	 * @return UUID字符串
-	 */
-	public static String randomStringByUUID() {
-		return UUID.randomUUID().toString().replace("-", "");
-	}
-
-	/**
-	 * 基于UUID生成一个去掉[-]的字符串，并按照一定长度截取<br>
-	 * 如果超出字符串生成长度，则自动去UUID最终长度<br>
-	 * <b>该方法会最低限度保证唯一性</b>
-	 * 
-	 * @param length 生成字符串的长度
-	 * @return UUID字符串
-	 */
-	public static String randomStringByUUID(int length) {
-		String data = randomStringByUUID();
-		length = length < 1 ? data.length() : length;
-		return data.length() > length ? data.substring(0, length) : data;
-	}
-
-	/**
-	 * 随机生成一个长度为8的字符串
-	 * 
-	 * @return 生成的字符串
-	 */
-	public static String randomString() {
-		return randomString(8);
-	}
-
-	/**
-	 * 随机生成一个指定的字符串
-	 * 
-	 * @param length 生成的长度
-	 * @return 生成的字符串
-	 */
-	public static String randomString(int length) {
-		return randomString(null, length);
-	}
-
-	/**
-	 * 生成长度为6的验证码
-	 * 
-	 * @return 生成的验证码字符串
-	 */
-	public static String randomStringCode() {
-		return randomStringCode(6);
-	}
-
-	/**
-	 * 生成指定长度的验证码
-	 * 
-	 * @param length 生成长度
-	 * @return 生成的验证码字符串
-	 */
-	public static String randomStringCode(int length) {
-		return randomString(CODE_CHARS, length);
-	}
-
-	/**
-	 * 根据传入的字符串和长度，从字符串中抽取字符串，生成指定长度的字符串<br>
-	 * 如果生成长度小于1，则最低生成4个长度的字符串<br>
-	 * 如果要包含的字符串为空，则默认当作A-Ba-b0-9范围内的字符
-	 * 
-	 * @param chars  要包含字符的字符串
-	 * @param length 生成长度
-	 * @return 生成后的字符串
-	 */
-	public static String randomString(String chars, int length) {
-		length = length < 1 ? 4 : length;
-		if (chars == null || chars.length() == 0) { chars = ALL_CHARS; }
-		StringBuilder stringBuilder = new StringBuilder();
-		for (int i = 0; i < length; i++) { stringBuilder.append(chars.charAt(RandomUtil.randInt(chars.length()))); }
-		return stringBuilder.toString();
 	}
 
 	/**
@@ -803,4 +718,44 @@ public class StringUtil {
 		if (chars != null) { for (char c : chars) { if (c == chr) { return true; } } }
 		return false;
 	}
+
+	/**
+	 * 查找字符位置
+	 * 
+	 * @param source 源字符串
+	 * @param word   查找的字符串
+	 * @return -1：没有找到/大于0：当前从左到右最近的位置
+	 */
+	public static int findChar(String source, char word) {
+		return findChar(source, word, 0, source.length());
+	}
+
+	/**
+	 * 查找字符位置
+	 * 
+	 * @param source 源字符串
+	 * @param word   查找的字符串
+	 * @param start  起始位置
+	 * @return -1：没有找到/大于0：当前从左到右最近的位置
+	 */
+	public static int findChar(String source, char word, int start) {
+		return findChar(source, word, start, source.length());
+	}
+
+	/**
+	 * 查找字符位置
+	 * 
+	 * @param source 源字符串
+	 * @param word   查找的字符串
+	 * @param start  起始位置
+	 * @param end    结束位置
+	 * @return -1：没有找到/大于0：当前从左到右最近的位置
+	 */
+	public static int findChar(String source, char word, int start, int end) {
+		if (source == null) { return -1; }
+		if (end > source.length()) { end = source.length(); }
+		for (int i = start; i < end; i++) { if (source.charAt(i) == word) { return i; } }
+		return -1;
+	}
+
 }
