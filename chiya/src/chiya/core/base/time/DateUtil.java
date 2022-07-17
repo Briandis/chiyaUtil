@@ -237,7 +237,7 @@ public class DateUtil {
 	 */
 	public static Date stringToDate(String string) {
 		// 如果是时间戳的情况
-		if (StringUtil.match("^[-0-9]*$", string)) { return new Date(Long.parseLong(string)); }
+		if (StringUtil.match("^[0-9]+$", string)) { return new Date(Long.parseLong(string)); }
 		// 谷歌游览器提交时间问题
 		if (string.indexOf("T") != -1) {
 			string = string.replace("T", " ");
