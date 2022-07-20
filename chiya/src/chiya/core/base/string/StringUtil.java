@@ -758,4 +758,30 @@ public class StringUtil {
 		return -1;
 	}
 
+	/**
+	 * 数值最小填充
+	 * 
+	 * @param length 填充最小长度
+	 * @param number 当前数值
+	 * @return 填充后的字符串
+	 */
+	public static String zeroPadding(int length, int number) {
+		String res = "";
+		String len = String.valueOf(number);
+		for (int i = 0; i < length - len.length(); i++) { res += "0"; }
+		return res + number;
+	}
+
+	/**
+	 * 查找子串存在位置
+	 * 
+	 * @param source 原串
+	 * @param chars  子串
+	 * @return -1:未找到/n:起始位置
+	 */
+	public static int findString(String source, String chars) {
+		if (source == null || chars == null) { return -1; }
+		return source.indexOf(chars);
+	}
+
 }

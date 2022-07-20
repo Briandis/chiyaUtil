@@ -841,4 +841,20 @@ public class DateUtil {
 	public static long getNowYearOffset(Date date) {
 		return System.currentTimeMillis() - getStartTimeToYear(date).getTime();
 	}
+
+	/**
+	 * 判断当前时间是不是在两个时间范围
+	 * 
+	 * @param oldDate    过去的时间
+	 * @param futureDate 未来的时间
+	 * @return true:在范围内/false:不在范围内
+	 */
+	public static boolean between(Date oldDate, Date futureDate) {
+		return NumberUtil.between(
+			System.currentTimeMillis(),
+			oldDate != null ? oldDate.getTime() : null,
+			futureDate != null ? futureDate.getTime() : null
+		);
+	}
+
 }

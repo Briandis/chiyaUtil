@@ -1,7 +1,10 @@
 package chiya.core.base.count;
 
+import java.util.Set;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
+import java.util.function.BiConsumer;
 
 import chiya.core.base.collection.ContainerUtil;
 
@@ -92,7 +95,26 @@ public class CountMap<T> {
 	 * 删除全部
 	 */
 	public void remove() {
-		count.clear();;
+		count.clear();
+		;
+	}
+
+	/**
+	 * 返回Entry
+	 * 
+	 * @return Set<T>
+	 */
+	public Set<Entry<T, LongAdder>> entrySet() {
+		return count.entrySet();
+	}
+
+	/**
+	 * 迭代方法
+	 * 
+	 * @param action (k,v)->function的表达式
+	 */
+	public void forEach(BiConsumer<? super T, ? super LongAdder> action) {
+		count.forEach(action);
 	}
 
 	@Override

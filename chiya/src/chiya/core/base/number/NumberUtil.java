@@ -404,4 +404,18 @@ public class NumberUtil {
 		return false;
 	}
 
+	/**
+	 * 判断数值是否在两数之间,如果传入的值为null，则判定无穷小<br>
+	 * 如果number为null，则无论如何都会返回false
+	 * 
+	 * @param number 待比较数值
+	 * @param min    下线
+	 * @param max    上限
+	 * @return true:在两者之间/false:不在两者之间
+	 */
+	public static boolean between(Long number, Long min, Long max) {
+		if (number == null || max == null) { return false; }
+		if (min == null) { return number < max; }
+		return min < number && number < max;
+	}
 }
