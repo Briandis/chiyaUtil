@@ -6,6 +6,7 @@ package chiya.core.base.function;
  * @author brian
  * @param <T> 泛型对象
  */
+@FunctionalInterface
 public interface ForEachFunction<T> {
 
 	/**

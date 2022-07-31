@@ -6,6 +6,7 @@ package chiya.core.base.function;
  * @author brain
  * @param <V> 要获取的类型泛型
  */
+@FunctionalInterface
 public interface GetValueFunction<V> {
 
 	/**

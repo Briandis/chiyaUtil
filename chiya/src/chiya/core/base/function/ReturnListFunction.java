@@ -7,6 +7,7 @@ import java.util.List;
  * 
  * @author brian
  */
+@FunctionalInterface
 public interface ReturnListFunction<T> {
 
 	/**

@@ -38,6 +38,74 @@ public class ThreadUtil {
 	}
 
 	/**
+	 * 创建N个守护线程，并执行
+	 * 
+	 * @param count    线程数量
+	 * @param runnable 任务体
+	 * @return Thread 创建后并执行的线程
+	 */
+	public static Thread[] createDaemonAndStart(int count, Runnable runnable) {
+		Thread[] threads = createThread(count, runnable);
+		for (int i = 0; i < threads.length; i++) {
+			threads[i].setDaemon(true);
+		}
+		start(threads);
+		return threads;
+	}
+
+	/**
+	 * 创建N个线程并启动
+	 * 
+	 * @param count    线程数量
+	 * @param runnable 线程任务体
+	 * @return 执行后的线程对象
+	 */
+	public static Thread[] createAndStart(int count, Runnable runnable) {
+		Thread[] threads = createThread(count, runnable);
+		start(threads);
+		return threads;
+	}
+
+	/**
+	 * 创建线程，但是不执行
+	 * 
+	 * @param count    线程数量
+	 * @param runnable 线程任务体
+	 * @return 线程数组
+	 */
+	public static Thread[] createThread(int count, Runnable runnable) {
+		if (count < 1) { count = 1; }
+		Thread[] threads = new Thread[count];
+		for (int i = 0; i < threads.length; i++) {
+			Thread thread = new Thread(runnable);
+			threads[i] = thread;
+		}
+		return threads;
+	}
+
+	/**
+	 * 开启线程，如果线程未执行
+	 * 
+	 * @param thread 线程对象
+	 */
+	public static void start(Thread thread) {
+		if (thread != null && !thread.isAlive()) { thread.start(); }
+	}
+
+	/**
+	 * 开启线程，如果线程未执行
+	 * 
+	 * @param thread 线程对象
+	 */
+	public static void start(Thread thread[]) {
+		if (thread != null) {
+			for (int i = 0; i < thread.length; i++) {
+				start(thread[i]);
+			}
+		}
+	}
+
+	/**
 	 * 获取线程名字
 	 * 
 	 * @return String:线程名字
@@ -91,8 +159,7 @@ public class ThreadUtil {
 			lock.lock();
 			try {
 				if (booleanFunction.task()) { function.task(); }
-			}
-			finally {
+			} finally {
 				lock.unlock();
 			}
 		}
@@ -108,8 +175,7 @@ public class ThreadUtil {
 		lock.lock();
 		try {
 			function.task();
-		}
-		finally {
+		} finally {
 			lock.unlock();
 		}
 	}
@@ -125,22 +191,22 @@ public class ThreadUtil {
 		lock.lock();
 		try {
 			return function.getValue();
-		}
-		finally {
+		} finally {
 			lock.unlock();
 		}
 	}
 
 	/**
-	 * 让当前线程睡眠多少秒
+	 * 让当前线程睡眠多少毫秒
 	 * 
-	 * @param second 秒
+	 * @param millisecond 毫秒
 	 */
-	public static void sleep(int second) {
+	public static void sleep(long millisecond) {
 		try {
-			Thread.sleep(1000 * second);
+			Thread.sleep(millisecond);
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
 	}
+
 }

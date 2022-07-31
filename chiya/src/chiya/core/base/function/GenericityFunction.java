@@ -7,6 +7,7 @@ package chiya.core.base.function;
  * @param <T> 泛型
  *
  */
+@FunctionalInterface
 public interface GenericityFunction<T> {
 
 	/**

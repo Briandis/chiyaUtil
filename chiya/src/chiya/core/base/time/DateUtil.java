@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import chiya.core.base.function.TimeFunction;
 import chiya.core.base.number.NumberUtil;
 import chiya.core.base.string.StringUtil;
 
@@ -22,18 +23,28 @@ import chiya.core.base.string.StringUtil;
  */
 public class DateUtil {
 	/** 日期时间 */
-	private static final String DATE_TIME = "yyyy-MM-dd HH:mm:ss";
+	public static final String DATE_TIME = "yyyy-MM-dd HH:mm:ss";
 	/** 日期 */
-	private static final String DATE = "yyyy-MM-dd";
+	public static final String DATE = "yyyy-MM-dd";
 	/** UTC标准时间 */
-	private static final String UTC_DATE_TIME = "yyyy-MM-dd'T'HH:mm:ss'+08:00'";
+	public static final String UTC_DATE_TIME = "yyyy-MM-dd'T'HH:mm:ss'+08:00'";
 	/** 日期时间的纯数字，不是时间戳 */
-	private static final String NUMBER_DATE_TIME = "yyyyMMddHHmmss";
+	public static final String NUMBER_DATE_TIME = "yyyyMMddHHmmss";
 
+	/** 一秒的毫秒长度 */
+	public static final long ONE_SECOND_TIME = 1000;
+	/** 一分钟的时间毫秒长度 */
+	public static final long ONE_MINUTE_TIME = ONE_SECOND_TIME * 60;
+	/** 一小时的时间毫秒长度 */
+	public static final long ONE_HOUR_TIME = ONE_MINUTE_TIME * 60;
 	/** 一天的时间毫秒长度 */
-	private static final int ONE_DAY_TIME = 1000 * 60 * 60 * 24;
+	public static final long ONE_DAY_TIME = ONE_HOUR_TIME * 24;
+	/** 一年时间 */
+	public static final long ONE_YEAR_TIME = ONE_DAY_TIME * 365;
+	/** 一个闰年周期的长度 */
+	public static final long LEAP_YEAR_TIME = ONE_YEAR_TIME * 4 + ONE_DAY_TIME;
 	/** 东8时区偏移长度 */
-	private static final int EAST_8_TIME_ZONE = 1000 * 60 * 60 * 8;
+	public static final long EAST_8_TIME_ZONE = ONE_HOUR_TIME * 8;
 
 	/** UTC时间格式化工具 */
 	private static final ThreadLocal<SimpleDateFormat> simpleDateFormatUTCDateTime = new ThreadLocal<SimpleDateFormat>() {
@@ -136,7 +147,7 @@ public class DateUtil {
 	public static int getYearMonthDay(int year, int month) {
 		if (month < 1 || month > 12) { return 0; }
 		if (month == 2) {
-			if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0) {
+			if (isLeap(year)) {
 				return MONTH_DAY[1] + 1;
 			} else {
 				return MONTH_DAY[1];
@@ -426,7 +437,7 @@ public class DateUtil {
 	 * @param timeZone 时区差
 	 * @return long 今天的起始时间的数值
 	 */
-	public static long getStartTimeToDayReturnLong(long time, int timeZone) {
+	public static long getStartTimeToDayReturnLong(long time, long timeZone) {
 		// 此处计算是以0时区柏林的作为基准，不加入时区会造成地方起始时间错误
 		return time - ((time + timeZone) % (ONE_DAY_TIME));
 	}
@@ -478,7 +489,7 @@ public class DateUtil {
 	 * @param timeZone 时区
 	 * @return long 今天的起始时间的数值
 	 */
-	public static long getStartTimeYesterdayReturnLong(long time, int timeZone) {
+	public static long getStartTimeYesterdayReturnLong(long time, long timeZone) {
 		// 此处计算是以0时区柏林的作为基准，不加入时区会造成地方起始时间错误
 		return (time - ((time + timeZone) % (ONE_DAY_TIME))) - ONE_DAY_TIME;
 	}
@@ -529,7 +540,7 @@ public class DateUtil {
 	 * @param timeZone 时区
 	 * @return Date 这个星期的起始时间
 	 */
-	public static long getStartTimeToWeekReturnLong(long time, int timeZone) {
+	public static long getStartTimeToWeekReturnLong(long time, long timeZone) {
 		// 此处计算是以0时区柏林的作为基准，不加入时区会造成地方起始时间错误
 		time = time + (ONE_DAY_TIME * 4);
 		time = time - ((time + timeZone) % (ONE_DAY_TIME * 7));
@@ -857,4 +868,159 @@ public class DateUtil {
 		);
 	}
 
+	/**
+	 * 获取年份中的月份
+	 * 
+	 * @param year 年
+	 * @param day  天
+	 * @return 月
+	 */
+	public static int getMonth(int year, int day) {
+		int sum = 0;
+		for (int i = 0; i < MONTH_DAY.length; i++) {
+			sum += MONTH_DAY[i];
+			if (i == 1 && isLeap(year)) { sum++; }
+			if (sum > day) { return i + 1; }
+		}
+		return MONTH_DAY.length;
+	}
+
+	/**
+	 * 获取年份中的月份
+	 * 
+	 * @param year 年
+	 * @param day  天
+	 * @return 月
+	 */
+	public static int getMonthDay(int year, int day) {
+		for (int i = 0; i < MONTH_DAY.length; i++) {
+			day = day - MONTH_DAY[i];
+			if (i == 1 && isLeap(year)) { day--; }
+			if (day < 0) { return day + MONTH_DAY[i] + 1; }
+		}
+		return day;
+	}
+
+	/**
+	 * 是否是闰年
+	 * 
+	 * @param year 年
+	 * @return true:是/false:不是
+	 */
+	public static boolean isLeap(int year) {
+		return (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
+	}
+
+	/**
+	 * 时间戳转时间数组<br>
+	 * 默认使用东8时区
+	 * 
+	 * @return 数组，长度为7，按照[年,月,日,时,分,秒,毫秒]的分布
+	 */
+	public static int[] toTimeArray() {
+		return toTimeArray(System.currentTimeMillis(), EAST_8_TIME_ZONE);
+	}
+
+	/**
+	 * 时间戳转时间数组<br>
+	 * 默认使用东8时区
+	 * 
+	 * @param time 时间戳
+	 * @return 数组，长度为7，按照[年,月,日,时,分,秒,毫秒]的分布
+	 */
+	public static int[] toTimeArray(long time) {
+		return toTimeArray(time, EAST_8_TIME_ZONE);
+	}
+
+	/**
+	 * 时间戳转时间数组
+	 * 
+	 * @param time 时间戳
+	 * @param zone 所在时区
+	 * @return 数组，长度为7，按照[年,月,日,时,分,秒,毫秒]的分布
+	 */
+	public static int[] toTimeArray(long time, long zone) {
+		int timeArray[] = new int[7];
+		time += zone;
+		long leapCount = time / LEAP_YEAR_TIME;
+		time = time % LEAP_YEAR_TIME;
+		long lastyear = time / ONE_YEAR_TIME;
+		// 年
+		timeArray[0] = (int) (1970 + leapCount * 4 + lastyear);
+		time = time % ONE_YEAR_TIME;
+		// 剩余天数
+		int lastDay = (int) (time / ONE_DAY_TIME);
+		time = time % ONE_DAY_TIME;
+		// 月
+		timeArray[1] = getMonth(timeArray[0], lastDay);
+		// 日
+		timeArray[2] = getMonthDay(timeArray[0], lastDay);
+		// 时
+		timeArray[3] = (int) (time / ONE_HOUR_TIME);
+		time = time % ONE_HOUR_TIME;
+		// 分
+		timeArray[4] = (int) (time / ONE_MINUTE_TIME);
+		time = time % ONE_MINUTE_TIME;
+		// 秒
+		timeArray[5] = (int) (time / ONE_SECOND_TIME);
+		// 毫秒
+		timeArray[6] = (int) (time % ONE_SECOND_TIME);
+		return timeArray;
+	}
+
+	/**
+	 * 时间戳转时间数组<br>
+	 * 默认使用东8时区
+	 * 
+	 * @param timeFunction 时间解析后处理
+	 */
+	public static void timeAnalysis(TimeFunction timeFunction) {
+		timeAnalysis(System.currentTimeMillis(), timeFunction);
+	}
+
+	/**
+	 * 时间戳转时间数组<br>
+	 * 默认使用东8时区
+	 * 
+	 * @param time         时间戳
+	 * @param timeFunction 时间解析后处理
+	 */
+	public static void timeAnalysis(long time, TimeFunction timeFunction) {
+		timeAnalysis(time, EAST_8_TIME_ZONE, timeFunction);
+	}
+
+	/**
+	 * 时间戳转时间数组
+	 * 
+	 * @param time         时间戳
+	 * @param zone         所在时区
+	 * @param timeFunction 时间解析后处理
+	 */
+	public static void timeAnalysis(long time, long zone, TimeFunction timeFunction) {
+		time += zone;
+		long leapCount = time / LEAP_YEAR_TIME;
+		time = time % LEAP_YEAR_TIME;
+		long lastyear = time / ONE_YEAR_TIME;
+		// 年
+		int year = (int) (1970 + leapCount * 4 + lastyear);
+		time = time % ONE_YEAR_TIME;
+		// 剩余天数
+		int lastDay = (int) (time / ONE_DAY_TIME);
+		time = time % ONE_DAY_TIME;
+		// 月
+		int month = getMonth(year, lastDay);
+		// 日
+		int day = getMonthDay(year, lastDay);
+		// 时
+		int hour = (int) (time / ONE_HOUR_TIME);
+		time = time % ONE_HOUR_TIME;
+		// 分
+		int minute = (int) (time / ONE_MINUTE_TIME);
+		time = time % ONE_MINUTE_TIME;
+		// 秒
+		int second = (int) (time / ONE_SECOND_TIME);
+		// 毫秒
+		int millisecond = (int) (time % ONE_SECOND_TIME);
+		timeFunction.time(year, month, day, hour, minute, second, millisecond);
+	}
 }
