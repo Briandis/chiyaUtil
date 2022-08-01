@@ -9,6 +9,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.regex.Pattern;
 
+import chiya.core.base.function.StartEndFunction;
+import chiya.core.base.number.NumberUtil;
+
 /**
  * 字符串工具库
  * 
@@ -129,9 +132,7 @@ public class StringUtil {
 		boolean b = true;
 		for (int i = 0; i < str.length(); i++) {
 			b = true;
-			for (char c : SPACE_CHARS) {
-				b = b && str.charAt(i) != c;
-			}
+			for (char c : SPACE_CHARS) { b = b && str.charAt(i) != c; }
 			if (b) { return false; }
 		}
 		return true;
@@ -157,9 +158,7 @@ public class StringUtil {
 	 */
 	public static String extractFileNameIsImg(String fileName) {
 		String s = getFileFormat(fileName);
-		for (int i = 0; i < ARRAY_IMG.length; i++) {
-			if (ARRAY_IMG[i].equalsIgnoreCase(s)) { return ARRAY_IMG[i]; }
-		}
+		for (int i = 0; i < ARRAY_IMG.length; i++) { if (ARRAY_IMG[i].equalsIgnoreCase(s)) { return ARRAY_IMG[i]; } }
 		return null;
 	}
 
@@ -175,9 +174,7 @@ public class StringUtil {
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
 			String hashtext = new BigInteger(1, md.digest(string.getBytes())).toString(16);
-			while (hashtext.length() < 32) {
-				hashtext = "0" + hashtext;
-			}
+			while (hashtext.length() < 32) { hashtext = "0" + hashtext; }
 			return hashtext;
 		} catch (NoSuchAlgorithmException e) {
 			return string;
@@ -196,9 +193,7 @@ public class StringUtil {
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-1");
 			String hashtext = new BigInteger(1, md.digest(string.getBytes())).toString(16);
-			while (hashtext.length() < 32) {
-				hashtext = "0" + hashtext;
-			}
+			while (hashtext.length() < 32) { hashtext = "0" + hashtext; }
 			return hashtext;
 		} catch (NoSuchAlgorithmException e) {
 			return string;
@@ -298,9 +293,7 @@ public class StringUtil {
 			StringBuilder stringBuilder = new StringBuilder();
 			// 截取前index个显示字符
 			stringBuilder.append(head.substring(0, index));
-			for (int i = 0; i < l; i++) {
-				stringBuilder.append("*");
-			}
+			for (int i = 0; i < l; i++) { stringBuilder.append("*"); }
 			stringBuilder.append(less);
 			mail = stringBuilder.toString();
 		}
@@ -528,9 +521,7 @@ public class StringUtil {
 		if (!isNullOrZero(string)) {
 			String s[] = string.split("_");
 			StringBuilder stringBuilder = new StringBuilder();
-			for (int i = 0; i < s.length; i++) {
-				stringBuilder.append(i == 0 ? lowerFirst(s[i]) : upperFirst(s[i]));
-			}
+			for (int i = 0; i < s.length; i++) { stringBuilder.append(i == 0 ? lowerFirst(s[i]) : upperFirst(s[i])); }
 			return stringBuilder.toString();
 		}
 		return null;
@@ -546,9 +537,7 @@ public class StringUtil {
 		if (!isNullOrZero(string)) {
 			String s[] = string.split("_");
 			StringBuilder stringBuilder = new StringBuilder();
-			for (int i = 0; i < s.length; i++) {
-				stringBuilder.append(upperFirst(s[i]));
-			}
+			for (int i = 0; i < s.length; i++) { stringBuilder.append(upperFirst(s[i])); }
 			return stringBuilder.toString();
 		}
 		return null;
@@ -680,9 +669,7 @@ public class StringUtil {
 		}
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(str.substring(0, start));
-		for (int i = 0; i < str.length() - (start + end) + hide; i++) {
-			stringBuilder.append("*");
-		}
+		for (int i = 0; i < str.length() - (start + end) + hide; i++) { stringBuilder.append("*"); }
 		stringBuilder.append(str.substring(str.length() - end));
 		return stringBuilder.toString();
 	}
@@ -718,9 +705,7 @@ public class StringUtil {
 		}
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(str.substring(0, start));
-		for (int i = 0; i < hide; i++) {
-			stringBuilder.append("*");
-		}
+		for (int i = 0; i < hide; i++) { stringBuilder.append("*"); }
 		stringBuilder.append(str.substring(str.length() - end));
 		return stringBuilder.toString();
 	}
@@ -733,11 +718,7 @@ public class StringUtil {
 	 * @return true:存在/false:不存在
 	 */
 	public static boolean charInArray(char chr, char[] chars) {
-		if (chars != null) {
-			for (char c : chars) {
-				if (c == chr) { return true; }
-			}
-		}
+		if (chars != null) { for (char c : chars) { if (c == chr) { return true; } } }
 		return false;
 	}
 
@@ -776,9 +757,7 @@ public class StringUtil {
 	public static int findChar(String source, char word, int start, int end) {
 		if (source == null) { return -1; }
 		if (end > source.length()) { end = source.length(); }
-		for (int i = start; i < end; i++) {
-			if (source.charAt(i) == word) { return i; }
-		}
+		for (int i = start; i < end; i++) { if (source.charAt(i) == word) { return i; } }
 		return -1;
 	}
 
@@ -790,12 +769,22 @@ public class StringUtil {
 	 * @return 填充后的字符串
 	 */
 	public static String zeroPadding(int length, int number) {
-		StringBuilder stringBuilder = new StringBuilder();
-		String len = String.valueOf(number);
-		for (int i = 0; i < length - len.length(); i++) {
-			stringBuilder.append('0');
+		int maxLength = NumberUtil.lengthDecimal(number);
+		if (maxLength < length) { maxLength = length; }
+		// 根据所得长度，构造字符数组
+		char chars[] = new char[maxLength];
+		int x = 0, j = maxLength - 1;
+		// 从右往左存放每位的数值
+		while (number != 0) {
+			x = number % NumberUtil.DECIMAL;
+			number = number / NumberUtil.DECIMAL;
+			chars[j] = CHAR_NUMBER[x];
+			j--;
+			if (j < 0) { break; }
 		}
-		return stringBuilder.append(len).toString();
+		// 从左往右填充0
+		for (int i = 0; i <= j; i++) { chars[i] = CHAR_NUMBER[0]; }
+		return String.valueOf(chars);
 	}
 
 	/**
@@ -810,4 +799,96 @@ public class StringUtil {
 		return source.indexOf(chars);
 	}
 
+	/** 字符集 */
+	public static final char CHAR_NUMBER[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+
+	/**
+	 * 按照最小值填充0作为数值前缀<br>
+	 * 
+	 * @param len    最小补充长度
+	 * @param number 数值
+	 * @param base   进制
+	 * @return 字符数组
+	 */
+	public static char[] zeroPadding(int len, int number, int base) {
+		if (base < NumberUtil.BINARY || base > NumberUtil.HEX) {
+			throw new IllegalArgumentException("base is less 2 or greater 16 ,base must is between 2 to 16");
+		}
+		int maxLength = NumberUtil.lengthNumber(number, base);
+		if (maxLength < len) { maxLength = len; }
+		// 根据所得长度，构造字符数组
+		char chars[] = new char[maxLength];
+		int x = 0, j = maxLength - 1;
+		// 从右往左存放每位的数值
+		while (number != 0) {
+			x = number % base;
+			number = number / base;
+			chars[j] = CHAR_NUMBER[x];
+			j--;
+			if (j < 0) { break; }
+		}
+		// 从左往右填充0
+		for (int i = 0; i <= j; i++) { chars[i] = CHAR_NUMBER[0]; }
+		return chars;
+	}
+
+	/**
+	 * 修个字符数组，为数值<br>
+	 * 如果长度不足，则按照后末尾装配，多余补0
+	 * 
+	 * @param number 数值
+	 * @param base   进制
+	 * @param chars  存储的字符数组
+	 * @param start  存储的起始位置
+	 * @param end    存储的结束位置
+	 */
+	public static void numberUpdateCharArray(int number, int base, char chars[], int start, int end) {
+		if (base < NumberUtil.BINARY || base > NumberUtil.HEX) {
+			throw new IllegalArgumentException("base is less 2 or greater 16 ,base must is between 2 to 16");
+		}
+		for (int i = 0; i <= end - start; i++) {
+			chars[end - i] = CHAR_NUMBER[number % base];
+			number = number / base;
+
+		}
+	}
+
+	/**
+	 * 修个字符数组，为数值，默认十进制<br>
+	 * 如果长度不足，则按照后末尾装配，多余补0
+	 * 
+	 * @param number 数值
+	 * @param chars  存储的字符数组
+	 * @param start  存储的起始位置
+	 * @param end    存储的结束位置
+	 */
+	public static void numberUpdateCharArray(int number, char chars[], int start, int end) {
+		numberUpdateCharArray(number, NumberUtil.DECIMAL, chars, start, end);
+	}
+
+	/**
+	 * 找到字符串中，相同的字符
+	 * 
+	 * @param chars            字符数组
+	 * @param c                要查找的相同的数值
+	 * @param startEndFunction 找到后的方法:function(start,end)->void;找到才会回调
+	 */
+	public static void findContinuousChar(char chars[], char c, StartEndFunction startEndFunction) {
+		int start = -1, end = -1;
+		for (int i = 0; i < chars.length; i++) {
+			if (c == chars[i]) {
+				// 如果是第一次找到则标记两个位置
+				if (start == -1) {
+					start = end = i;
+				} else {
+					end++;
+				}
+			} else {
+				// 如果已经标记了使用，则退出
+				if (start != -1) { break; }
+			}
+		}
+		// 如果找到了在使用
+		if (start != -1) { startEndFunction.apply(start, end); }
+	}
 }

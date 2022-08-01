@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import chiya.core.base.function.TimeFunction;
+import chiya.core.base.loop.Loop;
 import chiya.core.base.number.NumberUtil;
 import chiya.core.base.string.StringUtil;
 
@@ -1022,5 +1023,37 @@ public class DateUtil {
 		// 毫秒
 		int millisecond = (int) (time % ONE_SECOND_TIME);
 		timeFunction.time(year, month, day, hour, minute, second, millisecond);
+	}
+
+	/** 日期格式化 */
+	private static final char DATE_FORMAT[] = { 'y', 'M', 'd', 'H', 'm', 's', 'S' };
+
+	/**
+	 * 时间格式化<br>
+	 * yyyy:年份<br>
+	 * MM:月份<br>
+	 * dd:天<br>
+	 * HH:小时<br>
+	 * mm:分钟<br>
+	 * ss:秒<br>
+	 * SSS：毫秒<br>
+	 * 例如 yyyy-MM-dd HH:mm:ss等价于 2020-12-25 14:32:23
+	 * 
+	 * @param time       时间戳
+	 * @param expression 格式化的表达式
+	 * @return 格式化后的字符串
+	 */
+	public static String format(long time, String expression) {
+		char timeChar[] = expression.toCharArray();
+		int timeArray[] = DateUtil.toTimeArray(time);
+		Loop.step(
+			DATE_FORMAT.length,
+			i -> StringUtil.findContinuousChar(
+				timeChar,
+				DATE_FORMAT[i],
+				(start, end) -> StringUtil.numberUpdateCharArray(timeArray[i], timeChar, start, end)
+			)
+		);
+		return String.valueOf(timeChar);
 	}
 }

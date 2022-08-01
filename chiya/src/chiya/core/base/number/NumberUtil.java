@@ -9,6 +9,15 @@ import java.util.List;
  */
 public class NumberUtil {
 
+	/** 二进制 */
+	public static final int BINARY = 2;
+	/** 八进制 */
+	public static final int OCTAL = 8;
+	/** 十进制 */
+	public static final int DECIMAL = 10;
+	/** 十六进制 */
+	public static final int HEX = 16;
+
 	/**
 	 * 比较两个Integer包装类
 	 * 
@@ -417,5 +426,77 @@ public class NumberUtil {
 		if (number == null || max == null) { return false; }
 		if (min == null) { return number < max; }
 		return min < number && number < max;
+	}
+
+	/**
+	 * 十六进制的字符串长度
+	 * 
+	 * @param number 数值
+	 * @return 长度
+	 */
+	public static int lengthHex(int number) {
+		return lengthNumber(number, HEX);
+	}
+
+	/** 十进制位数 */
+	public static final int DECIMAL_DIGITS[] = { 9, 99, 999, 9999, 99999, 999999, 9999999, 99999999, 999999999, Integer.MAX_VALUE };
+
+	/**
+	 * 十进制的字符串长度
+	 * 
+	 * @param number 数值
+	 * @return 长度
+	 */
+	public static int lengthDecimal(int number) {
+		if (number < 0) { number = -number; }
+		int i = 0;
+		while (true) {
+			if (number <= DECIMAL_DIGITS[i]) { return i + 1; }
+			i++;
+		}
+	}
+
+	/**
+	 * 八进制的字符串长度
+	 * 
+	 * @param number 数值
+	 * @return 长度
+	 */
+	public static int lengthOctal(int number) {
+		return lengthNumber(number, OCTAL);
+	}
+
+	/**
+	 * 二进制的字符串长度
+	 * 
+	 * @param number 数值
+	 * @return 长度
+	 */
+	public static int lengthBinary(int number) {
+		return Integer.bitCount(number);
+	}
+
+	/**
+	 * 数值的字符串长度
+	 * 
+	 * @param number 数值
+	 * @param base   进制
+	 * @return 长度
+	 */
+	public static int lengthNumber(int number, int base) {
+		if (base < BINARY) { throw new IllegalArgumentException("base is less 2 ,must base greater 1"); }
+		switch (base) {
+		case BINARY:
+			return lengthBinary(number);
+		case DECIMAL:
+			return lengthDecimal(number);
+		default:
+			int i = 0;
+			while (number != 0) {
+				number = number / base;
+				i++;
+			}
+			return i;
+		}
 	}
 }
