@@ -132,7 +132,9 @@ public class StringUtil {
 		boolean b = true;
 		for (int i = 0; i < str.length(); i++) {
 			b = true;
-			for (char c : SPACE_CHARS) { b = b && str.charAt(i) != c; }
+			for (char c : SPACE_CHARS) {
+				b = b && str.charAt(i) != c;
+			}
 			if (b) { return false; }
 		}
 		return true;
@@ -158,7 +160,9 @@ public class StringUtil {
 	 */
 	public static String extractFileNameIsImg(String fileName) {
 		String s = getFileFormat(fileName);
-		for (int i = 0; i < ARRAY_IMG.length; i++) { if (ARRAY_IMG[i].equalsIgnoreCase(s)) { return ARRAY_IMG[i]; } }
+		for (int i = 0; i < ARRAY_IMG.length; i++) {
+			if (ARRAY_IMG[i].equalsIgnoreCase(s)) { return ARRAY_IMG[i]; }
+		}
 		return null;
 	}
 
@@ -174,7 +178,9 @@ public class StringUtil {
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
 			String hashtext = new BigInteger(1, md.digest(string.getBytes())).toString(16);
-			while (hashtext.length() < 32) { hashtext = "0" + hashtext; }
+			while (hashtext.length() < 32) {
+				hashtext = "0" + hashtext;
+			}
 			return hashtext;
 		} catch (NoSuchAlgorithmException e) {
 			return string;
@@ -193,7 +199,9 @@ public class StringUtil {
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-1");
 			String hashtext = new BigInteger(1, md.digest(string.getBytes())).toString(16);
-			while (hashtext.length() < 32) { hashtext = "0" + hashtext; }
+			while (hashtext.length() < 32) {
+				hashtext = "0" + hashtext;
+			}
 			return hashtext;
 		} catch (NoSuchAlgorithmException e) {
 			return string;
@@ -293,7 +301,9 @@ public class StringUtil {
 			StringBuilder stringBuilder = new StringBuilder();
 			// 截取前index个显示字符
 			stringBuilder.append(head.substring(0, index));
-			for (int i = 0; i < l; i++) { stringBuilder.append("*"); }
+			for (int i = 0; i < l; i++) {
+				stringBuilder.append("*");
+			}
 			stringBuilder.append(less);
 			mail = stringBuilder.toString();
 		}
@@ -521,7 +531,9 @@ public class StringUtil {
 		if (!isNullOrZero(string)) {
 			String s[] = string.split("_");
 			StringBuilder stringBuilder = new StringBuilder();
-			for (int i = 0; i < s.length; i++) { stringBuilder.append(i == 0 ? lowerFirst(s[i]) : upperFirst(s[i])); }
+			for (int i = 0; i < s.length; i++) {
+				stringBuilder.append(i == 0 ? lowerFirst(s[i]) : upperFirst(s[i]));
+			}
 			return stringBuilder.toString();
 		}
 		return null;
@@ -537,7 +549,9 @@ public class StringUtil {
 		if (!isNullOrZero(string)) {
 			String s[] = string.split("_");
 			StringBuilder stringBuilder = new StringBuilder();
-			for (int i = 0; i < s.length; i++) { stringBuilder.append(upperFirst(s[i])); }
+			for (int i = 0; i < s.length; i++) {
+				stringBuilder.append(upperFirst(s[i]));
+			}
 			return stringBuilder.toString();
 		}
 		return null;
@@ -669,7 +683,9 @@ public class StringUtil {
 		}
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(str.substring(0, start));
-		for (int i = 0; i < str.length() - (start + end) + hide; i++) { stringBuilder.append("*"); }
+		for (int i = 0; i < str.length() - (start + end) + hide; i++) {
+			stringBuilder.append("*");
+		}
 		stringBuilder.append(str.substring(str.length() - end));
 		return stringBuilder.toString();
 	}
@@ -705,7 +721,9 @@ public class StringUtil {
 		}
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(str.substring(0, start));
-		for (int i = 0; i < hide; i++) { stringBuilder.append("*"); }
+		for (int i = 0; i < hide; i++) {
+			stringBuilder.append("*");
+		}
 		stringBuilder.append(str.substring(str.length() - end));
 		return stringBuilder.toString();
 	}
@@ -718,7 +736,11 @@ public class StringUtil {
 	 * @return true:存在/false:不存在
 	 */
 	public static boolean charInArray(char chr, char[] chars) {
-		if (chars != null) { for (char c : chars) { if (c == chr) { return true; } } }
+		if (chars != null) {
+			for (char c : chars) {
+				if (c == chr) { return true; }
+			}
+		}
 		return false;
 	}
 
@@ -757,7 +779,9 @@ public class StringUtil {
 	public static int findChar(String source, char word, int start, int end) {
 		if (source == null) { return -1; }
 		if (end > source.length()) { end = source.length(); }
-		for (int i = start; i < end; i++) { if (source.charAt(i) == word) { return i; } }
+		for (int i = start; i < end; i++) {
+			if (source.charAt(i) == word) { return i; }
+		}
 		return -1;
 	}
 
@@ -783,7 +807,9 @@ public class StringUtil {
 			if (j < 0) { break; }
 		}
 		// 从左往右填充0
-		for (int i = 0; i <= j; i++) { chars[i] = CHAR_NUMBER[0]; }
+		for (int i = 0; i <= j; i++) {
+			chars[i] = CHAR_NUMBER[0];
+		}
 		return String.valueOf(chars);
 	}
 
@@ -811,9 +837,7 @@ public class StringUtil {
 	 * @return 字符数组
 	 */
 	public static char[] zeroPadding(int len, int number, int base) {
-		if (base < NumberUtil.BINARY || base > NumberUtil.HEX) {
-			throw new IllegalArgumentException("base is less 2 or greater 16 ,base must is between 2 to 16");
-		}
+		if (base < NumberUtil.BINARY || base > NumberUtil.HEX) { throw new IllegalArgumentException("base is less 2 or greater 16 ,base must is between 2 to 16"); }
 		int maxLength = NumberUtil.lengthNumber(number, base);
 		if (maxLength < len) { maxLength = len; }
 		// 根据所得长度，构造字符数组
@@ -828,7 +852,9 @@ public class StringUtil {
 			if (j < 0) { break; }
 		}
 		// 从左往右填充0
-		for (int i = 0; i <= j; i++) { chars[i] = CHAR_NUMBER[0]; }
+		for (int i = 0; i <= j; i++) {
+			chars[i] = CHAR_NUMBER[0];
+		}
 		return chars;
 	}
 
@@ -843,9 +869,7 @@ public class StringUtil {
 	 * @param end    存储的结束位置
 	 */
 	public static void numberUpdateCharArray(int number, int base, char chars[], int start, int end) {
-		if (base < NumberUtil.BINARY || base > NumberUtil.HEX) {
-			throw new IllegalArgumentException("base is less 2 or greater 16 ,base must is between 2 to 16");
-		}
+		if (base < NumberUtil.BINARY || base > NumberUtil.HEX) { throw new IllegalArgumentException("base is less 2 or greater 16 ,base must is between 2 to 16"); }
 		for (int i = 0; i <= end - start; i++) {
 			chars[end - i] = CHAR_NUMBER[number % base];
 			number = number / base;

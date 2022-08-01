@@ -318,7 +318,9 @@ public class NumberUtil {
 	 */
 	public static boolean compareAllNumbnerGreaterNumber(int number, int... all) {
 		if (all == null) { return false; }
-		for (int i = 0; i < all.length; i++) { if (all[i] <= number) { return false; } }
+		for (int i = 0; i < all.length; i++) {
+			if (all[i] <= number) { return false; }
+		}
 		return true;
 	}
 
@@ -332,7 +334,9 @@ public class NumberUtil {
 	 */
 	public static boolean compareAllNumberLessNumber(int number, int... all) {
 		if (all == null) { return false; }
-		for (int i = 0; i < all.length; i++) { if (all[i] >= number) { return false; } }
+		for (int i = 0; i < all.length; i++) {
+			if (all[i] >= number) { return false; }
+		}
 		return true;
 	}
 
@@ -359,7 +363,9 @@ public class NumberUtil {
 	 */
 	public static boolean compareAllNumberLessNumberAndGreaterNumber(int lower, int upper, int... all) {
 		if (all == null) { return false; }
-		for (int i = 0; i < all.length; i++) { if (all[i] < lower || all[i] > upper) { return false; } }
+		for (int i = 0; i < all.length; i++) {
+			if (all[i] < lower || all[i] > upper) { return false; }
+		}
 		return true;
 	}
 
@@ -371,7 +377,9 @@ public class NumberUtil {
 	 * @return true:存在/false:不存在
 	 */
 	public static boolean intInList(int i, List<Integer> list) {
-		for (Integer integer : list) { if (integer == i) { return true; } }
+		for (Integer integer : list) {
+			if (integer == i) { return true; }
+		}
 		return false;
 	}
 
@@ -383,7 +391,9 @@ public class NumberUtil {
 	 * @return true:存在/false:不存在
 	 */
 	public static boolean intInArray(int i, int[] ints) {
-		for (int j : ints) { if (j == i) { return true; } }
+		for (int j : ints) {
+			if (j == i) { return true; }
+		}
 		return false;
 	}
 
@@ -396,7 +406,9 @@ public class NumberUtil {
 	 */
 	public static boolean intEqualToAny(int number, int... array) {
 		if (array == null) { return false; }
-		for (Integer i : array) { if (i == number) { return true; } }
+		for (Integer i : array) {
+			if (i == number) { return true; }
+		}
 		return false;
 	}
 
@@ -409,7 +421,9 @@ public class NumberUtil {
 	 */
 	public static boolean intEqualToAny(int number, Integer... array) {
 		if (array == null) { return false; }
-		for (Integer i : array) { if (equalInteger(number, i)) { return true; } }
+		for (Integer i : array) {
+			if (equalInteger(number, i)) { return true; }
+		}
 		return false;
 	}
 

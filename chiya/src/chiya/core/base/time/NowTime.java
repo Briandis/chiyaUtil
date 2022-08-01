@@ -1,56 +1,50 @@
 package chiya.core.base.time;
 
-import chiya.core.base.string.StringUtil;
-import chiya.core.base.thread.ThreadUtil;
+import chiya.core.base.time.cache.DateCache;
+import chiya.core.base.time.cache.DateTimeCache;
+import chiya.core.base.time.cache.FullDateTimeCache;
+import chiya.core.base.time.cache.TimeCacheFormat;
 
 /**
  * 当前时间库<br>
  * 获取当前时间，效率比日式格式化工具高10倍<br>
- * 测试100线程分别获取10000次下，该工具库只需要平均40ms
+ * 测试100线程分别获取100万次，总共10亿获取下，该工具库平均200ms
  */
 public class NowTime {
-
-	/** 当前时间 */
-	private volatile static String current;
-	/** 当前时间的时间戳 */
-	private volatile static long currentTime = 0;
+	/** 日期类 */
+	public static final TimeCacheFormat date = new DateCache();
+	/** 日期和时间 */
+	public static final TimeCacheFormat dateTime = new DateTimeCache();
+	/** 日期和时间，带毫秒 */
+	public static final TimeCacheFormat fullDateTime = new FullDateTimeCache();
 
 	/**
-	 * 获取当前格式化的时间
+	 * 获取当前日期<br>
+	 * 获取的时间格式为：2022-07-01
 	 * 
-	 * @return 例如：2022-07-01 12:31:46.233
+	 * @return 日期
 	 */
-	public static String nowTime() {
-		ThreadUtil.doubleCheckLock(
-			() -> currentTime != System.currentTimeMillis(),
-			NowTime.class,
-			() -> DateUtil.timeAnalysis(NowTime::change)
-		);
-		return current;
+	public static String getDate() {
+		return date.getNowTime();
 	}
 
 	/**
-	 * 解析时间后的操作
+	 * 获取当前日期<br>
+	 * 获取的时间格式为：2022-07-01 12:31:46
 	 * 
-	 * @param year        年
-	 * @param month       月
-	 * @param day         日
-	 * @param hour        时
-	 * @param minute      分
-	 * @param second      秒
-	 * @param millisecond 毫秒
+	 * @return 日期时间字符串
 	 */
-	private static void change(int year, int month, int day, int hour, int minute, int second, int millisecond) {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(year).append('-')
-			.append(StringUtil.zeroPadding(2, month)).append('-')
-			.append(StringUtil.zeroPadding(2, day)).append(' ')
-			.append(StringUtil.zeroPadding(2, hour)).append(':')
-			.append(StringUtil.zeroPadding(2, minute)).append(':')
-			.append(StringUtil.zeroPadding(2, second)).append('.')
-			.append(StringUtil.zeroPadding(3, millisecond));
-		current = stringBuilder.toString();
-		currentTime = System.currentTimeMillis();
+	public static String getDateTime() {
+		return dateTime.getNowTime();
 	}
 
+	/**
+	 * 获取当前日期和时间，带毫秒<br>
+	 * 获取的时间格式为：2022-07-01 12:31:46.233
+	 * 
+	 * @return 日期时间毫秒字符串
+	 */
+	public static String getFullDateTime() {
+		return fullDateTime.getNowTime();
+	}
 }

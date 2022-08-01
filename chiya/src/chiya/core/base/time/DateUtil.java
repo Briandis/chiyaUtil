@@ -23,8 +23,12 @@ import chiya.core.base.string.StringUtil;
  * @author chiya
  */
 public class DateUtil {
+	/** 起始年份 */
+	public static final int START_YEAR = 1970;
 	/** 日期时间 */
 	public static final String DATE_TIME = "yyyy-MM-dd HH:mm:ss";
+	/** 日期时间 */
+	public static final String FULL_DATE_TIME = "yyyy-MM-dd HH:mm:ss.SSS";
 	/** 日期 */
 	public static final String DATE = "yyyy-MM-dd";
 	/** UTC标准时间 */
@@ -32,6 +36,10 @@ public class DateUtil {
 	/** 日期时间的纯数字，不是时间戳 */
 	public static final String NUMBER_DATE_TIME = "yyyyMMddHHmmss";
 
+	/** 一年的天数 */
+	public static final int ONE_YEAR_DAY = 365;
+	/** 一天多少个小时 */
+	public static final int ONE_DAY_HOUR = 24;
 	/** 一秒的毫秒长度 */
 	public static final long ONE_SECOND_TIME = 1000;
 	/** 一分钟的时间毫秒长度 */
@@ -41,36 +49,16 @@ public class DateUtil {
 	/** 一天的时间毫秒长度 */
 	public static final long ONE_DAY_TIME = ONE_HOUR_TIME * 24;
 	/** 一年时间 */
-	public static final long ONE_YEAR_TIME = ONE_DAY_TIME * 365;
+	public static final long ONE_YEAR_TIME = ONE_DAY_TIME * ONE_YEAR_DAY;
 	/** 一个闰年周期的长度 */
 	public static final long LEAP_YEAR_TIME = ONE_YEAR_TIME * 4 + ONE_DAY_TIME;
 	/** 东8时区偏移长度 */
 	public static final long EAST_8_TIME_ZONE = ONE_HOUR_TIME * 8;
 
-	/** UTC时间格式化工具 */
-	private static final ThreadLocal<SimpleDateFormat> simpleDateFormatUTCDateTime = new ThreadLocal<SimpleDateFormat>() {
-		protected SimpleDateFormat initialValue() {
-			return new SimpleDateFormat(UTC_DATE_TIME);
-		};
-	};
-
 	/** 时间日期格式化工具 */
 	private static final ThreadLocal<SimpleDateFormat> simpleDateFormatDatetime = new ThreadLocal<SimpleDateFormat>() {
 		protected SimpleDateFormat initialValue() {
 			return new SimpleDateFormat(DATE_TIME);
-		};
-	};
-	/** 日期格式化工具 */
-	private static final ThreadLocal<SimpleDateFormat> simpleDateFormatDate = new ThreadLocal<SimpleDateFormat>() {
-		protected SimpleDateFormat initialValue() {
-			return new SimpleDateFormat(DATE);
-		};
-	};
-
-	/** 日期时间纯数字的格式化工具 */
-	private static final ThreadLocal<SimpleDateFormat> simpleDateFormatNumberDate = new ThreadLocal<SimpleDateFormat>() {
-		protected SimpleDateFormat initialValue() {
-			return new SimpleDateFormat(NUMBER_DATE_TIME);
 		};
 	};
 
@@ -83,7 +71,7 @@ public class DateUtil {
 	 * @return yyyyMMddHHmmss的字符串
 	 */
 	public static String getNowNumberDateTime() {
-		return simpleDateFormatNumberDate.get().format(new Date());
+		return format(System.currentTimeMillis(), NUMBER_DATE_TIME);
 	}
 
 	/**
@@ -92,7 +80,7 @@ public class DateUtil {
 	 * @return yyyy-MM-dd HH:mm:ss
 	 */
 	public static String getNowDateTime() {
-		return simpleDateFormatDatetime.get().format(new Date());
+		return NowTime.getDateTime();
 	}
 
 	/**
@@ -101,29 +89,32 @@ public class DateUtil {
 	 * @return yyyy-MM-dd
 	 */
 	public static String getNowDate() {
-		return simpleDateFormatDate.get().format(new Date());
+		return NowTime.getDate();
 	}
 
 	/**
-	 * 以年月日的方式格式化日期
+	 * 以年月日的方式格式化日期<br>
+	 * yyyy-MM-dd
 	 * 
 	 * @param date:待格式化日期
 	 * @return 格式化后的字符串
 	 */
 	public static String formatDateYYYYMMDD(Date date) {
 		if (date == null) { return null; }
-		return simpleDateFormatDate.get().format(date);
+		return format(date.getTime(), DATE);
 	}
 
 	/**
-	 * 以年月日 时分秒的方式格式化日期
+	 * 以年月日 时分秒的方式格式化日期<br>
+	 * yyyy-MM-dd HH:mm:ss
 	 * 
 	 * @param date 待格式化日期
 	 * @return 格式化后的字符串
 	 */
 	public static String formatDateYYYYMMDDHHMMSS(Date date) {
 		if (date == null) { return null; }
-		return simpleDateFormatDatetime.get().format(date);
+		return format(date.getTime(), DATE_TIME);
+//		return simpleDateFormatDatetime.get().format(date);
 	}
 
 	/**
@@ -135,14 +126,14 @@ public class DateUtil {
 	 */
 	public static String formatDateNumberYYYYMMDDHHMMSS(Date date) {
 		if (date == null) { return null; }
-		return simpleDateFormatNumberDate.get().format(date);
+		return format(date.getTime(), NUMBER_DATE_TIME);
 	}
 
 	/**
 	 * 获取一年中，该月份有几天
 	 * 
-	 * @param year  年
-	 * @param month 月份
+	 * @param year  年 需要未偏移的年份，如1998
+	 * @param month 月份 1-12间的数字
 	 * @return 该月天数
 	 */
 	public static int getYearMonthDay(int year, int month) {
@@ -158,7 +149,8 @@ public class DateUtil {
 	}
 
 	/**
-	 * 根据年月日，转换成日期对象
+	 * 根据年月日，转换成日期对象<br>
+	 * 默认减去东8时区，因为Date中已经加入时区
 	 * 
 	 * @param year  年
 	 * @param month 月
@@ -166,11 +158,21 @@ public class DateUtil {
 	 * @return 日期对象
 	 */
 	public static Date parseDate(int year, int month, int day) {
-		try {
-			return simpleDateFormatDate.get().parse(year + "-" + month + "-" + day);
-		} catch (ParseException e) {
-			return null;
-		}
+		return parseDate(year, month, day, EAST_8_TIME_ZONE);
+	}
+
+	/**
+	 * 根据年月日，转换成日期对象
+	 * 
+	 * @param year  年
+	 * @param month 月 1-12的范围
+	 * @param day   日
+	 * @param zone  时区
+	 * @return 日期对象
+	 */
+	public static Date parseDate(int year, int month, int day, long zone) {
+		long time = offsetDay(year, month, day) * ONE_DAY_TIME + ONE_DAY_TIME - zone;
+		return new Date(time);
 	}
 
 	/**
@@ -368,7 +370,7 @@ public class DateUtil {
 	 */
 	public static String formatDateUTCDateTime(Date date) {
 		if (date == null) { return null; }
-		return simpleDateFormatUTCDateTime.get().format(date);
+		return format(date.getTime(), UTC_DATE_TIME);
 	}
 
 	/**
@@ -894,10 +896,9 @@ public class DateUtil {
 	 * @return 月
 	 */
 	public static int getMonthDay(int year, int day) {
-		for (int i = 0; i < MONTH_DAY.length; i++) {
-			day = day - MONTH_DAY[i];
-			if (i == 1 && isLeap(year)) { day--; }
-			if (day < 0) { return day + MONTH_DAY[i] + 1; }
+		for (int i = 1; i < 13; i++) {
+			day = day - getYearMonthDay(year, i);
+			if (day < 0) { return day + getYearMonthDay(year, i) + 1; }
 		}
 		return day;
 	}
@@ -919,7 +920,7 @@ public class DateUtil {
 	 * @return 数组，长度为7，按照[年,月,日,时,分,秒,毫秒]的分布
 	 */
 	public static int[] toTimeArray() {
-		return toTimeArray(System.currentTimeMillis(), EAST_8_TIME_ZONE);
+		return toTimeArray(System.currentTimeMillis());
 	}
 
 	/**
@@ -942,30 +943,19 @@ public class DateUtil {
 	 */
 	public static int[] toTimeArray(long time, long zone) {
 		int timeArray[] = new int[7];
-		time += zone;
-		long leapCount = time / LEAP_YEAR_TIME;
-		time = time % LEAP_YEAR_TIME;
-		long lastyear = time / ONE_YEAR_TIME;
-		// 年
-		timeArray[0] = (int) (1970 + leapCount * 4 + lastyear);
-		time = time % ONE_YEAR_TIME;
-		// 剩余天数
-		int lastDay = (int) (time / ONE_DAY_TIME);
-		time = time % ONE_DAY_TIME;
-		// 月
-		timeArray[1] = getMonth(timeArray[0], lastDay);
-		// 日
-		timeArray[2] = getMonthDay(timeArray[0], lastDay);
-		// 时
-		timeArray[3] = (int) (time / ONE_HOUR_TIME);
-		time = time % ONE_HOUR_TIME;
-		// 分
-		timeArray[4] = (int) (time / ONE_MINUTE_TIME);
-		time = time % ONE_MINUTE_TIME;
-		// 秒
-		timeArray[5] = (int) (time / ONE_SECOND_TIME);
-		// 毫秒
-		timeArray[6] = (int) (time % ONE_SECOND_TIME);
+		timeAnalysis(
+			time,
+			zone,
+			(year, month, day, hour, minute, second, millisecond) -> {
+				timeArray[0] = year;
+				timeArray[1] = month;
+				timeArray[2] = day;
+				timeArray[3] = hour;
+				timeArray[4] = minute;
+				timeArray[5] = second;
+				timeArray[6] = millisecond;
+			}
+		);
 		return timeArray;
 	}
 
@@ -998,31 +988,29 @@ public class DateUtil {
 	 * @param timeFunction 时间解析后处理
 	 */
 	public static void timeAnalysis(long time, long zone, TimeFunction timeFunction) {
-		time += zone;
-		long leapCount = time / LEAP_YEAR_TIME;
-		time = time % LEAP_YEAR_TIME;
-		long lastyear = time / ONE_YEAR_TIME;
-		// 年
-		int year = (int) (1970 + leapCount * 4 + lastyear);
-		time = time % ONE_YEAR_TIME;
-		// 剩余天数
-		int lastDay = (int) (time / ONE_DAY_TIME);
+		time += zone;// 时区计算
+		int day = (int) (time / ONE_DAY_TIME);// 获取天数
+		int year = day / ONE_YEAR_DAY; // 计算模糊的年
+		day = day - ((year + 1) / 4); // 去处闰年占用的天数
+		year = (day / ONE_YEAR_DAY) + START_YEAR; // 得到原始的年
+		day = day - (year - START_YEAR) * ONE_YEAR_DAY;// 计算得到剩余天数
+		if (isLeap(year) && day > 60) {
+			// 是闰年，并且是闰月以上的时间，则需要补偿
+			day++;
+		}
+		int month = getMonth(year, day);
+		day = getMonthDay(year, day);
+
 		time = time % ONE_DAY_TIME;
-		// 月
-		int month = getMonth(year, lastDay);
-		// 日
-		int day = getMonthDay(year, lastDay);
-		// 时
 		int hour = (int) (time / ONE_HOUR_TIME);
 		time = time % ONE_HOUR_TIME;
-		// 分
 		int minute = (int) (time / ONE_MINUTE_TIME);
 		time = time % ONE_MINUTE_TIME;
-		// 秒
 		int second = (int) (time / ONE_SECOND_TIME);
-		// 毫秒
 		int millisecond = (int) (time % ONE_SECOND_TIME);
+
 		timeFunction.time(year, month, day, hour, minute, second, millisecond);
+
 	}
 
 	/** 日期格式化 */
@@ -1030,12 +1018,12 @@ public class DateUtil {
 
 	/**
 	 * 时间格式化<br>
-	 * yyyy:年份<br>
-	 * MM:月份<br>
-	 * dd:天<br>
-	 * HH:小时<br>
-	 * mm:分钟<br>
-	 * ss:秒<br>
+	 * yyyy：年份<br>
+	 * MM：月份<br>
+	 * dd：天<br>
+	 * HH：小时<br>
+	 * mm：分钟<br>
+	 * ss：秒<br>
 	 * SSS：毫秒<br>
 	 * 例如 yyyy-MM-dd HH:mm:ss等价于 2020-12-25 14:32:23
 	 * 
@@ -1045,7 +1033,7 @@ public class DateUtil {
 	 */
 	public static String format(long time, String expression) {
 		char timeChar[] = expression.toCharArray();
-		int timeArray[] = DateUtil.toTimeArray(time);
+		int timeArray[] = toTimeArray(time);
 		Loop.step(
 			DATE_FORMAT.length,
 			i -> StringUtil.findContinuousChar(
@@ -1055,5 +1043,71 @@ public class DateUtil {
 			)
 		);
 		return String.valueOf(timeChar);
+	}
+
+	/**
+	 * 获取这个年月日至今的天数
+	 * 
+	 * @param year  年份
+	 * @param month 月份
+	 * @param day   日
+	 * @return 偏移天数
+	 */
+	public static int offsetDay(int year, int month, int day) {
+		int offsetYear = year - START_YEAR;
+		return (offsetYear * ONE_YEAR_DAY) + ((offsetYear + 1) / 4) + offsetMonthDay(year, month) + offsetInDay(day);
+	}
+
+	/**
+	 * 获取这个年份到这个月的天数<br>
+	 * 如：1999,2<br>
+	 * 返回：31，不包含第二月
+	 * 
+	 * @param year  年份 未偏移的年份
+	 * @param month 月份 1-12范围
+	 * @return 偏移天数
+	 */
+	public static int offsetMonthDay(int year, int month) {
+		int day = 0;
+		for (int i = 1; i < month; i++) {
+			day += getYearMonthDay(year, i);
+		}
+		return day;
+	}
+
+	/**
+	 * 获取至今过去的天数
+	 * 
+	 * @param day 日期
+	 * @return 过去的天数
+	 */
+	public static int offsetInDay(int day) {
+		return day < 1 ? 0 : day - 1;
+	}
+
+	/**
+	 * 输出时间戳<br>
+	 * 默认东8时区
+	 * 
+	 * @param year  年份
+	 * @param month 月份
+	 * @param day   日期
+	 * @return 时间戳
+	 */
+	public static long toTime(int year, int month, int day) {
+		return toTime(year, month, day, EAST_8_TIME_ZONE);
+	}
+
+	/**
+	 * 输出时间戳
+	 * 
+	 * @param year  年份
+	 * @param month 月份
+	 * @param day   日期
+	 * @param zone  时区
+	 * @return 时间戳
+	 */
+	public static long toTime(int year, int month, int day, long zone) {
+		return offsetDay(year, month, day) * ONE_DAY_TIME - zone;
 	}
 }
