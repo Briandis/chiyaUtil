@@ -171,7 +171,7 @@ public class DateUtil {
 	 * @return 日期对象
 	 */
 	public static Date parseDate(int year, int month, int day, long zone) {
-		long time = offsetDay(year, month, day) * ONE_DAY_TIME + ONE_DAY_TIME - zone;
+		long time = offsetDay(year, month, day) * ONE_DAY_TIME - zone;
 		return new Date(time);
 	}
 
@@ -991,16 +991,17 @@ public class DateUtil {
 		time += zone;// 时区计算
 		int day = (int) (time / ONE_DAY_TIME);// 获取天数
 		int year = day / ONE_YEAR_DAY; // 计算模糊的年
-		day = day - ((year + 1) / 4); // 去处闰年占用的天数
+		int leapDay = (year + 1) / 4; // 闰年所占天数
+		day = day - leapDay; // 去处闰年占用的天数
+//		day = day + offsetCenturyCount(year); // 世纪中，有几个不是闰年，需要补回来
 		year = (day / ONE_YEAR_DAY) + START_YEAR; // 得到原始的年
 		day = day - (year - START_YEAR) * ONE_YEAR_DAY;// 计算得到剩余天数
-		if (isLeap(year) && day > 60) {
+		if (isLeap(year) && day + leapDay > 364) {
 			// 是闰年，并且是闰月以上的时间，则需要补偿
 			day++;
 		}
 		int month = getMonth(year, day);
 		day = getMonthDay(year, day);
-
 		time = time % ONE_DAY_TIME;
 		int hour = (int) (time / ONE_HOUR_TIME);
 		time = time % ONE_HOUR_TIME;
@@ -1011,6 +1012,19 @@ public class DateUtil {
 
 		timeFunction.time(year, month, day, hour, minute, second, millisecond);
 
+	}
+
+	/**
+	 * 世纪中不是闰年的数量
+	 * 
+	 * @param year 未偏移的年份
+	 * @return 不是数量
+	 */
+	public static int offsetCenturyCount(int year) {
+		year = year - 2000;
+		int a = (year / 400) * 3;
+		int b = (year % 400) / 100;
+		return a + b;
 	}
 
 	/** 日期格式化 */
