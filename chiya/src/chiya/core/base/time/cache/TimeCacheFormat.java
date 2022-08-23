@@ -5,7 +5,7 @@ import chiya.core.base.time.DateUtil;
 import chiya.core.base.time.NowTime;
 
 /**
- * 从换从中获取当前时间
+ * 从中获取当前时间
  */
 public abstract class TimeCacheFormat {
 	/** 当前时间 */
