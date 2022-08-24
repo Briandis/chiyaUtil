@@ -22,7 +22,7 @@ public abstract class BaseLog implements LogLevel {
 	/** 日志缓存 */
 	private LogCache logCache = new LogCache(log -> {
 		if (logConfig.isConsoleLog()) { LogWrite.console(log); }
-		if (logConfig.isFileLog()) { LogWrite.write(logConfig.getPath(), log); }
+		if (logConfig.isFileLog()) { LogWrite.write(logConfig, log); }
 	});
 
 	/**
@@ -66,6 +66,8 @@ public abstract class BaseLog implements LogLevel {
 
 	/** 缩进字符 */
 	private static final String T = "\t";
+	/** 换行字符 */
+	private static final String N = "\n";
 
 	/**
 	 * 构建日志消息
@@ -78,9 +80,9 @@ public abstract class BaseLog implements LogLevel {
 		stringBuilder
 			.append(NowTime.getFullDateTime()).append(T)
 			.append(level).append(T)
-			.append(CodeTime.getRunTime()).append(T)
+			.append("启动至今时间：").append(CodeTime.getRunTime()).append(T)
 			.append(ThreadUtil.getThreadName()).append(T)
-			.append(message).append("\n");
+			.append(message).append(N);
 		return stringBuilder.toString();
 	}
 
@@ -94,4 +96,20 @@ public abstract class BaseLog implements LogLevel {
 		String str = createMessage(level, message);
 		logCache.add(str);
 	}
+
+	/**
+	 * 获取用户线程栈信息
+	 * 
+	 * @return 组装好的线程栈信息
+	 */
+	protected String threadStackTrace() {
+		StringBuilder stringBuilder = new StringBuilder();
+		String threadName = ThreadUtil.getThreadName();
+		stringBuilder.append(T).append("方法栈日志").append(N);
+		for (StackTraceElement stackTraceElement : ThreadUtil.getPackageStackTrace()) {
+			stringBuilder.append(T).append(threadName).append(T).append(stackTraceElement).append(N);
+		}
+		return stringBuilder.toString();
+	}
+
 }

@@ -11,7 +11,7 @@ public class LogConfig {
 	/** 文件输出 */
 	private volatile boolean fileLog = true;
 	/** 文件输出路径 */
-	private String path = "";
+	private String path = "/logs/";
 
 	/**
 	 * 控制日志启用

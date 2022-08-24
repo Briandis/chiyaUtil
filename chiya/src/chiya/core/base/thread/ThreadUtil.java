@@ -1,10 +1,12 @@
 package chiya.core.base.thread;
 
+import java.util.Arrays;
 import java.util.concurrent.locks.Lock;
 
 import chiya.core.base.function.BooleanFunction;
 import chiya.core.base.function.Function;
 import chiya.core.base.function.GetValueFunction;
+import chiya.core.base.string.StringUtil;
 
 /**
  * 线程工具
@@ -209,4 +211,85 @@ public class ThreadUtil {
 		}
 	}
 
+	/**
+	 * 根据线程获取所对应的方法栈信息
+	 * 
+	 * @param thread 线程对象
+	 * @return 方法栈信息
+	 */
+	public static StackTraceElement[] getStackTrace(Thread thread) {
+		return Thread.getAllStackTraces().get(thread);
+	}
+
+	/**
+	 * 获取当前方法栈信息
+	 * 
+	 * @return 方法栈信息
+	 */
+	public static StackTraceElement[] getStackTrace() {
+		return getStackTrace(Thread.currentThread());
+	}
+
+	/**
+	 * 获取调用者的信息
+	 * 
+	 * @return 调用者的信息
+	 */
+	public static String getTransfer() {
+		StackTraceElement[] stackTraceElement = getStackTrace();
+		String className = stackTraceElement[stackTraceElement.length - 1].getClassName();
+		int i = 0;
+		for (i = className.length() - 1; i > 0; i--) {
+			if (className.charAt(i) == '.') { break; }
+		}
+		return className.substring(0, i);
+	}
+
+	/**
+	 * 获取特定包方法栈信息
+	 * 
+	 * @param packages          包路径
+	 * @param stackTraceElement 方法栈数组
+	 * @return 方法栈信息
+	 */
+	public static StackTraceElement[] getPackageStackTrace(String packages, StackTraceElement[] stackTraceElement) {
+		StackTraceElement[] returnData = new StackTraceElement[stackTraceElement.length];
+		int i = 0;
+		for (StackTraceElement stackTrace : stackTraceElement) {
+			if (StringUtil.findString(stackTrace.getClassName(), packages) != -1) {
+				// 如果这个包存在，就加入字符串中
+				returnData[i] = stackTrace;
+				i++;
+			}
+		}
+		return Arrays.copyOf(returnData, i);
+	}
+
+	/**
+	 * 获取当前线程的方法栈信息
+	 * 
+	 * @return 方法栈信息
+	 */
+	public static StackTraceElement[] getPackageStackTrace() {
+		// 获取栈信息
+		StackTraceElement[] stackTraceElement = getStackTrace();
+		String className = stackTraceElement[stackTraceElement.length - 1].getClassName();
+		int i = 0;
+		for (i = className.length() - 1; i > 0; i--) {
+			if (className.charAt(i) == '.') { break; }
+		}
+		// 获取配置信息
+		String packages = className.substring(0, i);
+		return getPackageStackTrace(packages, stackTraceElement);
+	}
+
+	/**
+	 * 获取特定包方法栈信息
+	 * 
+	 * @param packages 包路径
+	 * @return 方法栈信息
+	 */
+	public static StackTraceElement[] getPackageStackTrace(String packages) {
+		return getPackageStackTrace(packages, getStackTrace());
+	}
 }
