@@ -32,7 +32,7 @@ public class DateUtil {
 	/** 日期 */
 	public static final String DATE = "yyyy-MM-dd";
 	/** UTC标准时间 */
-	public static final String UTC_DATE_TIME = "yyyy-MM-dd'T'HH:mm:ss'+08:00'";
+	public static final String UTC_DATE_TIME = "yyyy-MM-ddTHH:mm:ss+08:00";
 	/** 日期时间的纯数字，不是时间戳 */
 	public static final String NUMBER_DATE_TIME = "yyyyMMddHHmmss";
 
