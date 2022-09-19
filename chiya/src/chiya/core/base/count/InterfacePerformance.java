@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import chiya.core.base.collection.ContainerUtil;
 import chiya.core.base.time.DateUtil;
 
 /**
@@ -23,7 +22,7 @@ public class InterfacePerformance {
 	 * @param time 运行时间
 	 */
 	public void put(String url, int time) {
-		ContainerUtil.getValueOrPut(count, url, ServiceCount.class).add(time);
+		count.computeIfAbsent(url, k -> new ServiceCount()).add(time);;
 	}
 
 	/**

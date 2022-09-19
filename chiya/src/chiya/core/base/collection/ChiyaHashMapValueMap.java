@@ -3,8 +3,6 @@ package chiya.core.base.collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiConsumer;
 
 /**
@@ -21,10 +19,6 @@ public class ChiyaHashMapValueMap<T, K, V> {
 	 * 基础容器
 	 */
 	private ConcurrentHashMap<T, ConcurrentHashMap<K, V>> concurrentHashMap = new ConcurrentHashMap<T, ConcurrentHashMap<K, V>>();
-	/**
-	 * 同步锁
-	 */
-	private Lock lock = new ReentrantLock();
 
 	/**
 	 * 判断是否存在值
@@ -45,15 +39,7 @@ public class ChiyaHashMapValueMap<T, K, V> {
 	 * @param value    值
 	 */
 	public void put(T key, K valueKey, V value) {
-		if (!concurrentHashMap.containsKey(key)) {
-			lock.lock();
-			try {
-				if (!concurrentHashMap.containsKey(key)) { concurrentHashMap.put(key, new ConcurrentHashMap<K, V>()); }
-			} finally {
-				lock.unlock();
-			}
-		}
-		concurrentHashMap.get(key).put(valueKey, value);
+		concurrentHashMap.computeIfAbsent(key, k -> new ConcurrentHashMap<K, V>()).put(valueKey, value);
 	}
 
 	/**
@@ -142,4 +128,13 @@ public class ChiyaHashMapValueMap<T, K, V> {
 		concurrentHashMap.forEach(action);
 	}
 
+	/**
+	 * 获取一个已有的Map，如何没有就获取新的
+	 * 
+	 * @param key 键
+	 * @return ConcurrentHashMap<K, V>
+	 */
+	public ConcurrentHashMap<K, V> getOrNewValue(T key) {
+		return concurrentHashMap.computeIfAbsent(key, k -> new ConcurrentHashMap<K, V>());
+	}
 }

@@ -4,8 +4,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiConsumer;
 
 /**
@@ -21,10 +19,6 @@ public class ChiyaHashMapValueSet<T, E> {
 	 * 基础容器
 	 */
 	private ConcurrentHashMap<T, ConcurrentSkipListSet<E>> concurrentHashMap = new ConcurrentHashMap<T, ConcurrentSkipListSet<E>>();
-	/**
-	 * 同步锁
-	 */
-	private Lock lock = new ReentrantLock();
 
 	/**
 	 * 判断是否存在值
@@ -44,15 +38,7 @@ public class ChiyaHashMapValueSet<T, E> {
 	 * @param setKey Set的key
 	 */
 	public void put(T key, E setKey) {
-		if (!concurrentHashMap.containsKey(key)) {
-			lock.lock();
-			try {
-				if (!concurrentHashMap.containsKey(key)) { concurrentHashMap.put(key, new ConcurrentSkipListSet<E>()); }
-			} finally {
-				lock.unlock();
-			}
-		}
-		concurrentHashMap.get(key).add(setKey);
+		concurrentHashMap.computeIfAbsent(key, k -> new ConcurrentSkipListSet<E>()).add(setKey);
 	}
 
 	/**
@@ -128,5 +114,15 @@ public class ChiyaHashMapValueSet<T, E> {
 	 */
 	public void forEach(BiConsumer<? super T, ? super ConcurrentSkipListSet<E>> action) {
 		concurrentHashMap.forEach(action);
+	}
+
+	/**
+	 * 获取一个已有的Set，如何没有就获取新的
+	 * 
+	 * @param key 键
+	 * @return ConcurrentSkipListSet<E>
+	 */
+	public ConcurrentSkipListSet<E> getOrNewValue(T key) {
+		return concurrentHashMap.computeIfAbsent(key, k -> new ConcurrentSkipListSet<>());
 	}
 }

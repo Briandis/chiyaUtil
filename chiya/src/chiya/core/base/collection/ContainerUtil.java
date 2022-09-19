@@ -14,7 +14,6 @@ import chiya.core.base.object.ObjectUtil;
 import chiya.core.base.page.Page;
 import chiya.core.base.random.RandomUtil;
 import chiya.core.base.string.StringUtil;
-import chiya.core.base.thread.ThreadUtil;
 
 /**
  * 容器工具类
@@ -73,7 +72,9 @@ public class ContainerUtil {
 	 */
 	public static <T> List<T> upsetList(List<T> list) {
 		if (list == null) { return null; }
-		for (int i = 0; i < list.size(); i++) { swapList(list, i, RandomUtil.randInt(list.size())); }
+		for (int i = 0; i < list.size(); i++) {
+			swapList(list, i, RandomUtil.randInt(list.size()));
+		}
 		return list;
 	}
 
@@ -85,7 +86,9 @@ public class ContainerUtil {
 	 */
 	public static int[] upsetArray(int[] array) {
 		if (array == null) { return null; }
-		for (int i = 0; i < array.length; i++) { swapArrayInt(array, i, RandomUtil.randInt(array.length)); }
+		for (int i = 0; i < array.length; i++) {
+			swapArrayInt(array, i, RandomUtil.randInt(array.length));
+		}
 		return array;
 	}
 
@@ -109,7 +112,9 @@ public class ContainerUtil {
 		// ArrayList初始赋值
 		List<Integer> list = new ArrayList<Integer>(init > 10 ? init : 10);
 		// 对list赋范围内的值
-		for (int i = start; i < end; i++) { list.add(i); }
+		for (int i = start; i < end; i++) {
+			list.add(i);
+		}
 		// 对list进行乱序
 		return upsetList(list);
 	}
@@ -132,7 +137,9 @@ public class ContainerUtil {
 		int init = end - start;
 		if (init == 0) { return null; }
 		int array[] = new int[init];
-		for (int i = start; i < end; i++) { array[i - start] = i; }
+		for (int i = start; i < end; i++) {
+			array[i - start] = i;
+		}
 		// 对数组进行乱序
 		return upsetArray(array);
 	}
@@ -248,13 +255,7 @@ public class ContainerUtil {
 	 * @return MAP中对象或者这个实例化的对象
 	 */
 	public static <K, V> V getValueOrPut(Map<K, V> map, K key, Class<V> classes) {
-		// 多线程下保证数据一致
-		ThreadUtil.doubleCheckLock(
-			() -> map.get(key) == null,
-			map,
-			() -> map.put(key, ObjectUtil.newObject(classes))
-		);
-		return map.get(key);
+		return map.computeIfAbsent(key, k -> ObjectUtil.newObject(classes));
 	}
 
 	/**
@@ -265,7 +266,11 @@ public class ContainerUtil {
 	 * @return true:存在/false:不存在
 	 */
 	public static boolean stringInList(String string, List<String> list) {
-		if (list != null) { for (String str : list) { if (StringUtil.eqString(string, str)) { return true; } } }
+		if (list != null) {
+			for (String str : list) {
+				if (StringUtil.eqString(string, str)) { return true; }
+			}
+		}
 		return false;
 	}
 
@@ -277,7 +282,11 @@ public class ContainerUtil {
 	 * @return true:存在/false:不存在
 	 */
 	public static boolean stringInArray(String string, String str[]) {
-		if (str != null) { for (String st : str) { if (StringUtil.eqString(string, st)) { return true; } } }
+		if (str != null) {
+			for (String st : str) {
+				if (StringUtil.eqString(string, st)) { return true; }
+			}
+		}
 		return false;
 	}
 
@@ -294,7 +303,9 @@ public class ContainerUtil {
 		if (arr == null) { return true; }
 		if (data == null) { return false; }
 		data = data.toLowerCase();
-		for (String str : arr) { if (data.indexOf(str) != -1) { return true; } }
+		for (String str : arr) {
+			if (data.indexOf(str) != -1) { return true; }
+		}
 		return false;
 	}
 
@@ -310,7 +321,9 @@ public class ContainerUtil {
 		if (list == null) { return true; }
 		if (data == null) { return false; }
 		data = data.toLowerCase();
-		for (String str : list) { if (data.indexOf(str) != -1) { return true; } }
+		for (String str : list) {
+			if (data.indexOf(str) != -1) { return true; }
+		}
 		return false;
 	}
 
@@ -326,9 +339,13 @@ public class ContainerUtil {
 		if (list == null) { return false; }
 		// 查找的key为Null的情况
 		if (key == null) {
-			for (Object object : list) { if (object == null) { return true; } }
+			for (Object object : list) {
+				if (object == null) { return true; }
+			}
 		} else {
-			for (Object object : list) { if (key.equals(object)) { return true; } }
+			for (Object object : list) {
+				if (key.equals(object)) { return true; }
+			}
 		}
 		return false;
 	}
@@ -345,9 +362,13 @@ public class ContainerUtil {
 		if (array == null) { return false; }
 		// 查找的key为Null的情况
 		if (key == null) {
-			for (Object object : array) { if (object == null) { return true; } }
+			for (Object object : array) {
+				if (object == null) { return true; }
+			}
 		} else {
-			for (Object object : array) { if (key.equals(object)) { return true; } }
+			for (Object object : array) {
+				if (key.equals(object)) { return true; }
+			}
 		}
 		return false;
 	}
