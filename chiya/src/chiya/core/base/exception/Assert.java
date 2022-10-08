@@ -1,5 +1,6 @@
 package chiya.core.base.exception;
 
+import chiya.core.base.number.NumberUtil;
 import chiya.core.base.result.ResultEnum;
 import chiya.core.base.string.StringUtil;
 
@@ -83,7 +84,7 @@ public class Assert {
 	 * @param message 消息
 	 */
 	public static void isEqualInteger(Integer a, Integer b, String message) {
-		isTrue(StringUtil.eqInteger(a, b), message);
+		isTrue(NumberUtil.equalInteger(a, b), message);
 	}
 
 	/**
@@ -94,7 +95,7 @@ public class Assert {
 	 * @param message 消息
 	 */
 	public static void isNotEqualInteger(Integer a, Integer b, String message) {
-		isFalse(StringUtil.eqInteger(a, b), message);
+		isFalse(NumberUtil.equalInteger(a, b), message);
 	}
 
 	/**
@@ -177,6 +178,28 @@ public class Assert {
 	 */
 	public static void isNotMail(String mail, String message) {
 		isFalse(StringUtil.matchEmail(mail), message);
+	}
+
+	/**
+	 * 如果两个字符串相同，则抛出异常
+	 * 
+	 * @param a       字符串a
+	 * @param b       字符串b
+	 * @param message 待抛出的异常的消息
+	 */
+	public static void isEqualString(String a, String b, String message) {
+		isTrue(StringUtil.eqString(a, b), message);
+	}
+
+	/**
+	 * 如果两个字符串不相同，则抛出异常
+	 * 
+	 * @param a       字符串a
+	 * @param b       字符串b
+	 * @param message 待抛出的异常的消息
+	 */
+	public static void isNotequalString(String a, String b, String message) {
+		isFalse(StringUtil.eqString(a, b), message);
 	}
 
 }

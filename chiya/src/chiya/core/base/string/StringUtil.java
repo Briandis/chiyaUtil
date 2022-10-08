@@ -361,6 +361,7 @@ public class StringUtil {
 	 * @param b Integer包装类
 	 * @return true:相同/false:不同
 	 */
+	@Deprecated
 	public static boolean eqInteger(Integer a, Integer b) {
 		return a != null ? a.equals(b) : false;
 	}
@@ -385,9 +386,8 @@ public class StringUtil {
 		try {
 			return URLEncoder.encode(url, CHAR_CODE);
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		return url;
 	}
 
 	/**
@@ -400,9 +400,8 @@ public class StringUtil {
 		try {
 			return URLDecoder.decode(url, CHAR_CODE);
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		return url;
 	}
 
 	/**
