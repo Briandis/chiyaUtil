@@ -198,7 +198,7 @@ public class Assert {
 	 * @param b       字符串b
 	 * @param message 待抛出的异常的消息
 	 */
-	public static void isNotequalString(String a, String b, String message) {
+	public static void isNotEqualString(String a, String b, String message) {
 		isFalse(StringUtil.eqString(a, b), message);
 	}
 
