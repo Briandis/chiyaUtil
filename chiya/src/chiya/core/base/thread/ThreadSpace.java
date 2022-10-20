@@ -25,12 +25,22 @@ public class ThreadSpace {
 	/**
 	 * 当前线程Map中添加一个key、value
 	 * 
-	 * @param <T>   存储的泛型类型
 	 * @param key   键
 	 * @param value 值
 	 */
-	public static <T> void put(String key, T value) {
+	public static void put(String key, Object value) {
 		CHIYA_SPACE.put(key, value);
+	}
+
+	/**
+	 * 如果存在则获取，不存在则插入
+	 * 
+	 * @param key   键
+	 * @param value 值
+	 * @return 持有的值/新插入的值
+	 */
+	public static Object computeIfAbsent(String key, Object value) {
+		return CHIYA_SPACE.computeIfAbsent(null, CHIYA_SPACE);
 	}
 
 	/**

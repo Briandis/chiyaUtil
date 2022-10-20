@@ -61,6 +61,17 @@ public class ChiyaSpace<K, V> {
 	}
 
 	/**
+	 * 如果值不存在，则插入，否则获取当前值
+	 * 
+	 * @param key   键
+	 * @param value 值
+	 * @return 当前持有的值/新插入的值
+	 */
+	public V computeIfAbsent(K key, V value) {
+		return getMap().computeIfAbsent(key, k -> value);
+	}
+
+	/**
 	 * 删除当前Map中对应key
 	 * 
 	 * @param key 键
