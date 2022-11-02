@@ -29,7 +29,7 @@ public abstract class BaseLog implements LogLevel {
 	 * 系统终止，则立即写入
 	 */
 	public void shutdown() {
-		LogWrite.writeNow(logConfig.getPath());
+		if (logConfig.isFileLog()) { LogWrite.writeNow(logConfig.getPath()); }
 	}
 
 	/**
