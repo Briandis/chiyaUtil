@@ -125,7 +125,7 @@ public class AESUtil {
 		try {
 			return Cipher.getInstance(string);
 		} catch (Exception e) {
-			return null;
+			throw new RuntimeException(e);
 		}
 	}
 }
