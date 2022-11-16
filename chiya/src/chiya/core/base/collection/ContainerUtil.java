@@ -382,6 +382,7 @@ public class ContainerUtil {
 	 * @return 分页后的数据
 	 */
 	public static <T> List<T> listPage(List<T> list, Page page) {
+		if (page == null) { return list; }
 		return listPage(list, page.getStart(), page.getCount());
 	}
 
