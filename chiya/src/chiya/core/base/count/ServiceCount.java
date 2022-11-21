@@ -27,6 +27,7 @@ public class ServiceCount {
 	 * @return 平均时间
 	 */
 	public double averageTime() {
+		if (count.longValue() == 0) { return 0; }
 		return allTime.longValue() / count.longValue();
 	}
 

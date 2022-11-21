@@ -2,8 +2,8 @@ package chiya.core.base.cache;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import chiya.core.base.function.GetValueFunction;
 import chiya.core.base.gc.GarbageCollection;
-import chiya.core.base.thread.ThreadUtil;
 
 /**
  * key-value结构计时缓存，如果超出时间未访问，则会被回收
@@ -38,7 +38,7 @@ public class MapTimingCache<K, V> {
 	/**
 	 * 构造方法
 	 * 
-	 * @param timeInterval 失效间隔
+	 * @param timeInterval 失效间隔毫秒
 	 */
 	public MapTimingCache(int timeInterval) {
 		this.timeInterval = timeInterval;
@@ -53,14 +53,27 @@ public class MapTimingCache<K, V> {
 	 * @return 自身
 	 */
 	public MapTimingCache<K, V> put(K key, V value) {
-		ThreadUtil.doubleCheckLock(
-			() -> !concurrentHashMap.containsKey(key),
-			concurrentHashMap,
-			() -> concurrentHashMap.put(key, new TimeEntity<V>(value))
-		);
-		concurrentHashMap.get(key).setData(value);
+		concurrentHashMap.computeIfAbsent(key, k -> new TimeEntity<V>(value)).setData(value);
 		garbageCollection.recycle();
 		return this;
+	}
+
+	/**
+	 * 获取缓存中的或者构建一个
+	 * 
+	 * @param key   键
+	 * @param value 值
+	 * @return 缓存中的或者构建的对象
+	 */
+	public V getOrNew(K key, GetValueFunction<V> function) {
+		garbageCollection.recycle();
+		TimeEntity<V> timeEntity = concurrentHashMap.computeIfAbsent(key, k -> new TimeEntity<V>(function.getValue()));
+		if (timeEntity.getLastTime() + timeInterval > System.currentTimeMillis()) {
+			return timeEntity.getData();
+		} else {
+			timeEntity.setData(function.getValue());
+			return timeEntity.getData();
+		}
 	}
 
 	/**
@@ -85,5 +98,12 @@ public class MapTimingCache<K, V> {
 	 */
 	public void remove(K key) {
 		concurrentHashMap.remove(key);
+	}
+
+	/**
+	 * 移除全部
+	 */
+	public void removeAll() {
+		concurrentHashMap.clear();
 	}
 }
