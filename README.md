@@ -54,10 +54,12 @@
 > 22. 日志工具：ChiyaLog <br>
 > 23. AES工具：AESUtil
 > 24. 权限注解：ChiyaSecurity、ChiyaSecurityGroup
+> 25. DSL解析框架，ChiyaSyntaxParser、ChiyaTokenParser、ChiyaSyntaxTreeParser
 >
 
 ### 特别说明
-> 本工具库下所有工具均为多线程、高并发下设计，均保证线程安全，部分非多线程设计功能除外
+> 本工具库下大部分工具均为多线程、高并发下设计，均保证线程安全，部分非多线程设计功能除外
+
 
 ### 缓存类型回收说明
 > 该库中的所有缓存均为惰性回收，即下次使用时在进行回收，由负责使用的线程进行
