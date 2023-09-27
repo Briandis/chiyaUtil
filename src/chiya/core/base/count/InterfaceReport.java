@@ -109,4 +109,14 @@ public class InterfaceReport {
 		this.reportTime = reportTime;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("接口名称:").append(name)
+			.append(" 访问次数:").append(count)
+			.append(" 平均响应时间:").append(averageTime).append("ms")
+			.append("累计总耗时:").append(allTime).append("ms")
+			.append("报告时间").append(reportTime);
+		return stringBuilder.toString();
+	}
 }
