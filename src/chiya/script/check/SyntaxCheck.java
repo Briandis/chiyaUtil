@@ -48,10 +48,11 @@ public class SyntaxCheck {
 	public List<String> check(List<ChiyaToken> list) {
 		List<String> errorMessage = new ArrayList<>();
 		RecursionStack<ChiyaToken> recursionStack = new RecursionStack<>();
+		recursionStack.copyEnable();
 		List<ChiyaToken> needRecursion = new ArrayList<>();
 		// 检查根节点
 		if (rootCheck != null) { rootCheck.check(new ChiyaToken().chainTokenTree(list), needRecursion, errorMessage); }
-
+		
 		recursionStack.setJudgeMethod((stack, data) -> {
 			if (data != null) {
 				RecursionCheck recursionCheck = hashMap.get(data.getType());
