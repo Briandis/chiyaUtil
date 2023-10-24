@@ -113,10 +113,10 @@ public class InterfaceReport {
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("接口名称:").append(name)
-			.append(" 访问次数:").append(count)
-			.append(" 平均响应时间:").append(averageTime).append("ms")
-			.append("累计总耗时:").append(allTime).append("ms")
-			.append("报告时间").append(reportTime);
+			.append("\t访问次数:").append(count)
+			.append("\t平均响应时间:").append(averageTime).append("ms")
+			.append("\t累计总耗时:").append(allTime).append("ms")
+			.append("\t报告时间:").append(reportTime);
 		return stringBuilder.toString();
 	}
 }
