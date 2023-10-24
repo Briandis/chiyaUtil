@@ -8,16 +8,22 @@ import chiya.core.base.page.Page;
  * @author chiya
  */
 public class Result {
+	/** 成功状态码 */
+	public static final int SUCCESS_CODE = 200;
+	/** 成功响应消息 */
+	public static final String SUCCESS_MESSAGE = "业务执行完成";
+
+	/** 失败状态码 */
+	public static final int FAIL_CODE = -1;
+	/** 失败响应消息 */
+	public static final String FAIL_MESSAGE = "业务未能执行完成";
 
 	/** 业务状态码 */
 	private int code;
-
 	/** 响应数据 */
 	private Object data;
-
 	/** 分页信息 */
 	private Page page;
-
 	/** 响应消息 */
 	private String message;
 
@@ -30,6 +36,7 @@ public class Result {
 	 * @param code    业务状态码
 	 * @param data    数据
 	 * @param message 消息
+	 * @param page    分页信息
 	 */
 	private Result(int code, Object data, String message, Page page) {
 		this.code = code;
@@ -39,26 +46,15 @@ public class Result {
 	}
 
 	/**
-	 * 枚举构造
+	 * 构造方法
 	 * 
-	 * @param resultEnum 返回类型枚举值
+	 * @param code    业务状态码
+	 * @param data    数据
+	 * @param message 消息
 	 */
-	private Result(ResultEnum resultEnum) {
-		this.code = resultEnum.getCode();
-		this.message = resultEnum.getMessage();
-	}
-
-	/**
-	 * 枚举有值构造
-	 * 
-	 * @param resultEnum 返回类型枚举值
-	 * @param data       数据
-	 */
-	private Result(ResultEnum resultEnum, Object data, Page page) {
-		this.code = resultEnum.getCode();
-		this.data = data;
-		this.page = page;
-		this.message = resultEnum.getMessage();
+	private Result(int code, String message) {
+		this.code = code;
+		this.message = message;
 	}
 
 	/**
@@ -133,18 +129,13 @@ public class Result {
 		this.page = page;
 	}
 
-	@Override
-	public String toString() {
-		return "{\"code\":\"" + code + "\", \"data\":\"" + data + "\", \"page\":\"" + page + "\", \"message\":\"" + message + "\"}";
-	}
-
 	/**
 	 * 执行成功
 	 * 
 	 * @return Result 消息对象
 	 */
 	public static Result success() {
-		return new Result(ResultEnum.SUCCESS);
+		return new Result(SUCCESS_CODE, SUCCESS_MESSAGE);
 	}
 
 	/**
@@ -154,7 +145,7 @@ public class Result {
 	 * @return Result 消息对象
 	 */
 	public static Result success(Object data) {
-		return new Result(ResultEnum.SUCCESS, data, null);
+		return new Result(SUCCESS_CODE, data, SUCCESS_MESSAGE, null);
 	}
 
 	/**
@@ -165,7 +156,7 @@ public class Result {
 	 * @return Result 消息对象
 	 */
 	public static Result success(Object data, Page page) {
-		return new Result(ResultEnum.SUCCESS, data, page);
+		return new Result(SUCCESS_CODE, data, SUCCESS_MESSAGE, page);
 	}
 
 	/**
@@ -174,7 +165,7 @@ public class Result {
 	 * @return Result 消息对象
 	 */
 	public static Result fail() {
-		return new Result(ResultEnum.FAIL);
+		return new Result(FAIL_CODE, FAIL_MESSAGE);
 	}
 
 	/**
@@ -184,7 +175,7 @@ public class Result {
 	 * @return Result 消息对象
 	 */
 	public static Result fail(String message) {
-		return enums(ResultEnum.FAIL, message);
+		return new Result(FAIL_CODE, message);
 	}
 
 	/**
@@ -193,17 +184,7 @@ public class Result {
 	 * @return Result 消息对象
 	 */
 	public static Result paramentError() {
-		return new Result(ResultEnum.PARAMENTER_ERROR);
-	}
-
-	/**
-	 * 重定向
-	 * 
-	 * @param path 新的路径
-	 * @return Result 消息对象
-	 */
-	public static Result redirect(String path) {
-		return new Result(ResultEnum.REDIRECT, path, null);
+		return new Result(FAIL_CODE, "参数错误");
 	}
 
 	/**
@@ -237,27 +218,6 @@ public class Result {
 	 */
 	public static Result judge(boolean isSuccess, Object data, Page page) {
 		return isSuccess ? success(data, page) : fail();
-	}
-
-	/**
-	 * 根据枚举值响应
-	 * 
-	 * @param resultEnum 枚举值
-	 * @return Result 消息对象
-	 */
-	public static Result enums(ResultEnum resultEnum) {
-		return new Result(resultEnum);
-	}
-
-	/**
-	 * 根据枚举值响应
-	 * 
-	 * @param resultEnum 枚举值
-	 * @param message    消息
-	 * @return Result 消息对象
-	 */
-	public static Result enums(ResultEnum resultEnum, String message) {
-		return new Result(resultEnum.getCode(), null, message, null);
 	}
 
 	/**
@@ -304,4 +264,18 @@ public class Result {
 		return this;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("{\"code\":\"");
+		builder.append(code);
+		builder.append("\", \"data\":\"");
+		builder.append(data);
+		builder.append("\", \"page\":\"");
+		builder.append(page);
+		builder.append("\", \"message\":\"");
+		builder.append(message);
+		builder.append("\"} ");
+		return builder.toString();
+	}
 }

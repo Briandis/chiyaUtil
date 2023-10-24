@@ -144,7 +144,7 @@ public class ResultPack<T> {
 	 * @return true:是/false:否
 	 */
 	public boolean isSuccess() {
-		return code == 200;
+		return code == Result.SUCCESS_CODE;
 	}
 
 }

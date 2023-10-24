@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Map;
 
 import chiya.core.base.number.NumberUtil;
-import chiya.core.base.result.ResultEnum;
 import chiya.core.base.string.StringUtil;
 
 /**
@@ -18,25 +17,6 @@ public class Assert {
 	 */
 	public static void fail(String message) {
 		throw new ChiyaException(message);
-	}
-
-	/**
-	 * 断言-自定义异常类型
-	 * 
-	 * @param resultEnum 返回类型枚举值
-	 */
-	public static void fail(ResultEnum resultEnum) {
-		throw new ChiyaException(resultEnum);
-	}
-
-	/**
-	 * 参数断言-自定义消息
-	 * 
-	 * @param message 自定义消息
-	 */
-	public static void notParamFail(String message) {
-		ResultEnum resultEnum = ResultEnum.PARAMENTER_ERROR;
-		throw new ChiyaException(resultEnum, message);
 	}
 
 	/**
@@ -76,7 +56,7 @@ public class Assert {
 	 * @param message 消息
 	 */
 	public static void isTrue(boolean b, String message) {
-		if (b) { throw new ChiyaException(message); }
+		if (b) { fail(message); }
 	}
 
 	/**
