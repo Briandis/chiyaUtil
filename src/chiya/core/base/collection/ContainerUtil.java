@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -565,5 +567,49 @@ public class ContainerUtil {
 	 */
 	public static <T> T removeLast(List<T> list) {
 		return list.isEmpty() ? null : list.remove(list.size() - 1);
+	}
+
+	/**
+	 * 获取一个可迭代的对象
+	 * 
+	 * @param <T>      泛型
+	 * @param iterator 迭代器
+	 * @return 迭代的对象
+	 */
+	public static <T> T getOne(Iterator<T> iterator) {
+		return iterator.hasNext() ? iterator.next() : null;
+	}
+
+	/**
+	 * 获取一个可迭代的对象
+	 * 
+	 * @param <T>      泛型
+	 * @param iterable 迭代器
+	 * @return 迭代的对象
+	 */
+	public static <T> T getOne(Iterable<T> iterable) {
+		return iterable == null ? null : getOne(iterable.iterator());
+	}
+
+	/**
+	 * 获取一个可迭代的对象
+	 * 
+	 * @param <T>      泛型
+	 * @param iterator 迭代器
+	 * @return 迭代的对象
+	 */
+	public static <T> void forEachOne(Iterator<T> iterator, Consumer<? super T> consumer) {
+		if (iterator.hasNext()) { consumer.accept(iterator.next()); }
+	}
+
+	/**
+	 * 获取一个可迭代的对象
+	 * 
+	 * @param <T>      泛型
+	 * @param iterable 迭代器
+	 * @return 迭代的对象
+	 */
+	public static <T> void forEachOne(Iterable<T> iterable, Consumer<? super T> consumer) {
+		forEachOne(iterable.iterator(), consumer);
 	}
 }

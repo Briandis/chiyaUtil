@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * 线程安全的MAP<T,SET<E>>结构
@@ -14,7 +15,7 @@ import java.util.function.BiConsumer;
  * @param <T> MAP的key
  * @param <E> 内部Set的Key
  */
-public class ChiyaHashMapValueSet<T, E> {
+public class ChiyaSet<T, E> {
 	/**
 	 * 基础容器
 	 */
@@ -76,7 +77,10 @@ public class ChiyaHashMapValueSet<T, E> {
 	 * @return true 移除了值/false 不存在值
 	 */
 	public boolean remove(T key, E setKey) {
-		return concurrentHashMap.containsKey(key) ? concurrentHashMap.get(key).remove(setKey) : false;
+		boolean result = concurrentHashMap.containsKey(key) ? concurrentHashMap.get(key).remove(setKey) : false;
+		// 如果已经为空了，则删除根节点
+		if (concurrentHashMap.get(key).isEmpty()) { concurrentHashMap.remove(key); }
+		return result;
 	}
 
 	/**
@@ -124,6 +128,17 @@ public class ChiyaHashMapValueSet<T, E> {
 	 */
 	public void forEach(BiConsumer<? super T, ? super ConcurrentSkipListSet<E>> action) {
 		concurrentHashMap.forEach(action);
+	}
+
+	/**
+	 * 迭代方法
+	 * 
+	 * @param key    要迭代的key
+	 * @param action (k,v)->function的表达式
+	 */
+	public void forEach(String key, Consumer<? super E> action) {
+		ConcurrentSkipListSet<E> data = concurrentHashMap.get(key);
+		if (data != null) { data.forEach(action); }
 	}
 
 	/**

@@ -1,6 +1,5 @@
 package chiya.core.base.loop;
 
-import java.util.Collection;
 import java.util.function.Consumer;
 
 import chiya.core.base.count.CountInteger;
@@ -92,13 +91,13 @@ public class Loop {
 	/**
 	 * 迭代任意对象集合
 	 * 
-	 * @param <T>        对象数组类型
-	 * @param collection 可迭代的集合
-	 * @param action     泛型迭代方法
+	 * @param <T>      对象数组类型
+	 * @param iterable 可迭代的集合
+	 * @param action   泛型迭代方法
 	 */
-	public static <T> void forEach(Collection<T> collection, Consumer<? super T> action) {
-		if (collection == null) { return; }
-		collection.forEach(action);
+	public static <T> void forEach(Iterable<T> iterable, Consumer<? super T> action) {
+		if (iterable == null) { return; }
+		iterable.forEach(action);
 	}
 
 	/**
@@ -108,10 +107,10 @@ public class Loop {
 	 * @param collection      可迭代的集合
 	 * @param forEachFunction 泛型迭代方法
 	 */
-	public static <T> void forEach(Collection<T> collection, ForEachFunction<T> forEachFunction) {
-		if (collection == null) { return; }
+	public static <T> void forEach(Iterable<T> iterable, ForEachFunction<T> forEachFunction) {
+		if (iterable == null) { return; }
 		CountInteger countInteger = new CountInteger();
-		collection.forEach(o -> forEachFunction.next(o, countInteger.getAndIncrement()));
+		iterable.forEach(o -> forEachFunction.next(o, countInteger.getAndIncrement()));
 	}
 
 	/**

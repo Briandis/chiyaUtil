@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * 线程安全的MAP<T,Queue<V>>结构
@@ -14,9 +15,19 @@ import java.util.function.BiConsumer;
  * @param <T> MAP的key
  * @param <V> 内部Queue的值
  */
-public class ChiyaHashMapValueQueue<T, V> {
+public class ChiyaQueue<T, V> {
 	/** 基础容器 */
 	private ConcurrentHashMap<T, LinkedBlockingQueue<V>> concurrentHashMap = new ConcurrentHashMap<T, LinkedBlockingQueue<V>>();
+
+	/**
+	 * 判断是否存在值
+	 * 
+	 * @param key Map的key
+	 * @return true 存在/false 不存在
+	 */
+	public boolean contains(T key) {
+		return concurrentHashMap.containsKey(key);
+	}
 
 	/**
 	 * 判断是否存在值
@@ -64,7 +75,10 @@ public class ChiyaHashMapValueQueue<T, V> {
 	 * @return true 移除了值/false 不存在值
 	 */
 	public boolean remove(T key, V value) {
-		return concurrentHashMap.containsKey(key) ? concurrentHashMap.get(key).remove(value) : false;
+		boolean result = concurrentHashMap.containsKey(key) ? concurrentHashMap.get(key).remove(value) : false;
+		// 如果已经为空了，则删除根节点
+		if (concurrentHashMap.get(key).isEmpty()) { concurrentHashMap.remove(key); }
+		return result;
 	}
 
 	/**
@@ -112,6 +126,17 @@ public class ChiyaHashMapValueQueue<T, V> {
 	 */
 	public void forEach(BiConsumer<? super T, ? super LinkedBlockingQueue<V>> action) {
 		concurrentHashMap.forEach(action);
+	}
+
+	/**
+	 * 迭代方法
+	 * 
+	 * @param key    要迭代的key
+	 * @param action (k,v)->function的表达式
+	 */
+	public void forEach(String key, Consumer<? super V> action) {
+		LinkedBlockingQueue<V> data = concurrentHashMap.get(key);
+		if (data != null) { data.forEach(action); }
 	}
 
 	/**

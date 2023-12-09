@@ -2,7 +2,7 @@ package chiya.core.base.cache;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import chiya.core.base.collection.ChiyaHashMapValueQueue;
+import chiya.core.base.collection.ChiyaQueue;
 import chiya.core.base.function.GenericNoParamFunction;
 import chiya.core.base.function.VoidGenericFunction;
 import chiya.core.base.object.ObjectUtil;
@@ -129,7 +129,7 @@ public class ObjectPool<K, V> {
 	}
 
 	/** 实例化容器 */
-	private ChiyaHashMapValueQueue<K, ObjectContainer> objectCache = new ChiyaHashMapValueQueue<>();
+	private ChiyaQueue<K, ObjectContainer> objectCache = new ChiyaQueue<>();
 
 	/** 延时列队 */
 	private TimeQueue<Integer, ObjectContainer> timeQueue = new TimeQueue<>(v -> {
