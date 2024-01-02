@@ -3,9 +3,9 @@ package chiya.core.base.object;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.LinkedList;
 import java.util.List;
 
 import chiya.core.base.loop.Loop;
@@ -53,11 +53,12 @@ public class ChiyaLoader {
 	public List<String> scanerAllClass(String path, String packRoot) {
 		List<String> listFile = new ArrayList<String>();
 		File file = new File(path);
-		LinkedList<String> stack = new LinkedList<>();
-		LinkedList<String> pack = new LinkedList<>();
+		ArrayDeque<String> stack = new ArrayDeque<>();
+		ArrayDeque<String> pack = new ArrayDeque<>();
 		if (file.isDirectory()) {
 			Loop.forEach(
-				file.list(), f -> {
+				file.list(),
+				f -> {
 					stack.push(file.getPath() + "\\" + f);
 					pack.push(f);
 				}
@@ -72,7 +73,8 @@ public class ChiyaLoader {
 			if (nowFile.isFile()) { listFile.add(packRoot + "." + nowPack.replace(".class", "")); }
 			if (nowFile.isDirectory()) {
 				Loop.forEach(
-					nowFile.list(), f -> {
+					nowFile.list(),
+					f -> {
 						stack.push(nowFile.getPath() + "\\" + f);
 						pack.push(nowPack + "." + f);
 					}

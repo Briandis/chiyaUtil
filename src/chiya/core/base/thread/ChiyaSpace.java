@@ -14,7 +14,7 @@ import chiya.core.base.gc.GarbageCollection;
 public class ChiyaSpace<K, V> {
 
 	/** 存储内容 */
-	private ConcurrentHashMap<String, ConcurrentHashMap<K, V>> threadMap = null;
+	private ConcurrentHashMap<Long, ConcurrentHashMap<K, V>> threadMap = null;
 	/** 垃圾回收期 */
 	private GarbageCollection garbageCollection = null;
 
@@ -23,16 +23,16 @@ public class ChiyaSpace<K, V> {
 	 */
 	public ChiyaSpace() {
 		// 构建存储容器
-		threadMap = new ConcurrentHashMap<String, ConcurrentHashMap<K, V>>();
+		threadMap = new ConcurrentHashMap<>();
 		// 构建GC回收
 		garbageCollection = new GarbageCollection(() -> {
 			ThreadGroup threadGroup = Thread.currentThread().getThreadGroup();
 			Thread threads[] = new Thread[threadGroup.activeCount()];
 			threadGroup.enumerate(threads);
 			// 存活的线程
-			HashSet<String> hashSet = new HashSet<String>();
+			HashSet<Long> hashSet = new HashSet<>();
 			for (Thread thread : threads) {
-				if (thread != null) { hashSet.add(thread.getName()); }
+				if (thread != null) { hashSet.add(thread.getId()); }
 			}
 			// 如果线程没有存活，则回收
 			threadMap.entrySet().removeIf(entry -> !hashSet.contains(entry.getKey()));
@@ -95,7 +95,7 @@ public class ChiyaSpace<K, V> {
 	private ConcurrentHashMap<K, V> getMap() {
 		garbageCollection.recycle();
 		return threadMap.computeIfAbsent(
-			ThreadUtil.getThreadName(),
+			ThreadUtil.getThreadId(),
 			k -> new ConcurrentHashMap<K, V>()
 		);
 	}

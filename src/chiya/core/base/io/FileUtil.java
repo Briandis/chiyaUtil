@@ -14,8 +14,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import chiya.core.base.loop.Loop;
@@ -308,7 +308,7 @@ public class FileUtil {
 	public static List<String> getAllFile(String path) {
 		List<String> listFile = new ArrayList<String>();
 		File file = new File(path);
-		LinkedList<String> stack = new LinkedList<>();
+		ArrayDeque<String> stack = new ArrayDeque<>();
 		if (file.isDirectory()) { Loop.forEach(file.list(), f -> stack.push(file.getPath() + "\\" + f)); }
 		while (stack.size() != 0) {
 			String root = stack.pop();
@@ -329,7 +329,7 @@ public class FileUtil {
 	public static List<String> getAllFile(String path, String... whiteList) {
 		List<String> listFile = new ArrayList<String>();
 		File file = new File(path);
-		LinkedList<String> stack = new LinkedList<>();
+		ArrayDeque<String> stack = new ArrayDeque<>();
 		if (file.isDirectory()) { Loop.forEach(file.list(), f -> stack.push(file.getPath() + "\\" + f)); }
 		while (stack.size() != 0) {
 			String root = stack.pop();
@@ -354,7 +354,7 @@ public class FileUtil {
 	public static List<String> getDirectoryFile(String path, String... whiteList) {
 		List<String> listFile = new ArrayList<String>();
 		File file = new File(path);
-		LinkedList<String> stack = new LinkedList<>();
+		ArrayDeque<String> stack = new ArrayDeque<>();
 		if (file.isDirectory()) { Loop.forEach(file.list(), f -> stack.push(file.getPath() + "\\" + f)); }
 		while (stack.size() != 0) {
 			String root = stack.pop();
