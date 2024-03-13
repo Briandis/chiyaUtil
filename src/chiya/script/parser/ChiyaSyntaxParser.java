@@ -132,9 +132,9 @@ public class ChiyaSyntaxParser {
 		ChiyaArray<SyntaxRule> finshList = new ChiyaArray<>();
 
 		flowInfo.getData().forEach(rule -> {
-				int configLayer = rule.getConfig().getEfficientLayer();
-				// 层数规则判断，可以减少有层数配置中无效的计算量
-				if (configLayer == -1 || layer < configLayer) { judgeList.add(rule); }
+			int configLayer = rule.getConfig().getEfficientLayer();
+			// 层数规则判断，可以减少有层数配置中无效的计算量
+			if (configLayer == -1 || layer < configLayer) { judgeList.add(rule); }
 		});
 
 		// 每次匹配都要对所有匹配器重置
@@ -280,6 +280,9 @@ public class ChiyaSyntaxParser {
 					);
 
 				}
+				branch
+					.chainCharLineStart(branch.getTokenTree().get(0).getCharLineStart())
+					.chainCharLineEnd(branch.getTokenTree().get(branch.getTokenTree().size() - 1).getCharLineEnd());
 			}
 		}
 		whileList.clear();

@@ -19,24 +19,20 @@ public class ChiyaToken {
 
 	/** 内部嵌套的token */
 	private List<ChiyaToken> tokenTree = new ArrayList<>();
-
 	/** token类型 */
 	private String type;
-
 	/** 起始字符 */
 	private String start;
-
 	/** 中间字符 */
 	private String data;
-
 	/** 结尾字符 */
 	private String end;
-
 	/** 字符所在原本的位置 */
 	private int charIndex = -1;
-
-	/** 字符原本所在行 */
-	private int charline = -1;
+	/** 字符原本所在开始行 */
+	private int charLineStart = -1;
+	/** 字符原本所在结束行 */
+	private int charLineEnd = -1;
 
 	/**
 	 * 检查树类型
@@ -284,35 +280,6 @@ public class ChiyaToken {
 	}
 
 	/**
-	 * 获取字符原本所在行
-	 * 
-	 * @return 字符原本所在行
-	 */
-	public int getCharline() {
-		return charline;
-	}
-
-	/**
-	 * 设置字符原本所在行
-	 * 
-	 * @param charline 字符原本所在行
-	 */
-	public void setCharline(int charline) {
-		this.charline = charline;
-	}
-
-	/**
-	 * 链式添加字符原本所在行
-	 * 
-	 * @param charline 字符原本所在行
-	 * @return 对象本身
-	 */
-	public ChiyaToken chainCharline(int charline) {
-		setCharline(charline);
-		return this;
-	}
-
-	/**
 	 * 获取debug后的token列表
 	 * 
 	 * @param listToken token列表
@@ -322,7 +289,7 @@ public class ChiyaToken {
 		StringBuilder stringBuilder = new StringBuilder();
 		RecursionStack<ChiyaToken> recursionStack = new RecursionStack<>();
 		IntegerPack integerPack = new IntegerPack();
-		int codeFormat[] = new int[] { 25, 1, 15, 1, 15, 1, 25, 1, 5 };
+		int codeFormat[] = new int[] { 25, 1, 8, 1, 8, 1, 8, 1, 15, 1, 25, 1, 5 };
 		String T_CHAR = "\t";
 		recursionStack.setJudgeMethod((stack, token) -> {
 			// 控制层级
@@ -335,6 +302,10 @@ public class ChiyaToken {
 					codeFormat,
 					" ",
 					token.getType(),
+					T_CHAR,
+					token.getCharLineStart(),
+					T_CHAR,
+					token.getCharLineEnd(),
 					T_CHAR,
 					token.getCharIndex(),
 					T_CHAR,
@@ -432,4 +403,61 @@ public class ChiyaToken {
 		});
 	}
 
+	/**
+	 * 获取字符原本所在开始行
+	 * 
+	 * @return 字符原本所在开始行
+	 */
+	public int getCharLineStart() {
+		return charLineStart;
+	}
+
+	/**
+	 * 设置字符原本所在开始行
+	 * 
+	 * @param charLineStart 字符原本所在开始行
+	 */
+	public void setCharLineStart(int charLineStart) {
+		this.charLineStart = charLineStart;
+	}
+
+	/**
+	 * 链式添加字符原本所在开始行
+	 * 
+	 * @param charLineStart 字符原本所在开始行
+	 * @return 对象本身
+	 */
+	public ChiyaToken chainCharLineStart(int charLineStart) {
+		setCharLineStart(charLineStart);
+		return this;
+	}
+
+	/**
+	 * 获取字符原本所在结束行
+	 * 
+	 * @return 字符原本所在结束行
+	 */
+	public int getCharLineEnd() {
+		return charLineEnd;
+	}
+
+	/**
+	 * 设置字符原本所在结束行
+	 * 
+	 * @param charLineEnd 字符原本所在结束行
+	 */
+	public void setCharLineEnd(int charLineEnd) {
+		this.charLineEnd = charLineEnd;
+	}
+
+	/**
+	 * 链式添加字符原本所在结束行
+	 * 
+	 * @param charLineEnd 字符原本所在结束行
+	 * @return 对象本身
+	 */
+	public ChiyaToken chainCharLineEnd(int charLineEnd) {
+		setCharLineEnd(charLineEnd);
+		return this;
+	}
 }

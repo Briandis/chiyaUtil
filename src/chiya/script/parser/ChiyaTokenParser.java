@@ -69,6 +69,19 @@ public class ChiyaTokenParser {
 	 * @return token列表
 	 */
 	public List<ChiyaToken> toToken(String sourceCode, String anyType, String... skipType) {
+		return toToken(sourceCode, anyType, 0, skipType);
+	}
+
+	/**
+	 * 生成Token序列
+	 * 
+	 * @param sourceCode 源码
+	 * @param anyType    任意token的名称
+	 * @param lineCount  行坐标信息
+	 * @param skipType   跳过的token
+	 * @return token列表
+	 */
+	public List<ChiyaToken> toToken(String sourceCode, String anyType, int lineCount, String... skipType) {
 		HashSet<String> skipSet = new HashSet<>();
 		if (skipType != null) { Loop.forEach(skipType, data -> skipSet.add(data)); }
 
@@ -77,6 +90,7 @@ public class ChiyaTokenParser {
 		int nowIndex = 0;
 		int endIndex = 0;
 		int startIndex = 0;
+		int lineStart = 0;
 		String nowTokenType = "";
 
 		ChiyaString anyData = new ChiyaString();
@@ -85,9 +99,17 @@ public class ChiyaTokenParser {
 			if (listMatchResult.isEmpty()) {
 				anyData.append(sourceCode.charAt(nowIndex));
 			} else {
+				lineStart = lineCount;
 				// 如果any的值存在，先构建token
 				if (!anyData.isEmpty()) {
-					listToken.add(new ChiyaToken().chainType(anyType).chainData(anyData.toString()).chainCharIndex(nowIndex - 1));
+					listToken.add(
+						new ChiyaToken()
+							.chainType(anyType)
+							.chainData(anyData.toString())
+							.chainCharIndex(nowIndex - 1)
+							.chainCharLineStart(lineStart)
+							.chainCharLineEnd(lineCount)
+					);
 					anyData.clear();
 				}
 				// 获取最后一个，最后一个肯定是所有匹配项中最长的
@@ -95,8 +117,11 @@ public class ChiyaTokenParser {
 				// 备份最后结尾下标，防止递归丢失
 				endIndex = lastMatchResult.getEndIndex();
 
+				// 统计字符出现的行数量
+				for (int charIndex = 0; charIndex < endIndex - nowIndex + 1; charIndex++) {
+					if (sourceCode.charAt(charIndex + nowIndex) == '\n') { lineCount++; }
+				}
 				// 如果匹配到的类型不是需要跳过的，则构建token
-
 				if (!skipSet.contains(lastMatchResult.getMatchRule().getStatus())) {
 					// 如果存在下一层解析
 					if (lastMatchResult.getMatchRule().getNextParser() != null) {
@@ -112,6 +137,7 @@ public class ChiyaTokenParser {
 						List<ChiyaToken> tempList = lastMatchResult.getMatchRule().getNextParser().toToken(
 							lastMatchResult.getData(),
 							lastMatchResult.getMatchRule().getStatus(),
+							lineCount,
 							skipType
 						);
 						// 重新计算开始坐标
@@ -134,6 +160,9 @@ public class ChiyaTokenParser {
 								.chainCharIndex(lastMatchResult.getEndIndex())
 						);
 					}
+					listToken.get(listToken.size() - 1)
+						.chainCharLineStart(lineStart)
+						.chainCharLineEnd(sourceCode.charAt(nowIndex) == '\n' ? lineCount - 1 : lineCount);
 				}
 				nowIndex = lastMatchResult.getEndIndex();
 			}
@@ -141,7 +170,14 @@ public class ChiyaTokenParser {
 		}
 		// 如果最后还有参与的字符，则进行最后处理
 		if (!anyData.isEmpty()) {
-			listToken.add(new ChiyaToken().chainType(anyType).chainData(anyData.toString()).chainCharIndex(nowIndex - 1));
+			listToken.add(
+				new ChiyaToken()
+					.chainType(anyType)
+					.chainData(anyData.toString())
+					.chainCharIndex(nowIndex - 1)
+					.chainCharLineStart(lineCount)
+					.chainCharLineEnd(lineCount)
+			);
 			anyData.clear();
 		}
 		return listToken;

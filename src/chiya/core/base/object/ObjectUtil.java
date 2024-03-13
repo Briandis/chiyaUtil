@@ -195,4 +195,39 @@ public class ObjectUtil {
 		setConverterAttribute(object, name, value, ConverterUtil.CHIYA_CONVERTER);
 	}
 
+	/**
+	 * 将对象转换成Map结构
+	 * 
+	 * @param objectField 存储的字段列表
+	 * @param object      对象
+	 * @param clazz       类型
+	 */
+	public static void toHashMap(HashMap<String, Object> objectField, Object object, Class<?> clazz) {
+		for (Field field : clazz.getDeclaredFields()) {
+			// key是get方法，value是属性
+			try {
+				field.setAccessible(true);
+				objectField.put(field.getName(), field.get(object));
+			} catch (Exception e) {
+				objectField.put(field.getName(), null);
+			}
+			if (clazz.getSuperclass() != null) {
+				// 递归查询
+				toHashMap(objectField, object, clazz.getSuperclass());
+			}
+		}
+	}
+
+	/**
+	 * 将对象转换成Map结构
+	 * 
+	 * @param object 对象
+	 * @return MAP结构
+	 */
+	public static HashMap<String, Object> toHashMap(Object object) {
+		HashMap<String, Object> objectField = new HashMap<>();
+		// 递归查询
+		toHashMap(objectField, object, object.getClass());
+		return objectField;
+	}
 }
