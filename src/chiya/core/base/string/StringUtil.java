@@ -1032,6 +1032,13 @@ public class StringUtil {
 		return stringBuilder.toString();
 	}
 
+	/**
+	 * 判断key是否出现在了以下列表中
+	 * 
+	 * @param key   参考的字符串
+	 * @param value 待判断的多个字符串
+	 * @return true:出现在列表中/false:未出现
+	 */
 	public static boolean inString(String key, String... value) {
 		if (value != null) {
 			for (String string : value) {
@@ -1039,6 +1046,17 @@ public class StringUtil {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * 判断字符串去除前后空格后是否为空
+	 * 
+	 * @param string 字符串
+	 * @return true:为空/false不为空
+	 */
+	public static boolean isEmpty(String string) {
+		if (string != null) { return string.trim().length() == 0; }
+		return true;
 	}
 
 }
