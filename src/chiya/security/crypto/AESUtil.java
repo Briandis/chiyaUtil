@@ -1,5 +1,10 @@
 package chiya.security.crypto;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 import javax.crypto.Cipher;
@@ -13,6 +18,11 @@ import javax.crypto.spec.SecretKeySpec;
  *
  */
 public class AESUtil {
+	/** 加密方式 */
+	private static final String ALGORITHM = "AES";
+	/** CTR方式 */
+	private static final String TRANSFORMATION = "AES/CTR/NoPadding";
+
 	/**
 	 * base64解码
 	 * 
@@ -56,7 +66,7 @@ public class AESUtil {
 	 */
 	public static String decryptAES(byte bytes[], Cipher cipher, byte key[], String ivs) {
 		try {
-			SecretKeySpec skeySpec = new SecretKeySpec(key, "AES");
+			SecretKeySpec skeySpec = new SecretKeySpec(key, ALGORITHM);
 			if (ivs != null) {
 				cipher.init(Cipher.DECRYPT_MODE, skeySpec, new IvParameterSpec(ivs.getBytes()));
 			} else {
@@ -128,4 +138,103 @@ public class AESUtil {
 			throw new RuntimeException(e);
 		}
 	}
+
+	/**
+	 * 二进制文件加密
+	 * 
+	 * @param inputFile  文件保存路径
+	 * @param outputFile 文件输出路径
+	 * @param key        key
+	 * @param iv         向量
+	 */
+	public static void encryptFile(String inputFile, String outputFile, String key, String iv) {
+		fileAES(inputFile, outputFile, key, iv, false);
+	}
+
+	/**
+	 * 二进制文件加密
+	 * 
+	 * @param inputFile  文件保存路径
+	 * @param outputFile 文件输出路径
+	 * @param key        key
+	 */
+	public static void encryptFile(String inputFile, String outputFile, String key) {
+		fileAES(inputFile, outputFile, key, null, false);
+	}
+
+	/**
+	 * 解密文件并生成二进制数组
+	 * 
+	 * @param inputFile  文件保存路径
+	 * @param outputFile 文件输出路径
+	 * @param key        key
+	 * @param iv         向量
+	 */
+	public static void decryptFile(String inputFile, String outputFile, String key, String iv) {
+		fileAES(inputFile, outputFile, key, iv, true);
+	}
+
+	/**
+	 * 解密文件并生成二进制数组
+	 * 
+	 * @param inputFile  文件保存路径
+	 * @param outputFile 文件输出路径
+	 * @param key        key
+	 */
+	public static void decryptFile(String inputFile, String outputFile, String key) {
+		fileAES(inputFile, outputFile, key, null, true);
+	}
+
+	/**
+	 * 文件AES处理
+	 * 
+	 * @param inputFile  输入文件
+	 * @param outputFile 输出文件
+	 * @param key        key
+	 * @param iv         向量
+	 * @param isDecrypt  是否是解密模式
+	 */
+	public static void fileAES(String inputFile, String outputFile, String key, String iv, boolean isDecrypt) {
+		try (FileInputStream fileInputStream = new FileInputStream(inputFile);
+			FileOutputStream fileOutputStream = new FileOutputStream(outputFile)) {
+			ctrModle(fileInputStream, fileOutputStream, key, iv, isDecrypt);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * CTR模式加密或解密
+	 * 
+	 * @param inputStream  输入流
+	 * @param outputStream 输出流
+	 * @param key          key
+	 * @param iv           向量
+	 * @param isDecrypt    是否是解密模式
+	 */
+	public static void ctrModle(InputStream inputStream, OutputStream outputStream, String key, String iv, boolean isDecrypt) {
+		try {
+			Cipher cipher = Cipher.getInstance(TRANSFORMATION);
+			SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(), ALGORITHM);
+			int model = isDecrypt ? Cipher.DECRYPT_MODE : Cipher.ENCRYPT_MODE;
+			if (iv != null) {
+				cipher.init(model, secretKeySpec, new IvParameterSpec(iv.getBytes()));
+			} else {
+				cipher.init(model, secretKeySpec);
+			}
+			byte[] buffer = new byte[8192];
+			int read;
+			// CTR模式处理
+			while ((read = inputStream.read(buffer)) != -1) {
+				byte[] decrypted = cipher.update(buffer, 0, read);
+				if (decrypted != null) { outputStream.write(decrypted); }
+				byte[] lastBlock = cipher.doFinal();
+				if (lastBlock != null) { outputStream.write(lastBlock); }
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
+	}
+
 }
