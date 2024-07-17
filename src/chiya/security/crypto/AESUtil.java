@@ -1,11 +1,12 @@
 package chiya.security.crypto;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -22,122 +23,6 @@ public class AESUtil {
 	private static final String ALGORITHM = "AES";
 	/** CTR方式 */
 	private static final String TRANSFORMATION = "AES/CTR/NoPadding";
-
-	/**
-	 * base64解码
-	 * 
-	 * @param baseString BASE64字符串
-	 * @return 解密后的byte二进制
-	 */
-	public static byte[] base64StringDecoding(String baseString) {
-		return Base64.getDecoder().decode(baseString);
-	}
-
-	/**
-	 * AES128 CBC模式解密 AES/CBC/PKCS5Padding
-	 * 
-	 * @param sSrc Base64字符串
-	 * @param key  密钥
-	 * @param ivs  向量
-	 * @return 解密后字符串
-	 */
-	@Deprecated
-	public static String AES128CBCStringDecoding(byte[] sSrc, String key, String ivs) {
-		try {
-			return decryptAES(
-				sSrc,
-				getCipher("AES/CBC/PKCS5Padding"),
-				key.getBytes("ASCII"),
-				ivs
-			);
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	/**
-	 * 通用AES解密
-	 * 
-	 * @param bytes  字节数组
-	 * @param cipher 加密方式
-	 * @param key    键
-	 * @param ivs    向量
-	 * @return 解密后的字符串
-	 */
-	public static String decryptAES(byte bytes[], Cipher cipher, byte key[], String ivs) {
-		try {
-			SecretKeySpec skeySpec = new SecretKeySpec(key, ALGORITHM);
-			if (ivs != null) {
-				cipher.init(Cipher.DECRYPT_MODE, skeySpec, new IvParameterSpec(ivs.getBytes()));
-			} else {
-				cipher.init(Cipher.DECRYPT_MODE, skeySpec);
-			}
-			return new String(cipher.doFinal(bytes), "utf-8");
-		} catch (Exception ex) {
-			return null;
-		}
-	}
-
-	/**
-	 * 通用AES解密
-	 * 
-	 * @param bytes  字节数组
-	 * @param cipher 加密方式
-	 * @param key    键
-	 * @param ivs    向量
-	 * @return 解密后的字符串
-	 */
-	public static String decryptAES(byte bytes[], String cipher, byte key[], String ivs) {
-		return decryptAES(bytes, getCipher(cipher), key, ivs);
-	}
-
-	/**
-	 * Base通用AES解密
-	 * 
-	 * @param context 加密的数据
-	 * @param cipher  加密方式
-	 * @param key     键
-	 * @param ivs     向量
-	 * @return 解密后的字符串
-	 */
-	public static String decryptAES(String context, String cipher, String key, String ivs) {
-		return decryptAES(base64StringDecoding(context), getCipher(cipher), base64StringDecoding(key), ivs);
-	}
-
-	/**
-	 * 解密 AES128 CBC模式解密 AES/CBC/PKCS5Padding
-	 * 
-	 * @param data 加密数据
-	 * @param key  sessionKey
-	 * @param iv   向量
-	 * @return 解密后字符串
-	 */
-	public static String decrypt(String data, String key, String iv) {
-		try {
-			return decryptAES(
-				base64StringDecoding(data),
-				getCipher("AES/CBC/PKCS5Padding"),
-				key.getBytes("ASCII"),
-				iv
-			);
-		} catch (UnsupportedEncodingException e) {
-			return null;
-		}
-	}
-
-	/**
-	 * 获取加密方式实例
-	 * 
-	 * @param string 加密方式
-	 * @return Cipher
-	 */
-	public static Cipher getCipher(String string) {
-		try {
-			return Cipher.getInstance(string);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
 
 	/**
 	 * 二进制文件加密
@@ -217,11 +102,7 @@ public class AESUtil {
 			Cipher cipher = Cipher.getInstance(TRANSFORMATION);
 			SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(), ALGORITHM);
 			int model = isDecrypt ? Cipher.DECRYPT_MODE : Cipher.ENCRYPT_MODE;
-			if (iv != null) {
-				cipher.init(model, secretKeySpec, new IvParameterSpec(iv.getBytes()));
-			} else {
-				cipher.init(model, secretKeySpec);
-			}
+			cipher.init(model, secretKeySpec, new IvParameterSpec(iv != null ? iv.getBytes() : new byte[16]));
 			byte[] buffer = new byte[8192];
 			int read;
 			// CTR模式处理
@@ -237,4 +118,117 @@ public class AESUtil {
 
 	}
 
+	/**
+	 * 加密成BASE64
+	 * 
+	 * @param inputData 输入字符串
+	 * @param key       key
+	 * @param iv        向量
+	 * @return BASE64编码的二进制数据
+	 */
+	public static String encryptToBase64(String inputData, String key, String iv) {
+		byte[] data = aes(inputData.getBytes(), key, iv, false);
+		return Base64.getEncoder().encodeToString(data);
+	}
+
+	/**
+	 * 加密成BASE64
+	 * 
+	 * @param inputData 输入字符串
+	 * @param key       key
+	 * @return BASE64编码的二进制数据
+	 */
+	public static String encryptToBase64(String inputData, String key) {
+		return encryptToBase64(inputData, key, null);
+	}
+
+	/**
+	 * AES加密
+	 * 
+	 * @param inputData 输入字符串
+	 * @param key       key
+	 * @param iv        向量
+	 * @return 二进制数据
+	 */
+	public static byte[] encrypt(String inputData, String key, String iv) {
+		return aes(inputData.getBytes(), key, iv, false);
+	}
+
+	/**
+	 * AES加密
+	 * 
+	 * @param inputData 输入字符串
+	 * @param key       key
+	 * @return 二进制数据
+	 */
+	public static byte[] encrypt(String inputData, String key) {
+		return encrypt(inputData, key, null);
+	}
+
+	/**
+	 * AES解密
+	 * 
+	 * @param inputData 输入数据
+	 * @param key       key
+	 * @param iv        向量
+	 * @return 解密后数据
+	 */
+	public static String decrypt(String inputData, String key, String iv) {
+		byte[] data = aes(Base64.getDecoder().decode(inputData), key, iv, true);
+		return new String(data);
+	}
+
+	/**
+	 * AES解密
+	 * 
+	 * @param inputData 文件保存路径
+	 * @param key       key
+	 * @return 解密后数据
+	 */
+	public static String decrypt(String inputData, String key) {
+		return decrypt(inputData, key, null);
+	}
+
+	/**
+	 * AES解密
+	 * 
+	 * @param inputData 文件保存路径
+	 * @param key       key
+	 * @param iv        向量
+	 * @return 解密后数据
+	 */
+	public static String decrypt(byte[] inputData, String key, String iv) {
+		byte[] data = aes(inputData, key, iv, true);
+		return new String(data);
+	}
+
+	/**
+	 * AES解密
+	 * 
+	 * @param inputData 文件保存路径
+	 * @param key       key
+	 * @return 解密后数据
+	 */
+	public static String decrypt(byte[] inputData, String key) {
+		return decrypt(inputData, key, null);
+	}
+
+	/**
+	 * AES处理
+	 * 
+	 * @param inputData 输入输入
+	 * @param key       key
+	 * @param iv        向量
+	 * @param isDecrypt 是否是解密模式
+	 * @return 二进制数组
+	 */
+	public static byte[] aes(byte[] inputData, String key, String iv, boolean isDecrypt) {
+		try (InputStream inputStream = new ByteArrayInputStream(inputData);
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+			ctrModle(inputStream, outputStream, key, iv, isDecrypt);
+			return outputStream.toByteArray();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }
