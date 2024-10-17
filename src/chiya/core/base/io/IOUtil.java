@@ -1,12 +1,9 @@
 package chiya.core.base.io;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 
 /**
  * IO工具类
@@ -43,16 +40,12 @@ public class IOUtil {
 	 * @return 字符串
 	 */
 	public static String readAllString(InputStream inputStream) {
-		StringBuilder stringBuilder = new StringBuilder();
-		try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
-			BufferedReader bufferedReader = new BufferedReader(inputStreamReader);) {
-			String line = "";
-			while ((line = bufferedReader.readLine()) != null) {
-				stringBuilder.append(line);
-			}
+		try {
+			byte[] bytes = readAllBytes(inputStream);
+			return new String(bytes);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		return stringBuilder.toString();
+
 	}
 }
