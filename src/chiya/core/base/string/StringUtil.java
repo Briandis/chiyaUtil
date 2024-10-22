@@ -188,6 +188,27 @@ public class StringUtil {
 	}
 
 	/**
+	 * 获取SHA256加密<br>
+	 * 如果失败返回原字符串
+	 * 
+	 * @param string 待加密字符串
+	 * @return SHA256加密后字符串/原字符串
+	 */
+	public static String encoderSHA256(byte[] bytes) {
+		if (bytes == null) { return null; }
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			String hashtext = new BigInteger(1, md.digest(bytes)).toString(16);
+			while (hashtext.length() < 32) {
+				hashtext = "0" + hashtext;
+			}
+			return hashtext;
+		} catch (NoSuchAlgorithmException e) {
+			return new String(bytes);
+		}
+	}
+
+	/**
 	 * 获取SHA1加密<br>
 	 * 如果失败返回原字符串
 	 * 
@@ -219,6 +240,16 @@ public class StringUtil {
 	}
 
 	/**
+	 * 获取BASE64加密
+	 * 
+	 * @param bytes 待加密二进制
+	 * @return BASE64字符串
+	 */
+	public static String encoderBASE64(byte[] bytes) {
+		return Base64.getEncoder().encodeToString(bytes);
+	}
+
+	/**
 	 * 对BASE64加密进行解密
 	 * 
 	 * @param string 待解密字符串
@@ -226,6 +257,16 @@ public class StringUtil {
 	 */
 	public static String decoderBASE64(String string) {
 		return new String(Base64.getDecoder().decode(string));
+	}
+
+	/**
+	 * 对BASE64加密进行解密
+	 * 
+	 * @param string 待解密字符串
+	 * @return 解密后字符串
+	 */
+	public static byte[] decoderBASE64ToByte(String string) {
+		return Base64.getDecoder().decode(string);
 	}
 
 	/**
