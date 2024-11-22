@@ -612,4 +612,20 @@ public class ContainerUtil {
 	public static <T> void forEachOne(Iterable<T> iterable, Consumer<? super T> consumer) {
 		forEachOne(iterable.iterator(), consumer);
 	}
+
+	/**
+	 * 将数组转换成list
+	 * 
+	 * @param <T>    数组
+	 * @param object 多个对象
+	 * @return list
+	 */
+	@SafeVarargs
+	public static <T> ArrayList<T> createList(T... object) {
+		ArrayList<T> list = new ArrayList<>();
+		for (T t : object) {
+			list.add(t);
+		}
+		return list;
+	}
 }
