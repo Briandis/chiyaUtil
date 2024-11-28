@@ -67,6 +67,17 @@ public class ChiyaToken {
 	}
 
 	/**
+	 * 获取最后的树
+	 * 
+	 * @return 树节点
+	 */
+	public ChiyaToken getTreeLast() {
+		if (tokenTree.size() != 0) { return tokenTree.get(tokenTree.size() - 1); }
+		return null;
+
+	}
+
+	/**
 	 * 获取树的data
 	 * 
 	 * @param index 下标

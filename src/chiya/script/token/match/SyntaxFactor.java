@@ -25,10 +25,28 @@ public class SyntaxFactor {
 	private boolean needPaired = false;
 	/** 将子项对应位置替换成对应token类型 */
 	private HashMap<Integer, Object> tokenType = new HashMap<>();
-	/** 集成类型位特定位置上的类型 */
+	/** 继承类型位特定位置上的类型 */
 	private Integer extendType = null;
 	/** 匹配到的值充当父级下标 */
 	private Integer fatherIndex = null;
+	/** 是否合并 */
+	private boolean needMerge = false;
+
+	/**
+	 * 更改语法装饰器类型
+	 * 
+	 * @param listToken token列表
+	 */
+	public void changeType(List<ChiyaToken> listToken) {
+		tokenType.forEach((index, type) -> {
+			ChiyaToken nowToken = listToken.get(index);
+			if (type instanceof String typeString) { nowToken.setType(typeString); }
+			if (type instanceof HashMap map && map.containsKey(nowToken.getType())) {
+				// 在map中拿当前的类型信息
+				nowToken.setType(map.get(index).toString());
+			}
+		});
+	}
 
 	/**
 	 * 获取词法长度
@@ -114,11 +132,57 @@ public class SyntaxFactor {
 	/**
 	 * 添加语法
 	 * 
-	 * @param lexicalFactor
+	 * @param lexicalFactor 语法构成
 	 * @return 自身
 	 */
 	public SyntaxFactor addLexical(LexicalFactor lexicalFactor) {
 		syntaxList.add(lexicalFactor);
+		return this;
+	}
+
+	/**
+	 * 添加语法
+	 * 
+	 * @param types token类型
+	 * @return 自身
+	 */
+	public SyntaxFactor addLexicalType(String... types) {
+		syntaxList.add(new LexicalFactor().chainType(types));
+		return this;
+	}
+
+	/**
+	 * 添加语法
+	 * 
+	 * @param type  token类型
+	 * @param start 前缀内容
+	 * @return 自身
+	 */
+	public SyntaxFactor addLexicalTypeStart(String type, String... start) {
+		syntaxList.add(new LexicalFactor().chainType(type).chainStart(start));
+		return this;
+	}
+
+	/**
+	 * 添加语法
+	 * 
+	 * @param type token类型
+	 * @param data 内容
+	 * @return 自身
+	 */
+	public SyntaxFactor addLexicalTypeData(String type, String... data) {
+		syntaxList.add(new LexicalFactor().chainType(type).chainData(data));
+		return this;
+	}
+
+	/**
+	 * 添加语法
+	 * 
+	 * @param data 内容
+	 * @return 自身
+	 */
+	public SyntaxFactor addLexicalData(String... data) {
+		syntaxList.add(new LexicalFactor().chainData(data));
 		return this;
 	}
 
@@ -292,27 +356,27 @@ public class SyntaxFactor {
 	}
 
 	/**
-	 * 获取集成类型位特定位置上的类型
+	 * 获取继承类型位特定位置上的类型
 	 * 
-	 * @return 集成类型位特定位置上的类型
+	 * @return 继承类型位特定位置上的类型
 	 */
 	public Integer getExtendType() {
 		return extendType;
 	}
 
 	/**
-	 * 设置集成类型位特定位置上的类型
+	 * 设置继承类型位特定位置上的类型
 	 * 
-	 * @param extendType 集成类型位特定位置上的类型
+	 * @param extendType 继承类型位特定位置上的类型
 	 */
 	public void setExtendType(Integer extendType) {
 		this.extendType = extendType;
 	}
 
 	/**
-	 * 链式添加集成类型位特定位置上的类型
+	 * 链式添加继承类型位特定位置上的类型
 	 * 
-	 * @param extendType 集成类型位特定位置上的类型
+	 * @param extendType 继承类型位特定位置上的类型
 	 * @return 对象本身
 	 */
 	public SyntaxFactor chainExtendType(Integer extendType) {
@@ -349,4 +413,32 @@ public class SyntaxFactor {
 		return this;
 	}
 
+	/**
+	 * 获取是否合并
+	 * 
+	 * @return 是否合并
+	 */
+	public boolean getNeedMerge() {
+		return needMerge;
+	}
+
+	/**
+	 * 设置是否合并
+	 * 
+	 * @param needMerge 是否合并
+	 */
+	public void setNeedMerge(boolean needMerge) {
+		this.needMerge = needMerge;
+	}
+
+	/**
+	 * 链式添加是否合并
+	 * 
+	 * @param needMerge 是否合并
+	 * @return 对象本身
+	 */
+	public SyntaxFactor chainNeedMerge(boolean needMerge) {
+		setNeedMerge(needMerge);
+		return this;
+	}
 }

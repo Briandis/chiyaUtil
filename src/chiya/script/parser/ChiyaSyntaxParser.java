@@ -53,6 +53,16 @@ public class ChiyaSyntaxParser {
 	}
 
 	/**
+	 * 添加工作流
+	 * 
+	 * @param index        执行的索引
+	 * @param syntaxFactor 语法规则
+	 */
+	public void addFlow(double index, SyntaxFactor syntaxFactor) {
+		addFlow(index, new ParserConfig(), syntaxFactor);
+	}
+
+	/**
 	 * 自定义流
 	 * 
 	 * @param index    执行索引
@@ -180,6 +190,34 @@ public class ChiyaSyntaxParser {
 	}
 
 	/**
+	 * 更改父级token与合并处理
+	 * 
+	 * @param syntaxFactor 语法配置
+	 * @param branch       当前支
+	 * @param whileList    下一次判别队列
+	 * @param nowIndex     当前下标
+	 */
+	private static void fatherTokenMerge(SyntaxFactor syntaxFactor, ChiyaToken branch, List<ChiyaToken> whileList, int nowIndex) {
+		if (syntaxFactor.getFatherIndex() != null) {
+			// 获取当前支上的token并构成临时token
+			ChiyaToken tempBranch = branch.getTree(syntaxFactor.getFatherIndex());
+			if (syntaxFactor.getNeedMerge() && StringUtil.eqString(tempBranch.getType(), syntaxFactor.getType())
+				|| !syntaxFactor.getNeedMerge()) {
+				tempBranch = fatherToken(syntaxFactor.getFatherIndex(), branch.getTokenTree());
+				whileList.set(nowIndex, tempBranch);
+				tempBranch
+					.chainCharLineStart(tempBranch.getTree(0).getCharLineStart())
+					.chainCharLineEnd(tempBranch.getTreeLast().getCharLineEnd());
+
+			} else {
+				whileList.set(nowIndex, branch);
+			}
+		} else {
+			whileList.set(nowIndex, branch);
+		}
+	}
+
+	/**
 	 * token解析模式
 	 * 
 	 * @param whileList  循环列表
@@ -246,10 +284,7 @@ public class ChiyaSyntaxParser {
 							branch.addTree(tempList.get(tempList.size() - 1));
 						}
 						// 如果有改变父级的特性
-						whileList.set(
-							nowIndex,
-							syntaxFactor.getFatherIndex() != null ? fatherToken(syntaxFactor.getFatherIndex(), branch.getTokenTree()) : branch
-						);
+						fatherTokenMerge(syntaxFactor, branch, whileList, nowIndex);
 					}
 				} else {
 					// 非递归场景
@@ -274,15 +309,16 @@ public class ChiyaSyntaxParser {
 					}
 					nowIndex = nowIndex + matchIndex - 1;
 					// 改变token树
-					whileList.set(
-						nowIndex,
-						syntaxFactor.getFatherIndex() != null ? fatherToken(syntaxFactor.getFatherIndex(), branch.getTokenTree()) : branch
-					);
-
+					fatherTokenMerge(syntaxFactor, branch, whileList, nowIndex);
+					syntaxFactor.changeType(branch.getTokenTree());
+				}
+				if (syntaxFactor != null && syntaxFactor.getExtendType() != null) {
+					// ？？？
+					branch.setType(branch.getTree(syntaxFactor.getExtendType()).getType());
 				}
 				branch
-					.chainCharLineStart(branch.getTokenTree().get(0).getCharLineStart())
-					.chainCharLineEnd(branch.getTokenTree().get(branch.getTokenTree().size() - 1).getCharLineEnd());
+					.chainCharLineStart(branch.getTree(0).getCharLineStart())
+					.chainCharLineEnd(branch.getTreeLast().getCharLineEnd());
 			}
 		}
 		whileList.clear();
