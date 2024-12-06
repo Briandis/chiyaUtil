@@ -206,4 +206,27 @@ public class Assert {
 		isNull(map, message);
 		isTrue(map.size() == 0, message);
 	}
+
+	/**
+	 * 如果原字符串包含目标字符串，则抛出异常
+	 * 
+	 * @param source  原字符串
+	 * @param target  目标字符串
+	 * @param message 消息
+	 */
+	public static void containString(String source, String target, String message) {
+		if (source != null) { isTrue(source.indexOf(target) != -1, message); }
+	}
+
+	/**
+	 * 如果原字符串不包含目标字符串，则抛出异常
+	 * 
+	 * @param source  原字符串
+	 * @param target  目标字符串
+	 * @param message 消息
+	 */
+	public static void notContainString(String source, String target, String message) {
+		isNull(source, message);
+		isTrue(source.indexOf(target) == -1, message);
+	}
 }
