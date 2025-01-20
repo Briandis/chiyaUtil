@@ -7,14 +7,14 @@ package chiya.core.base.function;
  * @param <V> 处理的类
  */
 @FunctionalInterface
-public interface VoidGenericFunction<V> {
+public interface BooleanGenericFunction<V> {
 
 	/**
 	 * 任务体
 	 * 
 	 * @param value 传入的对象
 	 */
-	void execute(V value);
+	boolean execute(V value);
 
 	/**
 	 * 错误处理

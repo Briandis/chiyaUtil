@@ -2,6 +2,8 @@ package chiya.core.base.object;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 
 import chiya.core.base.number.NumberUtil;
@@ -229,5 +231,39 @@ public class ObjectUtil {
 		// 递归查询
 		toHashMap(objectField, object, object.getClass());
 		return objectField;
+	}
+
+	/**
+	 * 获取泛型类型
+	 * 
+	 * @param type 类型
+	 * @return 类数组
+	 */
+	public static Class<?>[] getGenericType(Type type) {
+		if (type instanceof ParameterizedType parameterizedType) {
+			Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+			Class<?>[] array = new Class<?>[actualTypeArguments.length];
+			for (int i = 0; i < array.length; i++) {
+				try {
+					array[i] = Class.forName(actualTypeArguments[i].getTypeName());
+				} catch (ClassNotFoundException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			return array;
+		}
+		return null;
+	}
+
+	/**
+	 * 获取泛型类型
+	 * 
+	 * @param type 类型
+	 * @return 类数
+	 */
+	public static Class<?> getGenericTypeFirst(Type type) {
+		Class<?>[] classArray = getGenericType(type);
+		if (classArray != null && classArray.length > 0) { return classArray[0]; }
+		return null;
 	}
 }

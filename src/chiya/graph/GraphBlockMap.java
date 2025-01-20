@@ -312,11 +312,14 @@ public class GraphBlockMap {
 	 * @param targetNode 终点
 	 */
 	public List<String> find(String startNode, String targetNode) {
+
 		// 查询的目标点必须存在
 		if (!nodeMap.containsKey(startNode) || !nodeMap.containsKey(targetNode)) { return null; }
 		// 寻找到的路径
 		List<String> path = new ArrayList<String>();
+		// 先添加起始点
 		path.add(startNode);
+		// 起始点就是目标点就返回
 		if (StringUtil.eqString(startNode, targetNode)) { return path; }
 		String nowNode = startNode;
 		// 使用了的节点
@@ -337,20 +340,21 @@ public class GraphBlockMap {
 			if (nextNode == null) {
 				notFind = false;
 				while (!path.isEmpty()) {
+					// 移除路径队尾
 					String lastNode = path.remove(path.size() - 1);
 					if (costIndex.containsKey(lastNode)) {
 						nextNode = findMinCost(costIndex.get(lastNode));
 						if (costIndex.get(lastNode).isEmpty()) { costIndex.remove(lastNode); }
 						if (nextNode == null) { continue; }
 						notFind = true;
-						path.add(lastNode);
 						path.add(nextNode);
+						break;
 					}
 				}
 				if (!notFind) { break; }
 			} else {
 				// 添加可用的节点
-				if (!costMap.isEmpty()) { costIndex.put(nowNode, costMap); }
+				if (!costMap.isEmpty()) { costIndex.put(nextNode, costMap); }
 				path.add(nextNode);
 			}
 			nowNode = nextNode;

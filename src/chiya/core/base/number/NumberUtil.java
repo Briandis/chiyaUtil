@@ -83,6 +83,20 @@ public class NumberUtil {
 	}
 
 	/**
+	 * 强制把字符串转成数字，失败返回0
+	 * 
+	 * @param str 待转换字符串
+	 * @return Float包装类
+	 */
+	public static Float parseFloat(String str) {
+		try {
+			return Float.parseFloat(str);
+		} catch (Exception e) {
+			return 0f;
+		}
+	}
+
+	/**
 	 * 强制把字符串转成数字，失败返回null
 	 * 
 	 * @param str 待转换字符串
