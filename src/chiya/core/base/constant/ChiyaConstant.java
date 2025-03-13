@@ -82,4 +82,17 @@ public class ChiyaConstant {
 		public static final int PASS = 3;
 
 	}
+
+	/** 方向 */
+	public class Direction {
+		/** 上 */
+		public static final int UP = 0;
+		/** 下 */
+		public static final int DOWN = 1;
+		/** 左 */
+		public static final int LEFT = 2;
+		/** 右 */
+		public static final int RIGHT = 3;
+
+	}
 }

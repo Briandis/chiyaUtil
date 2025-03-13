@@ -147,17 +147,14 @@ public class ByteArray {
 	 * @return 当前下标字节
 	 */
 	public byte[] getByte(int index, int end) {
-		int count = end;
+		int count = end - index;
 		if (count > size) { count = size; }
 		byte result[] = new byte[count];
-		if (start > end) {
-			int endDataSize = buffer.length - start;
-			if (count > endDataSize) {
-				System.arraycopy(buffer, getIndex(index), result, 0, endDataSize);
-				System.arraycopy(buffer, getIndex(endDataSize), result, endDataSize, end);
-			} else {
-				System.arraycopy(buffer, getIndex(index), result, 0, count);
-			}
+		// start到实际数组尾部的值
+		int endDataSize = buffer.length - start;
+		if (count > endDataSize) {
+			System.arraycopy(buffer, getIndex(index), result, 0, endDataSize);
+			System.arraycopy(buffer, getIndex(endDataSize), result, endDataSize, count - endDataSize);
 		} else {
 			System.arraycopy(buffer, getIndex(index), result, 0, count);
 		}
